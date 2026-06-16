@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+if command -v pnpm >/dev/null 2>&1; then
+  pnpm exec commitlint --edit "$1"
+else
+  npx -y pnpm@11.7.0 exec commitlint --edit "$1"
+fi
