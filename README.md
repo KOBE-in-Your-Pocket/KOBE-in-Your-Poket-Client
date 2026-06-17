@@ -25,9 +25,11 @@ pnpm android                  # Pixel_8_API34 を自動起動
 このプロジェクトを動かすには、以下が必要です。
 
 - **OS**: macOS、または Windows (WSL2 必須 — Windows ネイティブシェルでは動作確認していません)
-- **Node.js**: `22.16.0` (リポジトリ直下の `.node-version` / `.tool-versions` で固定)
-  - バージョン管理は `mise` / `asdf` / `nvm` のいずれかを使ってください。`.node-version` を自動で読んでくれます。
-  - 例: `mise install` で `.tool-versions` に書かれた Node / pnpm / Java を一括導入できます。
+- **Node.js**: `22.16.0` (リポジトリ直下の `.node-version` / `.tool-versions` / `.nvmrc` で固定)
+  - バージョン管理ツールは `mise` / `asdf` / `nvm` のいずれかを使ってください。
+  - `mise` / `asdf` を使う場合: `.tool-versions` を読み取り、`mise install` で Node / pnpm / Java を一括導入。
+  - `nvm` を使う場合: `.nvmrc` を読み取る。リポジトリで `nvm install` → `nvm use` で 22.16.0 に切替。
+  - その他のツール (`fnm` 等) も `.node-version` を自動で読み取れます。
 - **Corepack**: Node 22 に同梱されています。後述の手順で有効化します。
 - **iOS Simulator**: Xcode 16+ (macOS のみ、iOS で動作確認する場合)
 - **Android Emulator**: Android Studio Koala 2024.1+ (任意)

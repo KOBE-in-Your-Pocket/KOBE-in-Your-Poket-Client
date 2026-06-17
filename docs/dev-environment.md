@@ -68,9 +68,18 @@ pnpm android
 
 ## 2. 共通ツールのインストール
 
-### 2.1 mise（バージョン管理ツール、推奨）
+バージョン管理ツールは下記から **どれか1つ** 選んでください。それぞれリポジトリの設定ファイルを自動で読みます。
 
-Node / pnpm / Java のバージョンをリポジトリの `.tool-versions` から自動で揃えるために `mise` を使います。`asdf` でも代用可。
+| ツール | 読むファイル     | おすすめ用途                                       |
+| ------ | ---------------- | -------------------------------------------------- |
+| `mise` | `.tool-versions` | **Node + pnpm + Java を一括** 管理したい人（推奨） |
+| `asdf` | `.tool-versions` | 既に asdf 使ってる人                               |
+| `nvm`  | `.nvmrc`         | Node だけ管理する人、定番ツール                    |
+| `fnm`  | `.node-version`  | nvm より高速なツール                               |
+
+### 2.1 mise（推奨）
+
+Node / pnpm / Java をリポジトリの `.tool-versions` から自動で揃えます。
 
 **macOS**:
 
@@ -94,9 +103,22 @@ source ~/.bashrc
 mise install   # .tool-versions に書かれた Node / pnpm / Java を自動インストール
 ```
 
-### 2.2 pnpm（Corepack 経由）
+### 2.2 nvm
 
-mise を使わない場合：
+Node だけ管理。インストールは [nvm 公式](https://github.com/nvm-sh/nvm#installing-and-updating) を参照。
+
+```bash
+# nvm 導入済みの前提
+cd KOBE-in-Your-Poket-Client
+nvm install   # .nvmrc から 22.16.0 を読んでインストール
+nvm use       # 22.16.0 に切替
+```
+
+`.nvmrc` を毎回 `nvm use` で読みに行くのが面倒なら、shell hook（[公式 README の Deeper Shell Integration](https://github.com/nvm-sh/nvm#deeper-shell-integration)）を設定すると `cd` で自動切替されます。
+
+### 2.3 pnpm（Corepack 経由）
+
+`mise` を使うなら不要（pnpm も同時に入る）。`nvm` や手動 Node の場合は別途：
 
 ```bash
 corepack enable
@@ -104,7 +126,7 @@ corepack prepare pnpm@11.7.0 --activate
 pnpm --version   # 11.7.0
 ```
 
-### 2.3 リポジトリの clone と依存インストール
+### 2.4 リポジトリの clone と依存インストール
 
 ```bash
 git clone https://github.com/KOBE-in-Your-Pocket/KOBE-in-Your-Poket-Client.git
