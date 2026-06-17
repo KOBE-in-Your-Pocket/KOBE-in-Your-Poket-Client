@@ -30,16 +30,21 @@ if ! xcrun simctl list devices available 2>/dev/null | grep -q "${TARGET_DEVICE}
 fi
 
 # ── 既に booted な「別機種」をシャットダウン ──────
-# 他機種が立ってると Expo がそっちを掴むので、メイン以外は落とす
-OTHERS=$(xcrun simctl list devices booted 2>/dev/null | grep -E "iPhone|iPad" | grep -v "${TARGET_DEVICE}" | sed -n 's/.*(\([0-9A-F-]*\)) (Booted).*/\1/p')
+# 他機種が立ってると Expo がそっちを掴むので、メイン以外は落とす。
+# パイプライン途中で grep がマッチなしだと exit 1 になるので || true で吸収。
+OTHERS=$(xcrun simctl list devices booted 2>/dev/null \
+  | grep -E "iPhone|iPad" \
+  | grep -v "${TARGET_DEVICE}" \
+  | sed -n 's/.*(\([0-9A-F-]*\)) (Booted).*/\1/p' || true)
+
 if [[ -n "$OTHERS" ]]; then
   echo "▶ メイン以外の Simulator をシャットダウン..."
-  echo "$OTHERS" | while read -r udid; do
+  while IFS= read -r udid; do
     [[ -z "$udid" ]] && continue
-    name=$(xcrun simctl list devices 2>/dev/null | grep "$udid" | sed -E 's/^[[:space:]]+([^(]+).*/\1/' | xargs)
-    echo "  - $name ($udid)"
+    name=$(xcrun simctl list devices 2>/dev/null | grep "$udid" | sed -E 's/^[[:space:]]+([^(]+).*/\1/' | xargs || true)
+    echo "  - ${name:-unknown} ($udid)"
     xcrun simctl shutdown "$udid" 2>/dev/null || true
-  done
+  done <<< "$OTHERS"
 fi
 
 # ── メイン機種を boot（既に booted ならスキップ） ─
@@ -54,10 +59,12 @@ fi
 open -a Simulator
 sleep 2
 
-# ── Expo 起動（--device で機種を明示し expo の自動選択を上書き） ─
+# ── Expo 起動 ─────────────────────────────────────
+# 直前に他機種を shutdown / TARGET_DEVICE を boot したので、expo は
+# 唯一 booted な ${TARGET_DEVICE} を選ぶ。
 echo "▶ Expo を ${TARGET_DEVICE} に向けて起動..."
 if command -v pnpm >/dev/null 2>&1; then
-  exec pnpm exec expo start --ios --device "${TARGET_DEVICE}"
+  exec pnpm exec expo start --ios
 else
-  exec npx -y pnpm@11.7.0 exec expo start --ios --device "${TARGET_DEVICE}"
+  exec npx -y pnpm@11.7.0 exec expo start --ios
 fi
