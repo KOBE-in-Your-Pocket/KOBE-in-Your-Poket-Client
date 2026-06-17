@@ -9,12 +9,14 @@
 このプロジェクトを動かすには、以下が必要です。
 
 - **OS**: macOS、または Windows (WSL2 必須 — Windows ネイティブシェルでは動作確認していません)
-- **Node.js**: `22.16.0` (リポジトリ直下の `.node-version` で固定)
-  - バージョン管理は `nvm` / `mise` / `asdf` のいずれかを使ってください。`.node-version` を自動で読んでくれます。
-  - 例: `mise install` または `nvm install` で `.node-version` に書かれているバージョンをインストールできます。
+- **Node.js**: `22.16.0` (リポジトリ直下の `.node-version` / `.tool-versions` で固定)
+  - バージョン管理は `mise` / `asdf` / `nvm` のいずれかを使ってください。`.node-version` を自動で読んでくれます。
+  - 例: `mise install` で `.tool-versions` に書かれた Node / pnpm / Java を一括導入できます。
 - **Corepack**: Node 22 に同梱されています。後述の手順で有効化します。
-- **iOS シミュレータ**: Xcode (macOS のみ。iOS で動作確認したい場合)
-- **Android エミュレータ**: Android Studio (任意)
+- **iOS Simulator**: Xcode 16+ (macOS のみ、iOS で動作確認する場合)
+- **Android Emulator**: Android Studio Koala 2024.1+ (任意)
+
+> **🎯 iOS / Android のエミュレータバージョンや AVD の作り方は [`docs/dev-environment.md`](./docs/dev-environment.md) に集約しています。チーム全員でバージョンを揃えるため、必ず一読してください。**
 
 > パッケージマネージャは **pnpm 11.7.0** を `package.json` の `packageManager` フィールドで固定しています。`npm install` や `yarn install` は使わないでください。
 
@@ -153,6 +155,17 @@ KOBE-in-Your-Poket-Client/
 ├── .github/workflows/   # GitHub Actions (Lint / Test)
 └── package.json
 ```
+
+---
+
+## 開発環境のチェック・自動化スクリプト
+
+```bash
+bash scripts/doctor.sh           # 環境チェック（Node / pnpm / Xcode / AVD 等）
+bash scripts/setup-emulators.sh  # 標準 Android AVD を一括作成
+```
+
+詳細は [`docs/dev-environment.md`](./docs/dev-environment.md) を参照。
 
 ---
 
