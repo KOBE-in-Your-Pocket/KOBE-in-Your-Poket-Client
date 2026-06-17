@@ -11,18 +11,45 @@ set -euo pipefail
 
 TARGET_AVD="Pixel_8_API34"
 
-# ── 前提チェック ──────────────────────────────────
+# ── ANDROID_HOME 自動検出（Mac brew / Android Studio / WSL / Linux） ──
+# シェルに ANDROID_HOME が無くてもよく使う場所を順番に試す。
 if [[ -z "${ANDROID_HOME:-}" ]]; then
-  echo "ERROR: 環境変数 ANDROID_HOME が未設定です。" >&2
+  CANDIDATES=(
+    "/opt/homebrew/share/android-commandlinetools"   # Mac (brew cask)
+    "/usr/local/share/android-commandlinetools"      # Mac Intel (brew)
+    "$HOME/Library/Android/sdk"                       # Mac (Android Studio 既定)
+    "$HOME/Android/Sdk"                               # Linux / WSL (Android Studio 既定)
+    "$HOME/.android/sdk"                              # 一部の Linux/WSL 設定
+    "/usr/lib/android-sdk"                            # Debian/Ubuntu apt パッケージ
+    "/mnt/c/Users/$USER/AppData/Local/Android/Sdk"    # WSL から Windows 側 Android Studio を見る場合
+  )
+  for candidate in "${CANDIDATES[@]}"; do
+    if [[ -d "$candidate" ]]; then
+      export ANDROID_HOME="$candidate"
+      echo "✓ ANDROID_HOME を $ANDROID_HOME に自動設定（永続化したいなら ~/.zshrc / ~/.bashrc に追加）"
+      break
+    fi
+  done
+fi
+
+if [[ -z "${ANDROID_HOME:-}" ]]; then
+  echo "ERROR: 環境変数 ANDROID_HOME が未設定で、候補パスにも SDK が見つかりません。" >&2
   echo "  詳細: docs/dev-environment.md §4.3" >&2
-  echo "  例:   export ANDROID_HOME=\"\$HOME/Library/Android/sdk\"" >&2
+  echo "  例 (Mac brew):     export ANDROID_HOME=\"/opt/homebrew/share/android-commandlinetools\"" >&2
+  echo "  例 (Android Studio Mac): export ANDROID_HOME=\"\$HOME/Library/Android/sdk\"" >&2
+  echo "  例 (Linux/WSL):    export ANDROID_HOME=\"\$HOME/Android/Sdk\"" >&2
   exit 1
 fi
 
+# ANDROID_HOME 配下のツールを PATH に追加（PATH に無くても拾えるように）
+export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH"
+
 for cmd in emulator adb; do
   if ! command -v "$cmd" >/dev/null 2>&1; then
-    echo "ERROR: '$cmd' が PATH に見つかりません。" >&2
+    echo "ERROR: '$cmd' が $ANDROID_HOME 配下に見つかりません。" >&2
     echo "  詳細: docs/dev-environment.md §4.3" >&2
+    echo "  Mac brew: 'brew install --cask android-commandlinetools' でインストール" >&2
+    echo "  その後:    sdkmanager --install \"platform-tools\" \"emulator\"" >&2
     exit 1
   fi
 done
