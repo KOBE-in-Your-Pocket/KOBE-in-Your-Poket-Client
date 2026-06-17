@@ -4,6 +4,22 @@
 
 ---
 
+## Quick Start (新メンバー向け一括セットアップ)
+
+```bash
+git clone https://github.com/KOBE-in-Your-Pocket/KOBE-in-Your-Poket-Client.git
+cd KOBE-in-Your-Poket-Client
+bash scripts/bootstrap.sh    # Node/pnpm 確認 → 依存インストール まで一括
+pnpm ios                      # iPhone 15 を自動起動 (Mac の場合)
+# または
+pnpm android                  # Pixel_8_API34 を自動起動
+```
+
+`bootstrap.sh` で詰まったら（Corepack 権限エラーなど）スクリプトが対処手順を出します。
+詳細セットアップは [`docs/dev-environment.md`](./docs/dev-environment.md) を参照。
+
+---
+
 ## 前提環境 (Prerequisites)
 
 このプロジェクトを動かすには、以下が必要です。
@@ -160,10 +176,11 @@ KOBE-in-Your-Poket-Client/
 
 ## 開発環境のチェック・自動化スクリプト
 
-```bash
-bash scripts/doctor.sh           # 環境チェック（Node / pnpm / Xcode / AVD 等）
-bash scripts/setup-emulators.sh  # 標準 Android AVD を一括作成
-```
+| スクリプト                        | 用途                                                       |
+| --------------------------------- | ---------------------------------------------------------- |
+| `bash scripts/bootstrap.sh`       | **新メンバー向け一括セットアップ** (Node/pnpm/依存) - 冪等 |
+| `bash scripts/doctor.sh`          | 環境チェック（Node / pnpm / Xcode / iOS Runtime / AVD 等） |
+| `bash scripts/setup-emulators.sh` | 標準 Android AVD (Pixel 4a/8/9) を一括作成                 |
 
 詳細は [`docs/dev-environment.md`](./docs/dev-environment.md) を参照。
 
