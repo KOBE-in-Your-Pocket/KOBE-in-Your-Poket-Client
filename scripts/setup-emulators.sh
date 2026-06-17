@@ -9,6 +9,31 @@
 
 set -euo pipefail
 
+# ── ANDROID_HOME 自動検出 ─────────────────────────────
+if [[ -z "${ANDROID_HOME:-}" ]]; then
+  # よくあるパスを順に探す
+  for candidate in \
+    "$HOME/Library/Android/sdk" \
+    "$HOME/Android/Sdk" \
+    "$HOME/android-sdk" \
+  ; do
+    if [[ -d "$candidate/cmdline-tools" ]]; then
+      export ANDROID_HOME="$candidate"
+      break
+    fi
+  done
+fi
+
+if [[ -z "${ANDROID_HOME:-}" ]]; then
+  echo "ERROR: ANDROID_HOME が見つかりません。" >&2
+  echo "  export ANDROID_HOME=\"<Android SDK のパス>\" を設定してください。" >&2
+  echo "  詳細: docs/dev-environment.md §5.3" >&2
+  exit 1
+fi
+
+export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH"
+echo "==> ANDROID_HOME=$ANDROID_HOME"
+
 # Apple Silicon かどうかで ABI を切り替え
 if [[ "$(uname -s)" == "Darwin" && "$(uname -m)" == "arm64" ]]; then
   ABI="arm64-v8a"
@@ -22,7 +47,7 @@ echo "==> Detected ABI: $ABI"
 for cmd in sdkmanager avdmanager; do
   if ! command -v "$cmd" >/dev/null 2>&1; then
     echo "ERROR: '$cmd' が見つかりません。Android Studio をインストールし、ANDROID_HOME と PATH を設定してください。" >&2
-    echo "詳細: docs/dev-environment.md §4.3" >&2
+    echo "詳細: docs/dev-environment.md §5.3" >&2
     exit 1
   fi
 done
@@ -44,7 +69,21 @@ for entry in "${AVDS[@]}"; do
 
   # System Image インストール
   echo "  - SDK Manager: installing $pkg"
-  yes | sdkmanager --install "$pkg" >/dev/null
+  # yes の SIGPIPE を無視（sdkmanager がパイプを閉じると yes が SIGPIPE で死ぬため）
+  (yes 2>/dev/null || true) | sdkmanager --install "$pkg" >/dev/null
+
+  # デバイスプロファイルが存在するか確認し、なければ代替を使う
+  if ! avdmanager list device 2>/dev/null | grep -q "\"$device\""; then
+    echo "  - デバイスプロファイル '$device' が見つかりません。代替を検索..."
+    # pixel_8 → pixel_7, pixel_9 → pixel_7 のようにフォールバック
+    fallback=$(avdmanager list device 2>/dev/null | grep -oP '"pixel_\d+"' | tr -d '"' | sort -t_ -k2 -n | tail -1)
+    if [[ -n "$fallback" ]]; then
+      echo "  - 代替デバイス '$fallback' を使用"
+      device="$fallback"
+    else
+      echo "  - WARNING: 代替デバイスも見つかりません。デフォルトを使用" >&2
+    fi
+  fi
 
   # AVD が既にあれば skip
   if avdmanager list avd 2>/dev/null | grep -q "Name: $name$"; then

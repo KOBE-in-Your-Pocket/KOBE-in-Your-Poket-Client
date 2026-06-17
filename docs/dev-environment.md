@@ -11,6 +11,8 @@
 
 時間がない人向けの最短コース：
 
+### macOS の場合
+
 ```bash
 # 1. リポジトリ取得
 git clone https://github.com/KOBE-in-Your-Pocket/KOBE-in-Your-Poket-Client.git
@@ -28,6 +30,37 @@ pnpm ios
 # 5. Android 動作確認 (Android SDK 必要)
 pnpm android
 ```
+
+### Windows (WSL2) の場合
+
+```bash
+# 0. WSL2 + Ubuntu をまだ入れてない場合（PowerShell を管理者で実行）
+#    wsl --install -d Ubuntu
+
+# 1. WSL2 ターミナル (Ubuntu) で実行
+git clone https://github.com/KOBE-in-Your-Pocket/KOBE-in-Your-Poket-Client.git
+cd KOBE-in-Your-Poket-Client
+
+# 2. Node + pnpm + 依存を一括セットアップ
+bash scripts/bootstrap.sh
+
+# 3. WSL2 で Android エミュレータを動かす前提を整える（libpulse0 + KVM）
+bash scripts/setup-wsl.sh
+#    kvm グループに追加された場合は、PowerShell で `wsl --shutdown` し
+#    Ubuntu を開き直してから次に進む（メッセージの指示に従う）
+
+# 4. 環境チェック
+bash scripts/doctor.sh
+
+# 5. AVD を一括作成（未作成の場合）→ エミュレータ起動
+bash scripts/setup-emulators.sh
+bash scripts/start-android.sh
+
+# 5. Web で動作確認（iOS は Mac のみ）
+pnpm web
+```
+
+> **Windows ユーザーへ**: iOS 開発は Mac 必須です。Windows では **Android + Web** で開発し、iOS は CI または Mac 持ちメンバーに依頼してください。
 
 `bootstrap.sh` は冪等なので何度実行しても安全。Node が未インストールだったり、Corepack が権限不足だったりした場合は、スクリプトが具体的な対処手順を出力します。
 
@@ -136,9 +169,188 @@ pnpm install
 
 ---
 
-## 3. iOS Simulator のセットアップ（Mac のみ）
+## 3. Windows (WSL2) 固有のセットアップ
 
-### 3.1 Xcode のインストール
+Windows ユーザーは WSL2 上で開発します。ここでは Windows 特有の手順とハマりやすいポイントをまとめます。
+
+> Mac ユーザーはこの章をスキップして §4 に進んでください。
+
+### 3.1 WSL2 のインストール
+
+PowerShell を **管理者として実行** し：
+
+```powershell
+wsl --install -d Ubuntu
+```
+
+インストール後、再起動してから Ubuntu ターミナルを起動。ユーザー名とパスワードを設定する。
+
+既に WSL2 が入っている場合はバージョン確認：
+
+```bash
+wsl --version
+# WSL バージョン: 2.x.x.x 以上であること
+```
+
+### 3.2 WSL2 内の基本パッケージ
+
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y build-essential curl wget unzip git
+```
+
+### 3.3 リポジトリの配置場所（重要）
+
+**WSL2 のファイルシステム内** にクローンすること。`/mnt/c/` や `/mnt/d/` など Windows 側のドライブ上で作業すると、ファイル I/O が 5〜10倍遅くなり `pnpm install` やメトロバンドラに深刻な影響が出る。
+
+```bash
+# 良い例（WSL2 ネイティブ）
+cd ~
+git clone https://github.com/KOBE-in-Your-Pocket/KOBE-in-Your-Poket-Client.git
+
+# 悪い例（Windows ドライブ経由 → 激遅）
+cd /mnt/c/Users/yourname/Desktop
+git clone ...   # ← やめてください
+```
+
+> もし既に `/mnt/c/` 配下で作業してしまった場合は、WSL2 ホーム (`~`) に `git clone` し直すのが最も早い解決策です。
+
+### 3.4 Android Studio を Windows 側にインストール
+
+> **方式の選択**: §3.4〜3.7 は Windows 側に Android Studio を入れる方式。Windows に Android Studio を入れず WSL2 内で完結させたい場合は §3.8 を参照（どちらか一方でよい）。
+
+Android Studio は **Windows 側（WSL2 の外）** にインストールします。
+
+1. https://developer.android.com/studio から Windows 版をダウンロード・インストール
+2. Setup Wizard でデフォルトの SDK をインストール
+3. SDK のデフォルトパスは `C:\Users\<ユーザー名>\AppData\Local\Android\Sdk`
+
+### 3.5 WSL2 から Windows 側の Android SDK を参照する
+
+WSL2 の `~/.bashrc` に以下を追加：
+
+```bash
+# Windows 側の Android SDK を WSL2 から参照
+# <ユーザー名> を自分の Windows ユーザー名に置き換える
+export ANDROID_HOME="/mnt/c/Users/<ユーザー名>/AppData/Local/Android/Sdk"
+export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"
+```
+
+反映：
+
+```bash
+source ~/.bashrc
+```
+
+確認：
+
+```bash
+adb version        # → Android Debug Bridge version x.x.x
+emulator -list-avds # → AVD 名が表示される
+```
+
+### 3.6 Windows 側の adb.exe と WSL2 側の adb の競合を防ぐ
+
+WSL2 と Windows の両方に `adb` がいると、ポート競合でデバイスが見えなくなることがある。
+
+**対処法**: WSL2 には `adb` をインストールせず、Windows 側の `adb.exe` だけを使う（§3.5 の PATH 設定で自動的にそうなる）。
+
+```bash
+# 確認: adb のパスが Windows 側を指しているか
+which adb
+# → /mnt/c/Users/.../Android/Sdk/platform-tools/adb であること
+```
+
+### 3.7 エミュレータの起動
+
+Android Emulator は **Windows 側で起動** する必要がある。WSL2 内から `emulator` コマンドで起動すると GUI が出ない場合がある。
+
+**方法1: Android Studio から起動（推奨）**
+
+Windows 側で Android Studio を開き、Device Manager からエミュレータを起動。起動後に WSL2 側から `pnpm android` を実行。
+
+**方法2: WSL2 から emulator.exe を直接実行**
+
+```bash
+# Windows 側の emulator を呼ぶ（.exe 不要、PATH が通っていれば動く）
+emulator -avd Pixel_8_API34 &
+```
+
+> WSLg が有効な場合は WSL2 から直接 GUI 表示できるが、GPU アクセラレーションが効かず重いことがある。Android Studio から起動するのが安定。
+
+### 3.8 代替方式: WSL2 ネイティブで完結させる
+
+§3.4〜3.7 は **Windows 側に Android Studio を入れて WSL2 から `/mnt/c/...` の SDK を参照する**方式。これとは別に、**Android SDK もエミュレータも WSL2 内で完結させる**方式もある。Windows 側に Android Studio を入れたくない・WSL2 だけで閉じたい場合はこちら。
+
+> どちらか一方でよい。両方を混在させると `adb` や AVD パスが競合しやすいので、片方に統一すること。
+
+WSL2 では KVM によるハードウェア仮想化が使えるため、エミュレータをヘッドレス（GUI なし）で十分実用的に動かせる。
+
+**① Android command-line tools を WSL2 に入れる**
+
+```bash
+# ビルド用 JDK
+sudo apt update && sudo apt install -y openjdk-17-jdk unzip wget
+
+# command-line tools を ~/android-sdk に配置
+# 最新版の URL は https://developer.android.com/studio#command-line-tools-only から取得
+mkdir -p ~/android-sdk/cmdline-tools
+cd /tmp
+wget -O cmdline-tools.zip "https://dl.google.com/android/repository/commandlinetools-linux-<VERSION>_latest.zip"
+unzip -q cmdline-tools.zip
+mv cmdline-tools ~/android-sdk/cmdline-tools/latest
+```
+
+**② 環境変数を設定**（`~/.bashrc` に追記）
+
+```bash
+# WSL2 ネイティブの Android SDK
+export ANDROID_HOME="$HOME/android-sdk"
+export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+```
+
+```bash
+source ~/.bashrc
+
+# ライセンス同意 + 基本コンポーネント
+sdkmanager --licenses
+sdkmanager "platform-tools" "emulator"
+```
+
+> このプロジェクトのスクリプト（`doctor.sh` / `setup-emulators.sh` / `start-android.sh`）は `~/android-sdk` を自動検出するので、上記の `ANDROID_HOME` を設定しておけば追加設定は不要。
+
+**③ エミュレータ起動の前提を整える（libpulse0 + KVM）**
+
+```bash
+bash scripts/setup-wsl.sh
+```
+
+- `libpulse0`（無いとエミュレータが起動直後に落ちる）を導入
+- `$USER` を `kvm` グループに追加（`/dev/kvm` へのアクセスに必須）
+- **`kvm` グループに追加された場合は WSL の再起動が必要**。メッセージの指示どおり PowerShell で `wsl --shutdown` → Ubuntu を開き直す → `bash scripts/doctor.sh` で確認
+
+**④ AVD を作成して起動**
+
+```bash
+bash scripts/setup-emulators.sh   # AVD 一括作成（x86_64 イメージ）
+bash scripts/start-android.sh     # ヘッドレス起動 + Metro
+```
+
+手動でヘッドレス起動したい場合：
+
+```bash
+emulator -avd Pixel_8_API34 -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect &
+adb wait-for-device
+adb shell getprop sys.boot_completed   # → 1 になれば起動完了
+```
+
+> `-no-window` で GUI を出さずに動かす。画面を見たい時は `-no-window` を外せば WSLg 経由で表示できる（GPU アクセラレーションが効かず重いことがある）。
+
+---
+
+## 4. iOS Simulator のセットアップ（Mac のみ）
+
+### 4.1 Xcode のインストール
 
 App Store から **Xcode 16+** をインストール（10GB+、回線によっては1〜2時間）。
 Apple ID 必須。
@@ -150,7 +362,7 @@ sudo xcode-select --install
 sudo xcodebuild -license accept
 ```
 
-### 3.2 iOS Runtime（複数バージョン）の追加
+### 4.2 iOS Runtime（複数バージョン）の追加
 
 Xcode → メニューバー **Xcode → Settings → Platforms** タブ → **+** ボタンから以下3つを順番に追加：
 
@@ -164,7 +376,7 @@ Xcode → メニューバー **Xcode → Settings → Platforms** タブ → **+
 > https://developer.apple.com/download/all/?q=simulator
 > .dmg ファイルから `xcrun simctl runtime add <path>` で追加可能。
 
-### 3.3 Simulator デバイス作成
+### 4.3 Simulator デバイス作成
 
 ターミナルで：
 
@@ -192,17 +404,20 @@ xcrun simctl list devices | grep -E "iPhone SE 3|iPhone 15|iPhone 17"
 
 ---
 
-## 4. Android Studio / AVD のセットアップ
+## 5. Android Studio / AVD のセットアップ
 
-### 4.1 Android Studio のインストール
+### 5.1 Android Studio のインストール
 
-https://developer.android.com/studio から **Android Studio Koala (2024.1)+** をダウンロード。
+https://developer.android.com/studio からダウンロード。
 
-**M1〜M4 Mac は必ず Apple Silicon 版を選ぶ**（Intel版を入れると x86 AVDがRosetta経由で激重）。
+| OS      | 注意点                                                                |
+| ------- | --------------------------------------------------------------------- |
+| macOS   | **M1〜M4 Mac は Apple Silicon 版** を選ぶ（Intel版は x86 AVD が激重） |
+| Windows | **Windows 版** をインストール（WSL2 内ではなく Windows 側）           |
 
 起動後の Setup Wizard でデフォルトの SDK Tools をインストール。
 
-### 4.2 必要な SDK と System Image を入れる
+### 5.2 必要な SDK と System Image を入れる
 
 Android Studio → **More Actions → SDK Manager** → **SDK Platforms** タブ：
 
@@ -221,23 +436,40 @@ Android Studio → **More Actions → SDK Manager** → **SDK Platforms** タブ
 > ⚠️ Mac（Apple Silicon）は **必ず `arm64-v8a` イメージ** を選ぶ。`x86_64` は Rosetta 翻訳で 5〜10倍遅い。
 > Windows は `x86_64` を選ぶ。
 
-### 4.3 環境変数の設定
+### 5.3 環境変数の設定
 
-`~/.zshrc` または `~/.bashrc` に追加：
+#### macOS の場合
+
+`~/.zshrc` に追加：
 
 ```bash
-export ANDROID_HOME="$HOME/Library/Android/sdk"   # macOS
-# export ANDROID_HOME="$HOME/Android/Sdk"         # Linux/WSL
+export ANDROID_HOME="$HOME/Library/Android/sdk"
 export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"
 ```
 
-反映：
-
 ```bash
-source ~/.zshrc   # or ~/.bashrc
+source ~/.zshrc
 ```
 
-### 4.4 AVD を一括作成
+#### Windows (WSL2) の場合
+
+> §3.5 で設定済みの場合はスキップ。
+
+`~/.bashrc` に追加：
+
+```bash
+# <ユーザー名> を自分の Windows ユーザー名に置き換える
+export ANDROID_HOME="/mnt/c/Users/<ユーザー名>/AppData/Local/Android/Sdk"
+export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"
+```
+
+```bash
+source ~/.bashrc
+```
+
+> **確認**: `echo $ANDROID_HOME` でパスが表示され、`adb version` が動作すれば OK。
+
+### 5.4 AVD を一括作成
 
 リポジトリの自動化スクリプトで一発：
 
@@ -259,9 +491,9 @@ emulator -list-avds
 
 ---
 
-## 5. 動作確認
+## 6. 動作確認
 
-### 5.1 doctor スクリプトで環境チェック
+### 6.1 doctor スクリプトで環境チェック
 
 ```bash
 bash scripts/doctor.sh
@@ -269,7 +501,7 @@ bash scripts/doctor.sh
 
 すべての項目が `OK` になっていればセットアップ完了。
 
-### 5.2 アプリ起動
+### 6.2 アプリ起動
 
 ```bash
 pnpm start
@@ -283,7 +515,7 @@ pnpm start
 
 ---
 
-## 6. 推奨：エミュレータ運用ルール
+## 7. 推奨：エミュレータ運用ルール
 
 | ルール                                                    | 理由                                       |
 | --------------------------------------------------------- | ------------------------------------------ |
@@ -295,7 +527,7 @@ pnpm start
 
 ---
 
-## 7. トラブルシューティング
+## 8. トラブルシューティング
 
 ### Q. Android Emulator が起動しない（M2 Mac）
 
@@ -321,9 +553,59 @@ pnpm start
 
 → `react-native-maps` や `expo-sqlite` のようなネイティブ依存を追加した時。Sprint 1 中盤に Dev Client を1回ビルドして全員配布する想定。
 
+### Q. (Windows) `pnpm install` が異常に遅い / ファイル監視が効かない
+
+→ `/mnt/c/` や `/mnt/d/` など **Windows ドライブ上** でプロジェクトを開いている。WSL2 ネイティブのファイルシステム（`~/` 以下）にクローンし直す（§3.3 参照）。
+
+### Q. (Windows) `adb devices` でデバイスが表示されない
+
+→ 原因は主に3つ：
+
+1. **adb の競合**: WSL2 と Windows 両方に adb がある。`which adb` で `/mnt/c/...` を指しているか確認。WSL2 に `android-tools` を apt で入れた場合は `sudo apt remove android-tools-adb` で削除。
+2. **adb server のバージョン不一致**: Windows 側で `adb kill-server && adb start-server` を実行してからリトライ。
+3. **ANDROID_HOME のパスミス**: `ls $ANDROID_HOME/platform-tools/adb` または `ls $ANDROID_HOME/platform-tools/adb.exe` でファイルが存在するか確認。ユーザー名のスペースや日本語に注意。
+
+### Q. (Windows) `emulator` コマンドで「PANIC: Cannot find AVD system path」
+
+→ AVD は Windows のユーザーフォルダに保存されるが、WSL2 から参照する際にパスが通っていない。`~/.bashrc` に以下を追加：
+
+```bash
+export ANDROID_AVD_HOME="/mnt/c/Users/<ユーザー名>/.android/avd"
+```
+
+### Q. (Windows) メトロバンドラにスマホ実機から接続できない
+
+→ WSL2 はデフォルトで NAT ネットワーク。実機からは `localhost` ではなく Windows ホストの IP でアクセスする必要がある。
+
+```bash
+# WSL2 内で Windows ホストの IP を確認
+cat /etc/resolv.conf | grep nameserver | awk '{print $2}'
+```
+
+Expo の場合は `pnpm start --tunnel` を使うと ngrok 経由で接続できる（チーム内テスト向け）。
+
+### Q. (Windows) Git の改行コードで diff が大量に出る
+
+→ Windows / WSL2 間で CRLF ↔ LF の変換が起きている。WSL2 内で以下を設定：
+
+```bash
+git config --global core.autocrlf input
+```
+
+既にクローン済みのリポジトリは改行コードをリセット：
+
+```bash
+git rm --cached -r .
+git reset --hard
+```
+
+### Q. (Windows) VS Code から WSL2 のプロジェクトを開くには
+
+→ VS Code の **Remote - WSL** 拡張をインストールし、WSL2 ターミナルから `code .` で開く。Windows 側のエクスプローラーから `\\wsl$\Ubuntu\home\...` を開くのは避ける（パフォーマンスが悪い）。
+
 ---
 
-## 8. 参考
+## 9. 参考
 
 - spec/02_tech-stack.md — 技術スタック仕様
 - spec/05_team.md — チーム構成

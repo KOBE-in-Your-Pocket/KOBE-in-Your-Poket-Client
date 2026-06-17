@@ -11,18 +11,35 @@ set -euo pipefail
 
 TARGET_AVD="Pixel_8_API34"
 
-# ── 前提チェック ──────────────────────────────────
+# ── ANDROID_HOME 自動検出 ─────────────────────────────
+if [[ -z "${ANDROID_HOME:-}" ]]; then
+  for candidate in \
+    "$HOME/Library/Android/sdk" \
+    "$HOME/Android/Sdk" \
+    "$HOME/android-sdk" \
+  ; do
+    if [[ -d "$candidate/cmdline-tools" ]]; then
+      export ANDROID_HOME="$candidate"
+      break
+    fi
+  done
+fi
+
 if [[ -z "${ANDROID_HOME:-}" ]]; then
   echo "ERROR: 環境変数 ANDROID_HOME が未設定です。" >&2
-  echo "  詳細: docs/dev-environment.md §4.3" >&2
-  echo "  例:   export ANDROID_HOME=\"\$HOME/Library/Android/sdk\"" >&2
+  echo "  詳細: docs/dev-environment.md §5.3" >&2
+  echo "  例:   export ANDROID_HOME=\"\$HOME/Library/Android/sdk\"   # macOS" >&2
+  echo "  例:   export ANDROID_HOME=\"\$HOME/android-sdk\"           # WSL2" >&2
   exit 1
 fi
 
+export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"
+
+# ── 前提チェック ──────────────────────────────────
 for cmd in emulator adb; do
   if ! command -v "$cmd" >/dev/null 2>&1; then
     echo "ERROR: '$cmd' が PATH に見つかりません。" >&2
-    echo "  詳細: docs/dev-environment.md §4.3" >&2
+    echo "  詳細: docs/dev-environment.md §5.3" >&2
     exit 1
   fi
 done

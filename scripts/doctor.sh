@@ -30,10 +30,14 @@ OS="$(uname -s)"
 ARCH="$(uname -m)"
 echo "  OS: $OS"
 echo "  Arch: $ARCH"
+IS_WSL=0
 if [[ "$OS" == "Darwin" && "$ARCH" == "arm64" ]]; then
   ok "Apple Silicon Mac（推奨環境）"
+elif [[ "$OS" == "Linux" ]] && grep -qiE 'microsoft|wsl' /proc/version 2>/dev/null; then
+  IS_WSL=1
+  ok "Windows / WSL2"
 elif [[ "$OS" == "Linux" ]]; then
-  ok "Linux / WSL"
+  ok "Linux"
 else
   warn "未検証の環境です"
 fi
@@ -117,12 +121,27 @@ fi
 
 # ── Android SDK ────────────────────────────────
 sec "Android SDK / AVD"
+# ANDROID_HOME 自動検出
 if [[ -z "${ANDROID_HOME:-}" ]]; then
-  ng "環境変数 ANDROID_HOME 未設定（docs/dev-environment.md §4.3）"
+  for candidate in \
+    "$HOME/Library/Android/sdk" \
+    "$HOME/Android/Sdk" \
+    "$HOME/android-sdk" \
+  ; do
+    if [[ -d "$candidate/cmdline-tools" ]]; then
+      export ANDROID_HOME="$candidate"
+      break
+    fi
+  done
+fi
+
+if [[ -z "${ANDROID_HOME:-}" ]]; then
+  ng "環境変数 ANDROID_HOME 未設定（docs/dev-environment.md §5.3）"
 elif [[ ! -d "$ANDROID_HOME" ]]; then
   ng "ANDROID_HOME=$ANDROID_HOME が存在しません"
 else
   ok "ANDROID_HOME=$ANDROID_HOME"
+  export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"
 fi
 
 if command -v sdkmanager >/dev/null; then
@@ -149,6 +168,27 @@ if command -v avdmanager >/dev/null; then
   fi
 else
   ng "avdmanager が見つかりません"
+fi
+
+# ── WSL2 / KVM（Android エミュレータ前提）─────────
+if [[ $IS_WSL -eq 1 ]]; then
+  sec "WSL2 / KVM（Android エミュレータ）"
+
+  if dpkg -s libpulse0 >/dev/null 2>&1; then
+    ok "libpulse0 インストール済み"
+  else
+    ng "libpulse0 未インストール（'bash scripts/setup-wsl.sh'）"
+  fi
+
+  if [[ ! -e /dev/kvm ]]; then
+    ng "/dev/kvm がありません（ネストされた仮想化が無効の可能性。WSL2 か確認）"
+  elif [[ -w /dev/kvm ]]; then
+    ok "/dev/kvm 書き込み可（KVM 利用可能）"
+  elif getent group kvm | grep -qw "$USER"; then
+    warn "kvm グループ登録済みだが未反映。WSL を再起動（PowerShell で 'wsl --shutdown'）"
+  else
+    ng "kvm グループ未所属（'bash scripts/setup-wsl.sh'）"
+  fi
 fi
 
 # ── プロジェクト依存 ──────────────────────────
