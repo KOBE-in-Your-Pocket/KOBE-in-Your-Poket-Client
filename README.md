@@ -169,6 +169,80 @@ bash scripts/setup-emulators.sh  # 標準 Android AVD を一括作成
 
 ---
 
+## アプリ起動 (iOS / Android / Web)
+
+### pnpm スクリプト
+
+| コマンド       | 動作                                           |
+| -------------- | ---------------------------------------------- |
+| `pnpm start`   | Metro Bundler のみ起動。`i` / `a` / `w` で切替 |
+| `pnpm ios`     | Metro + iOS Simulator にアプリ起動             |
+| `pnpm android` | Metro + Android Emulator にアプリ起動          |
+| `pnpm web`     | Metro + ブラウザで起動 (http://localhost:8081) |
+
+> ⚠️ `pnpm ios` / `pnpm android` を実行する前に **対応する Simulator / Emulator を先に起動しておく** 必要があります（下記）。
+
+### iOS Simulator の起動 (Mac のみ)
+
+```bash
+# 1. iPhone 15 を起動
+xcrun simctl boot "iPhone 15"
+
+# 2. Simulator アプリを前面に
+open -a Simulator
+
+# 3. 別ターミナルでアプリ起動
+pnpm ios
+```
+
+別バージョンを使うとき：
+
+```bash
+xcrun simctl boot "iPhone SE (3rd generation)"   # 下限保証
+xcrun simctl boot "iPhone 16 Pro"                # 最新追従
+```
+
+利用可能な Simulator 一覧:
+
+```bash
+xcrun simctl list devices available
+```
+
+### Android Emulator の起動
+
+事前準備として ANDROID_HOME が設定されている必要があります（`docs/dev-environment.md` §4参照）。
+
+```bash
+# 1. AVD 一覧を確認
+emulator -list-avds
+
+# 2. 標準 AVD を起動 (バックグラウンド)
+emulator -avd Pixel_8_API34 &
+
+# 3. 起動確認 (Booted になるまで2分くらい)
+adb devices                       # 'emulator-5554  device' になればOK
+
+# 4. 別ターミナルでアプリ起動
+pnpm android
+```
+
+別バージョンを使うとき：
+
+```bash
+emulator -avd Pixel_4a_API30 &    # 下限保証 (低スペック検証)
+emulator -avd Pixel_9_API36 &     # 最新追従
+```
+
+### 停止のしかた
+
+| 対象             | 停止コマンド                           |
+| ---------------- | -------------------------------------- |
+| Metro Bundler    | ターミナルで `Ctrl + C`                |
+| iOS Simulator    | `xcrun simctl shutdown all` または ⌘+Q |
+| Android Emulator | `adb -s emulator-5554 emu kill`        |
+
+---
+
 ## トラブルシューティング
 
 ### `pnpm install` で macOS の権限エラー (`EACCES` on `/usr/local/bin/pnpm`)
