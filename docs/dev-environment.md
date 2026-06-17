@@ -7,6 +7,34 @@
 
 ---
 
+## TL;DR (一括セットアップ)
+
+時間がない人向けの最短コース：
+
+```bash
+# 1. リポジトリ取得
+git clone https://github.com/KOBE-in-Your-Pocket/KOBE-in-Your-Poket-Client.git
+cd KOBE-in-Your-Poket-Client
+
+# 2. Node + pnpm + 依存を一括セットアップ (Node 未インストールでも案内が出る)
+bash scripts/bootstrap.sh
+
+# 3. 環境チェック (Xcode / Android SDK の状態が一覧で見える)
+bash scripts/doctor.sh
+
+# 4. Mac で iOS 動作確認 (Xcode 必要)
+pnpm ios
+
+# 5. Android 動作確認 (Android SDK 必要)
+pnpm android
+```
+
+`bootstrap.sh` は冪等なので何度実行しても安全。Node が未インストールだったり、Corepack が権限不足だったりした場合は、スクリプトが具体的な対処手順を出力します。
+
+それでも詰まった場合は、以下の各章を順に読んでください。
+
+---
+
 ## 0. このガイドのゴール
 
 セットアップ完了時、以下が成立している状態：
