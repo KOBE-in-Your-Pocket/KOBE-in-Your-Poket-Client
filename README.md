@@ -173,33 +173,33 @@ bash scripts/setup-emulators.sh  # 標準 Android AVD を一括作成
 
 ### pnpm スクリプト
 
-| コマンド       | 動作                                           |
-| -------------- | ---------------------------------------------- |
-| `pnpm start`   | Metro Bundler のみ起動。`i` / `a` / `w` で切替 |
-| `pnpm ios`     | Metro + iOS Simulator にアプリ起動             |
-| `pnpm android` | Metro + Android Emulator にアプリ起動          |
-| `pnpm web`     | Metro + ブラウザで起動 (http://localhost:8081) |
+| コマンド           | 動作                                                                 |
+| ------------------ | -------------------------------------------------------------------- |
+| `pnpm start`       | Metro Bundler のみ起動。`i` / `a` / `w` で切替                       |
+| `pnpm ios`         | **iPhone 15 (iOS 18) を自動起動** → Metro + Expo 起動                |
+| `pnpm android`     | **Pixel_8_API34 (Android 14) を自動起動** → boot完了待ち → Expo 起動 |
+| `pnpm web`         | Metro + ブラウザで起動 (http://localhost:8081)                       |
+| `pnpm ios:raw`     | `expo start --ios` を素で呼ぶ（機種指定なし、デフォルト動作）        |
+| `pnpm android:raw` | `expo start --android` を素で呼ぶ（機種指定なし、デフォルト動作）    |
 
-> ⚠️ `pnpm ios` / `pnpm android` を実行する前に **対応する Simulator / Emulator を先に起動しておく** 必要があります（下記）。
+> **`pnpm ios` / `pnpm android` は `scripts/start-ios.sh` / `start-android.sh` を呼ぶラッパー**です。
+> チーム共通のメイン機種を自動 boot するので、誰がやっても同じ機種で動作確認できます。
+> 別バージョンを試したいときは下記の手動手順、または `pnpm ios:raw` / `pnpm android:raw`。
 
-### iOS Simulator の起動 (Mac のみ)
+### 別バージョンで動作確認したいとき (PRレビュー時など)
+
+#### iOS
 
 ```bash
-# 1. iPhone 15 を起動
-xcrun simctl boot "iPhone 15"
-
-# 2. Simulator アプリを前面に
+# 下限保証 (PRレビュー時の追加確認)
+xcrun simctl boot "iPhone SE (3rd generation)"
 open -a Simulator
+pnpm ios:raw
 
-# 3. 別ターミナルでアプリ起動
-pnpm ios
-```
-
-別バージョンを使うとき：
-
-```bash
-xcrun simctl boot "iPhone SE (3rd generation)"   # 下限保証
-xcrun simctl boot "iPhone 16 Pro"                # 最新追従
+# 最新追従 (PRレビュー時の追加確認)
+xcrun simctl boot "iPhone 16 Pro"
+open -a Simulator
+pnpm ios:raw
 ```
 
 利用可能な Simulator 一覧:
@@ -208,29 +208,14 @@ xcrun simctl boot "iPhone 16 Pro"                # 最新追従
 xcrun simctl list devices available
 ```
 
-### Android Emulator の起動
-
-事前準備として ANDROID_HOME が設定されている必要があります（`docs/dev-environment.md` §4参照）。
-
-```bash
-# 1. AVD 一覧を確認
-emulator -list-avds
-
-# 2. 標準 AVD を起動 (バックグラウンド)
-emulator -avd Pixel_8_API34 &
-
-# 3. 起動確認 (Booted になるまで2分くらい)
-adb devices                       # 'emulator-5554  device' になればOK
-
-# 4. 別ターミナルでアプリ起動
-pnpm android
-```
-
-別バージョンを使うとき：
+#### Android
 
 ```bash
 emulator -avd Pixel_4a_API30 &    # 下限保証 (低スペック検証)
 emulator -avd Pixel_9_API36 &     # 最新追従
+
+# 起動完了後
+pnpm android:raw
 ```
 
 ### 停止のしかた
