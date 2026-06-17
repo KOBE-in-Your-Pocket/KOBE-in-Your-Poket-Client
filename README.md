@@ -4,14 +4,32 @@
 
 ---
 
+## Quick Start (新メンバー向け一括セットアップ)
+
+```bash
+git clone https://github.com/KOBE-in-Your-Pocket/KOBE-in-Your-Poket-Client.git
+cd KOBE-in-Your-Poket-Client
+bash scripts/bootstrap.sh    # Node/pnpm 確認 → 依存インストール まで一括
+pnpm ios                      # iPhone 15 を自動起動 (Mac の場合)
+# または
+pnpm android                  # Pixel_8_API34 を自動起動
+```
+
+`bootstrap.sh` で詰まったら（Corepack 権限エラーなど）スクリプトが対処手順を出します。
+詳細セットアップは [`docs/dev-environment.md`](./docs/dev-environment.md) を参照。
+
+---
+
 ## 前提環境 (Prerequisites)
 
 このプロジェクトを動かすには、以下が必要です。
 
 - **OS**: macOS、または Windows (WSL2 必須 — Windows ネイティブシェルでは動作確認していません)
-- **Node.js**: `22.16.0` (リポジトリ直下の `.node-version` / `.tool-versions` で固定)
-  - バージョン管理は `mise` / `asdf` / `nvm` のいずれかを使ってください。`.node-version` を自動で読んでくれます。
-  - 例: `mise install` で `.tool-versions` に書かれた Node / pnpm / Java を一括導入できます。
+- **Node.js**: `22.16.0` (リポジトリ直下の `.node-version` / `.tool-versions` / `.nvmrc` で固定)
+  - バージョン管理ツールは `mise` / `asdf` / `nvm` のいずれかを使ってください。
+  - `mise` / `asdf` を使う場合: `.tool-versions` を読み取り、`mise install` で Node / pnpm / Java を一括導入。
+  - `nvm` を使う場合: `.nvmrc` を読み取る。リポジトリで `nvm install` → `nvm use` で 22.16.0 に切替。
+  - その他のツール (`fnm` 等) も `.node-version` を自動で読み取れます。
 - **Corepack**: Node 22 に同梱されています。後述の手順で有効化します。
 - **iOS Simulator**: Xcode 16+ (macOS のみ、iOS で動作確認する場合)
 - **Android Emulator**: Android Studio Koala 2024.1+ (任意)
@@ -160,10 +178,11 @@ KOBE-in-Your-Poket-Client/
 
 ## 開発環境のチェック・自動化スクリプト
 
-```bash
-bash scripts/doctor.sh           # 環境チェック（Node / pnpm / Xcode / AVD 等）
-bash scripts/setup-emulators.sh  # 標準 Android AVD を一括作成
-```
+| スクリプト                        | 用途                                                       |
+| --------------------------------- | ---------------------------------------------------------- |
+| `bash scripts/bootstrap.sh`       | **新メンバー向け一括セットアップ** (Node/pnpm/依存) - 冪等 |
+| `bash scripts/doctor.sh`          | 環境チェック（Node / pnpm / Xcode / iOS Runtime / AVD 等） |
+| `bash scripts/setup-emulators.sh` | 標準 Android AVD (Pixel 4a/8/9) を一括作成                 |
 
 詳細は [`docs/dev-environment.md`](./docs/dev-environment.md) を参照。
 
@@ -173,33 +192,33 @@ bash scripts/setup-emulators.sh  # 標準 Android AVD を一括作成
 
 ### pnpm スクリプト
 
-| コマンド       | 動作                                           |
-| -------------- | ---------------------------------------------- |
-| `pnpm start`   | Metro Bundler のみ起動。`i` / `a` / `w` で切替 |
-| `pnpm ios`     | Metro + iOS Simulator にアプリ起動             |
-| `pnpm android` | Metro + Android Emulator にアプリ起動          |
-| `pnpm web`     | Metro + ブラウザで起動 (http://localhost:8081) |
+| コマンド           | 動作                                                                 |
+| ------------------ | -------------------------------------------------------------------- |
+| `pnpm start`       | Metro Bundler のみ起動。`i` / `a` / `w` で切替                       |
+| `pnpm ios`         | **iPhone 15 (iOS 18) を自動起動** → Metro + Expo 起動                |
+| `pnpm android`     | **Pixel_8_API34 (Android 14) を自動起動** → boot完了待ち → Expo 起動 |
+| `pnpm web`         | Metro + ブラウザで起動 (http://localhost:8081)                       |
+| `pnpm ios:raw`     | `expo start --ios` を素で呼ぶ（機種指定なし、デフォルト動作）        |
+| `pnpm android:raw` | `expo start --android` を素で呼ぶ（機種指定なし、デフォルト動作）    |
 
-> ⚠️ `pnpm ios` / `pnpm android` を実行する前に **対応する Simulator / Emulator を先に起動しておく** 必要があります（下記）。
+> **`pnpm ios` / `pnpm android` は `scripts/start-ios.sh` / `start-android.sh` を呼ぶラッパー**です。
+> チーム共通のメイン機種を自動 boot するので、誰がやっても同じ機種で動作確認できます。
+> 別バージョンを試したいときは下記の手動手順、または `pnpm ios:raw` / `pnpm android:raw`。
 
-### iOS Simulator の起動 (Mac のみ)
+### 別バージョンで動作確認したいとき (PRレビュー時など)
+
+#### iOS
 
 ```bash
-# 1. iPhone 15 を起動
-xcrun simctl boot "iPhone 15"
-
-# 2. Simulator アプリを前面に
+# 下限保証 (PRレビュー時の追加確認)
+xcrun simctl boot "iPhone SE (3rd generation)"
 open -a Simulator
+pnpm ios:raw
 
-# 3. 別ターミナルでアプリ起動
-pnpm ios
-```
-
-別バージョンを使うとき：
-
-```bash
-xcrun simctl boot "iPhone SE (3rd generation)"   # 下限保証
-xcrun simctl boot "iPhone 16 Pro"                # 最新追従
+# 最新追従 (PRレビュー時の追加確認)
+xcrun simctl boot "iPhone 16 Pro"
+open -a Simulator
+pnpm ios:raw
 ```
 
 利用可能な Simulator 一覧:
@@ -208,29 +227,14 @@ xcrun simctl boot "iPhone 16 Pro"                # 最新追従
 xcrun simctl list devices available
 ```
 
-### Android Emulator の起動
-
-事前準備として ANDROID_HOME が設定されている必要があります（`docs/dev-environment.md` §4参照）。
-
-```bash
-# 1. AVD 一覧を確認
-emulator -list-avds
-
-# 2. 標準 AVD を起動 (バックグラウンド)
-emulator -avd Pixel_8_API34 &
-
-# 3. 起動確認 (Booted になるまで2分くらい)
-adb devices                       # 'emulator-5554  device' になればOK
-
-# 4. 別ターミナルでアプリ起動
-pnpm android
-```
-
-別バージョンを使うとき：
+#### Android
 
 ```bash
 emulator -avd Pixel_4a_API30 &    # 下限保証 (低スペック検証)
 emulator -avd Pixel_9_API36 &     # 最新追従
+
+# 起動完了後
+pnpm android:raw
 ```
 
 ### 停止のしかた
