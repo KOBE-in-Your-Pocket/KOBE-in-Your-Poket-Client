@@ -9,12 +9,14 @@
 このプロジェクトを動かすには、以下が必要です。
 
 - **OS**: macOS、または Windows (WSL2 必須 — Windows ネイティブシェルでは動作確認していません)
-- **Node.js**: `22.16.0` (リポジトリ直下の `.node-version` で固定)
-  - バージョン管理は `nvm` / `mise` / `asdf` のいずれかを使ってください。`.node-version` を自動で読んでくれます。
-  - 例: `mise install` または `nvm install` で `.node-version` に書かれているバージョンをインストールできます。
+- **Node.js**: `22.16.0` (リポジトリ直下の `.node-version` / `.tool-versions` で固定)
+  - バージョン管理は `mise` / `asdf` / `nvm` のいずれかを使ってください。`.node-version` を自動で読んでくれます。
+  - 例: `mise install` で `.tool-versions` に書かれた Node / pnpm / Java を一括導入できます。
 - **Corepack**: Node 22 に同梱されています。後述の手順で有効化します。
-- **iOS シミュレータ**: Xcode (macOS のみ。iOS で動作確認したい場合)
-- **Android エミュレータ**: Android Studio (任意)
+- **iOS Simulator**: Xcode 16+ (macOS のみ、iOS で動作確認する場合)
+- **Android Emulator**: Android Studio Koala 2024.1+ (任意)
+
+> **🎯 iOS / Android のエミュレータバージョンや AVD の作り方は [`docs/dev-environment.md`](./docs/dev-environment.md) に集約しています。チーム全員でバージョンを揃えるため、必ず一読してください。**
 
 > パッケージマネージャは **pnpm 11.7.0** を `package.json` の `packageManager` フィールドで固定しています。`npm install` や `yarn install` は使わないでください。
 
@@ -153,6 +155,91 @@ KOBE-in-Your-Poket-Client/
 ├── .github/workflows/   # GitHub Actions (Lint / Test)
 └── package.json
 ```
+
+---
+
+## 開発環境のチェック・自動化スクリプト
+
+```bash
+bash scripts/doctor.sh           # 環境チェック（Node / pnpm / Xcode / AVD 等）
+bash scripts/setup-emulators.sh  # 標準 Android AVD を一括作成
+```
+
+詳細は [`docs/dev-environment.md`](./docs/dev-environment.md) を参照。
+
+---
+
+## アプリ起動 (iOS / Android / Web)
+
+### pnpm スクリプト
+
+| コマンド       | 動作                                           |
+| -------------- | ---------------------------------------------- |
+| `pnpm start`   | Metro Bundler のみ起動。`i` / `a` / `w` で切替 |
+| `pnpm ios`     | Metro + iOS Simulator にアプリ起動             |
+| `pnpm android` | Metro + Android Emulator にアプリ起動          |
+| `pnpm web`     | Metro + ブラウザで起動 (http://localhost:8081) |
+
+> ⚠️ `pnpm ios` / `pnpm android` を実行する前に **対応する Simulator / Emulator を先に起動しておく** 必要があります（下記）。
+
+### iOS Simulator の起動 (Mac のみ)
+
+```bash
+# 1. iPhone 15 を起動
+xcrun simctl boot "iPhone 15"
+
+# 2. Simulator アプリを前面に
+open -a Simulator
+
+# 3. 別ターミナルでアプリ起動
+pnpm ios
+```
+
+別バージョンを使うとき：
+
+```bash
+xcrun simctl boot "iPhone SE (3rd generation)"   # 下限保証
+xcrun simctl boot "iPhone 16 Pro"                # 最新追従
+```
+
+利用可能な Simulator 一覧:
+
+```bash
+xcrun simctl list devices available
+```
+
+### Android Emulator の起動
+
+事前準備として ANDROID_HOME が設定されている必要があります（`docs/dev-environment.md` §4参照）。
+
+```bash
+# 1. AVD 一覧を確認
+emulator -list-avds
+
+# 2. 標準 AVD を起動 (バックグラウンド)
+emulator -avd Pixel_8_API34 &
+
+# 3. 起動確認 (Booted になるまで2分くらい)
+adb devices                       # 'emulator-5554  device' になればOK
+
+# 4. 別ターミナルでアプリ起動
+pnpm android
+```
+
+別バージョンを使うとき：
+
+```bash
+emulator -avd Pixel_4a_API30 &    # 下限保証 (低スペック検証)
+emulator -avd Pixel_9_API36 &     # 最新追従
+```
+
+### 停止のしかた
+
+| 対象             | 停止コマンド                           |
+| ---------------- | -------------------------------------- |
+| Metro Bundler    | ターミナルで `Ctrl + C`                |
+| iOS Simulator    | `xcrun simctl shutdown all` または ⌘+Q |
+| Android Emulator | `adb -s emulator-5554 emu kill`        |
 
 ---
 
