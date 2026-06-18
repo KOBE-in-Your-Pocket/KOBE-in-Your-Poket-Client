@@ -1,41 +1,43 @@
-import * as Localization from 'expo-localization';
-import { createInstance } from 'i18next';
+import { createInstance, type i18n as I18nInstance } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
+import { FALLBACK_LANGUAGE, resolveLanguage, SUPPORTED_LANGUAGES } from './language';
 import en from './locales/en.json';
 import ja from './locales/ja.json';
 import ko from './locales/ko.json';
 import zh from './locales/zh.json';
 
-export const SUPPORTED_LANGUAGES = ['ja', 'en', 'zh', 'ko'] as const;
-export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
+export { FALLBACK_LANGUAGE, resolveLanguage, SUPPORTED_LANGUAGES } from './language';
+export type { SupportedLanguage } from './language';
 
-export const FALLBACK_LANGUAGE: SupportedLanguage = 'en';
+let i18nInstance: I18nInstance | null = null;
 
-export function resolveLanguage(deviceLanguage?: string | null): SupportedLanguage {
-  const code = deviceLanguage ?? Localization.getLocales()[0]?.languageCode ?? FALLBACK_LANGUAGE;
+export function initI18n(): I18nInstance {
+  if (i18nInstance?.isInitialized) {
+    return i18nInstance;
+  }
 
-  return SUPPORTED_LANGUAGES.includes(code as SupportedLanguage)
-    ? (code as SupportedLanguage)
-    : FALLBACK_LANGUAGE;
+  const i18n = i18nInstance ?? createInstance();
+  const language = resolveLanguage();
+
+  void i18n.use(initReactI18next).init({
+    resources: {
+      en: { translation: en },
+      ja: { translation: ja },
+      zh: { translation: zh },
+      ko: { translation: ko },
+    },
+    lng: language,
+    fallbackLng: FALLBACK_LANGUAGE,
+    supportedLngs: [...SUPPORTED_LANGUAGES],
+    interpolation: {
+      escapeValue: false,
+    },
+    compatibilityJSON: 'v4',
+  });
+
+  i18nInstance = i18n;
+  return i18n;
 }
 
-const i18n = createInstance();
-
-void i18n.use(initReactI18next).init({
-  resources: {
-    en: { translation: en },
-    ja: { translation: ja },
-    zh: { translation: zh },
-    ko: { translation: ko },
-  },
-  lng: resolveLanguage(),
-  fallbackLng: FALLBACK_LANGUAGE,
-  supportedLngs: [...SUPPORTED_LANGUAGES],
-  interpolation: {
-    escapeValue: false,
-  },
-  compatibilityJSON: 'v4',
-});
-
-export default i18n;
+export default initI18n;
