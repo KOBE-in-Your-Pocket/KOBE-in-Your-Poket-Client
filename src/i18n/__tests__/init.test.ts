@@ -1,4 +1,5 @@
 import * as Localization from 'expo-localization';
+import type { Locale } from 'expo-localization';
 
 import { FALLBACK_LANGUAGE, resolveLanguage } from '../language';
 
@@ -7,6 +8,27 @@ jest.mock('expo-localization', () => ({
 }));
 
 const getLocales = jest.mocked(Localization.getLocales);
+
+function mockLocales(languageCode: string): [Locale, ...Locale[]] {
+  return [
+    {
+      languageTag: languageCode,
+      languageCode,
+      languageScriptCode: null,
+      regionCode: null,
+      languageRegionCode: null,
+      currencyCode: null,
+      currencySymbol: null,
+      languageCurrencyCode: null,
+      languageCurrencySymbol: null,
+      decimalSeparator: '.',
+      digitGroupingSeparator: ',',
+      textDirection: 'ltr',
+      measurementSystem: 'metric',
+      temperatureUnit: 'celsius',
+    },
+  ];
+}
 
 describe('resolveLanguage', () => {
   beforeEach(() => {
@@ -30,19 +52,19 @@ describe('resolveLanguage', () => {
 
   describe('デバイス言語（expo-localization）', () => {
     it('サポート言語の場合はそのまま採用する', () => {
-      getLocales.mockReturnValue([{ languageCode: 'ja' }]);
+      getLocales.mockReturnValue(mockLocales('ja'));
 
       expect(resolveLanguage()).toBe('ja');
     });
 
     it('非サポート言語の場合は en にフォールバックする', () => {
-      getLocales.mockReturnValue([{ languageCode: 'fr' }]);
+      getLocales.mockReturnValue(mockLocales('fr'));
 
       expect(resolveLanguage()).toBe(FALLBACK_LANGUAGE);
     });
 
     it('言語情報が取得できない場合は en にフォールバックする', () => {
-      getLocales.mockReturnValue([]);
+      getLocales.mockReturnValue([] as unknown as ReturnType<typeof Localization.getLocales>);
 
       expect(resolveLanguage()).toBe(FALLBACK_LANGUAGE);
     });
@@ -55,7 +77,7 @@ describe('initI18n', () => {
   });
 
   it('サポート言語で初期化する', () => {
-    getLocales.mockReturnValue([{ languageCode: 'ja' }]);
+    getLocales.mockReturnValue(mockLocales('ja'));
 
     jest.isolateModules(() => {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -67,7 +89,7 @@ describe('initI18n', () => {
   });
 
   it('非サポート言語は en で初期化する', () => {
-    getLocales.mockReturnValue([{ languageCode: 'fr' }]);
+    getLocales.mockReturnValue(mockLocales('fr'));
 
     jest.isolateModules(() => {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
