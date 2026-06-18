@@ -1,5 +1,6 @@
 import * as Device from 'expo-device';
 import { Platform, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AnimatedIcon } from '@/components/animated-icon';
@@ -29,6 +30,8 @@ function getDevMenuHint() {
 }
 
 export default function HomeScreen() {
+  const { t, i18n } = useTranslation();
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -44,6 +47,14 @@ export default function HomeScreen() {
         </ThemedText>
 
         <ThemedView type="backgroundElement" style={styles.stepContainer}>
+          <HintRow
+            title="Language"
+            hint={
+              <ThemedText type="small">
+                {i18n.language} — {t('common.appName')}
+              </ThemedText>
+            }
+          />
           <HintRow
             title="Try editing"
             hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
