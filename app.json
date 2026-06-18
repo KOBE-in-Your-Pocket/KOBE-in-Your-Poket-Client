@@ -34,6 +34,15 @@
             "imageWidth": 76
           }
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "観光案内のため、現在地を地図上に表示します。周辺のおすすめスポットへのご案内に利用します。",
+          "isIosBackgroundLocationEnabled": false,
+          "isAndroidBackgroundLocationEnabled": false,
+          "isAndroidForegroundServiceEnabled": false
+        }
       ]
     ],
     "experiments": {
