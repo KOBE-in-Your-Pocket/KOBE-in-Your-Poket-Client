@@ -55,18 +55,18 @@ for cmd in emulator adb; do
 done
 
 # ── AVD の存在確認 ────────────────────────────────
-if ! emulator -list-avds 2>/dev/null | grep -qx "${TARGET_AVD}"; then
+if ! emulator -list-avds 2>/dev/null | tr -d '\r' | grep -qx "${TARGET_AVD}"; then
   echo "ERROR: AVD '${TARGET_AVD}' が見つかりません。" >&2
   echo "" >&2
   echo "利用可能な AVD:" >&2
-  emulator -list-avds 2>/dev/null | sed 's/^/  /' >&2
+  emulator -list-avds 2>/dev/null | tr -d '\r' | sed 's/^/  /' >&2
   echo "" >&2
   echo "作成するには: bash scripts/setup-emulators.sh" >&2
   exit 1
 fi
 
 # ── 起動済みか確認 ────────────────────────────────
-if adb devices 2>/dev/null | awk 'NR>1 && $2=="device"' | grep -q '^emulator-'; then
+if adb devices 2>/dev/null | tr -d '\r' | awk 'NR>1 && $2=="device"' | grep -q '^emulator-'; then
   echo "✓ Android Emulator は既に起動済み"
 else
   echo "▶ ${TARGET_AVD} を起動（バックグラウンド）..."
