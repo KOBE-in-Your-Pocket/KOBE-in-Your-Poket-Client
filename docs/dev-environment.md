@@ -259,6 +259,159 @@ emulator -list-avds
 
 ---
 
+## 4.5 WSL2 (Win11) ユーザー専用ガイド
+
+> **対象**: 開発マシンが Windows 11 + WSL2 (Ubuntu 推奨) の人。Mac ユーザーは飛ばしてOK。
+
+### 大方針
+
+**Android Studio は Windows 側にインストールする**（WSL の中に入れない）。WSL からは Windows 側の `adb.exe` / `emulator.exe` を直接呼ぶ。これで「重い処理は Windows、コード編集は WSL」という分担になり、エミュレータも高速・安定。
+
+```
+[WSL]                              [Windows]
+─────                              ────────
+pnpm android                  ─→   AVD (Pixel_8_API34) を起動中
+↓                                  ↓
+start-android.sh                   adb.exe (Windows ネイティブ)
+↓                                  ↑
+ANDROID_HOME=/mnt/c/.../Sdk        ↑
+↓                                  ↑
+adb.exe を呼ぶ ───────────────────→ Windows の adb server
+↓                                  ↓
+expo start --android               Expo Go を AVD にインストール
+↓                                  ↓
+Metro (localhost:8081)        ←─   AVD の Expo Go が JS bundle 取りに来る
+↓
+Bundle 配信                   ─→   AVD 上でアプリ起動
+```
+
+### 4.5.1 Windows 側のセットアップ（一度だけ）
+
+1. **Android Studio をインストール**（Windows 側に）
+   - https://developer.android.com/studio から Windows 用をダウンロード
+   - Setup Wizard で「Standard」を選んで SDK を `C:\Users\<USER>\AppData\Local\Android\Sdk` に入れる（既定）
+2. **AVD Manager で `Pixel_8_API34` を作成**
+   - System Image: Android 14 (API 34) Google Play、`x86_64` を選ぶ
+   - （WSL 経由で動かす場合、Windows 側 emulator はネイティブ x86_64 で動く）
+
+### 4.5.2 WSL ↔ Windows ネットワーク設定（一度だけ）
+
+Windows の `%USERPROFILE%\.wslconfig` を作成（または編集）：
+
+```ini
+[wsl2]
+networkingMode=mirrored
+```
+
+これで `localhost` が WSL と Windows で透過になり、Metro Bundler (port 8081) や adb が双方から見えるようになる。
+
+設定反映: Windows の PowerShell で：
+
+```powershell
+wsl --shutdown
+```
+
+その後 WSL ターミナルを開き直す。
+
+### 4.5.3 WSL 側の環境変数（一度だけ）
+
+`~/.bashrc`（zsh なら `~/.zshrc`）に追加：
+
+```bash
+# Android SDK (Windows 側を指す)
+export ANDROID_HOME="/mnt/c/Users/$USER/AppData/Local/Android/Sdk"
+
+# Windows ネイティブの .exe を直接使う（WSL 側 adb は入れない）
+export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+alias adb='adb.exe'
+alias emulator='emulator.exe'
+```
+
+> Windows ユーザー名と WSL ユーザー名が違う場合は `$USER` 部分を手書きで Windows 側のユーザー名に。例: `/mnt/c/Users/Taro/AppData/Local/Android/Sdk`
+
+反映:
+
+```bash
+source ~/.bashrc   # or ~/.zshrc
+```
+
+### 4.5.4 動作確認
+
+```bash
+# Windows 側で AVD Manager から Pixel_8_API34 を起動しておく
+# その後 WSL で:
+cd KOBE-in-Your-Poket-Client
+bash scripts/doctor.sh   # ANDROID_HOME 認識を確認
+pnpm android             # adb.exe 経由で起動済 AVD を検出 → アプリ起動
+```
+
+### 4.5.5 iOS について
+
+**WSL では iOS の動作確認は不可能**（Xcode が macOS 専用）。WSL ユーザーは：
+
+- Android Emulator + Web で開発・動作確認
+- iOS は **Mac 組のメンバーとペアで PR レビュー時に確認**
+
+実機 iPhone で確認したい場合は Expo Go on 実機（QR読み取り）が可能。ただし PBI 1.4（地図）以降は Dev Client が必要なので、Issue #64 完了後に Mac 組からビルドを受け取る。
+
+### 4.5.6 CRLF 改行コード問題（最頻出ハマり）
+
+シェルスクリプトを WSL で実行した時、こんなエラーが出ることがある：
+
+```
+bash: ./scripts/bootstrap.sh: /bin/bash^M: bad interpreter: No such file or directory
+```
+
+ファイルの改行コードが CRLF（Windows形式）になっているのが原因。WSL/Linux は LF を期待する。
+
+#### 原因
+
+- リポジトリを `/mnt/c/...` 配下に Windows 側 Git でクローンした
+- Windows 側の Git の `core.autocrlf` が `true`（既定）になっている
+- VSCode などのエディタが CRLF で保存した
+
+#### 対策（このリポジトリでは予防済み）
+
+リポジトリ直下の `.gitattributes` でシェルスクリプト類を **LF 強制** に設定済。新規 clone なら起きない。
+
+#### それでも CRLF になってしまった時の修復
+
+```bash
+# リポジトリ単位で改行を正規化
+git config core.autocrlf input
+git rm --cached -r .
+git reset --hard
+
+# または既存ファイルを直接変換
+sudo apt install dos2unix          # まだなら
+find scripts/ -name "*.sh" -exec dos2unix {} +
+
+# 確認 (CRLF が無くなってればOK)
+file scripts/bootstrap.sh   # 「ASCII text」ならOK、「with CRLF line terminators」だとNG
+```
+
+#### 推奨: WSL 側 (Linux ファイルシステム) で clone する
+
+パフォーマンスも改善するので、**`~/projects/` などに clone するのを強く推奨**。`/mnt/c/...` 配下は遅いし CRLF 事故が起きやすい。
+
+```bash
+mkdir -p ~/projects
+cd ~/projects
+git clone https://github.com/KOBE-in-Your-Pocket/KOBE-in-Your-Poket-Client.git
+```
+
+### 4.5.7 WSL2 のその他よくある詰まり
+
+| 症状                                    | 対処                                                                                          |
+| --------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `pnpm android` で `adb: device offline` | Windows 側で AVD 再起動                                                                       |
+| Metro QR をスマホから読んでも繋がらない | `.wslconfig` の `networkingMode=mirrored` が効いてない。`wsl --shutdown` してターミナル再起動 |
+| `pnpm install` が遅い                   | プロジェクトが `/mnt/c/` 配下にあると激遅。**Linux 側 `~/projects/` などに clone する**       |
+| `bash` が `\r` / `^M` で構文エラー      | CRLF 問題。**§4.5.6 参照**                                                                    |
+| `adb` コマンドが2つ衝突                 | WSL 側に apt で adb 入れてないか確認、入ってたら `sudo apt remove adb`                        |
+
+---
+
 ## 5. 動作確認
 
 ### 5.1 doctor スクリプトで環境チェック

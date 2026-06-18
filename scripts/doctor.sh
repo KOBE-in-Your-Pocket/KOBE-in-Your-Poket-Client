@@ -28,12 +28,20 @@ FAIL=0
 sec "OS / Hardware"
 OS="$(uname -s)"
 ARCH="$(uname -m)"
+IS_WSL=false
+if [[ "$OS" == "Linux" ]] && grep -qi microsoft /proc/version 2>/dev/null; then
+  IS_WSL=true
+fi
 echo "  OS: $OS"
 echo "  Arch: $ARCH"
 if [[ "$OS" == "Darwin" && "$ARCH" == "arm64" ]]; then
   ok "Apple Silicon Mac（推奨環境）"
+elif $IS_WSL; then
+  ok "WSL2 (Win11 想定)"
+  echo "    → Android SDK は Windows 側 (/mnt/c/Users/\$USER/AppData/Local/Android/Sdk) を指す前提"
+  echo "    → 詳細手順: docs/dev-environment.md §4.5"
 elif [[ "$OS" == "Linux" ]]; then
-  ok "Linux / WSL"
+  ok "Linux"
 else
   warn "未検証の環境です"
 fi
@@ -119,6 +127,11 @@ fi
 sec "Android SDK / AVD"
 if [[ -z "${ANDROID_HOME:-}" ]]; then
   ng "環境変数 ANDROID_HOME 未設定（docs/dev-environment.md §4.3）"
+  if $IS_WSL; then
+    echo "    → WSL なら Windows 側 SDK を指すのが推奨:"
+    echo "      export ANDROID_HOME=\"/mnt/c/Users/\$USER/AppData/Local/Android/Sdk\""
+    echo "      詳細: docs/dev-environment.md §4.5"
+  fi
 elif [[ ! -d "$ANDROID_HOME" ]]; then
   ng "ANDROID_HOME=$ANDROID_HOME が存在しません"
 else

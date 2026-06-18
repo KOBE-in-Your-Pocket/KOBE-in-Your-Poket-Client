@@ -18,6 +18,8 @@ pnpm android                  # Pixel_8_API34 を自動起動
 `bootstrap.sh` で詰まったら（Corepack 権限エラーなど）スクリプトが対処手順を出します。
 詳細セットアップは [`docs/dev-environment.md`](./docs/dev-environment.md) を参照。
 
+> **WSL2 (Win11) ユーザー**: Android Studio は **Windows 側** にインストール、WSL からは `adb.exe` 経由で動かす方式です。専用手順を [`docs/dev-environment.md §4.5`](./docs/dev-environment.md#45-wsl2-win11-ユーザー専用ガイド) にまとめています。
+
 ---
 
 ## 前提環境 (Prerequisites)
