@@ -354,15 +354,61 @@ pnpm android             # adb.exe 経由で起動済 AVD を検出 → アプ�
 
 実機 iPhone で確認したい場合は Expo Go on 実機（QR読み取り）が可能。ただし PBI 1.4（地図）以降は Dev Client が必要なので、Issue #64 完了後に Mac 組からビルドを受け取る。
 
-### 4.5.6 WSL2 のよくある詰まり
+### 4.5.6 CRLF 改行コード問題（最頻出ハマり）
 
-| 症状                                    | 対処                                                                                                                     |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `pnpm android` で `adb: device offline` | Windows 側で AVD 再起動                                                                                                  |
-| Metro QR をスマホから読んでも繋がらない | `.wslconfig` の `networkingMode=mirrored` が効いてない。`wsl --shutdown` してターミナル再起動                            |
-| `pnpm install` が遅い                   | プロジェクトが `/mnt/c/` 配下にあると激遅。**Linux 側 `~/projects/` などに clone する**                                  |
-| `bash` が `\r` で構文エラー             | リポジトリを Windows 側でクローンして CRLF になった。`git config --global core.autocrlf input` してから WSL 側で再 clone |
-| `adb` コマンドが2つ衝突                 | WSL 側に apt で adb 入れてないか確認、入ってたら `sudo apt remove adb`                                                   |
+シェルスクリプトを WSL で実行した時、こんなエラーが出ることがある：
+
+```
+bash: ./scripts/bootstrap.sh: /bin/bash^M: bad interpreter: No such file or directory
+```
+
+ファイルの改行コードが CRLF（Windows形式）になっているのが原因。WSL/Linux は LF を期待する。
+
+#### 原因
+
+- リポジトリを `/mnt/c/...` 配下に Windows 側 Git でクローンした
+- Windows 側の Git の `core.autocrlf` が `true`（既定）になっている
+- VSCode などのエディタが CRLF で保存した
+
+#### 対策（このリポジトリでは予防済み）
+
+リポジトリ直下の `.gitattributes` でシェルスクリプト類を **LF 強制** に設定済。新規 clone なら起きない。
+
+#### それでも CRLF になってしまった時の修復
+
+```bash
+# リポジトリ単位で改行を正規化
+git config core.autocrlf input
+git rm --cached -r .
+git reset --hard
+
+# または既存ファイルを直接変換
+sudo apt install dos2unix          # まだなら
+find scripts/ -name "*.sh" -exec dos2unix {} +
+
+# 確認 (CRLF が無くなってればOK)
+file scripts/bootstrap.sh   # 「ASCII text」ならOK、「with CRLF line terminators」だとNG
+```
+
+#### 推奨: WSL 側 (Linux ファイルシステム) で clone する
+
+パフォーマンスも改善するので、**`~/projects/` などに clone するのを強く推奨**。`/mnt/c/...` 配下は遅いし CRLF 事故が起きやすい。
+
+```bash
+mkdir -p ~/projects
+cd ~/projects
+git clone https://github.com/KOBE-in-Your-Pocket/KOBE-in-Your-Poket-Client.git
+```
+
+### 4.5.7 WSL2 のその他よくある詰まり
+
+| 症状                                    | 対処                                                                                          |
+| --------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `pnpm android` で `adb: device offline` | Windows 側で AVD 再起動                                                                       |
+| Metro QR をスマホから読んでも繋がらない | `.wslconfig` の `networkingMode=mirrored` が効いてない。`wsl --shutdown` してターミナル再起動 |
+| `pnpm install` が遅い                   | プロジェクトが `/mnt/c/` 配下にあると激遅。**Linux 側 `~/projects/` などに clone する**       |
+| `bash` が `\r` / `^M` で構文エラー      | CRLF 問題。**§4.5.6 参照**                                                                    |
+| `adb` コマンドが2つ衝突                 | WSL 側に apt で adb 入れてないか確認、入ってたら `sudo apt remove adb`                        |
 
 ---
 
