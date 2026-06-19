@@ -16,15 +16,15 @@ cd "$PROJECT_ROOT"
 echo "▶ Dev Client (Android APK) を EAS Build で作成します"
 echo ""
 echo "事前準備（初回のみ）:"
-echo "  1. pnpm exec eas-cli login"
-echo "  2. pnpm exec eas-cli secret:create --scope project --name GOOGLE_MAPS_API_KEY --value <your-key>"
+echo "  1. pnpm dlx eas-cli login"
+echo "  2. pnpm dlx eas-cli env:create development --name GOOGLE_MAPS_API_KEY --value <your-key> --visibility secret"
 echo "  3. ビルド完了後、EAS Credentials の SHA-1 を GCP API キー制限に追加"
 echo "     詳細: docs/dev-client-distribution.md"
 echo ""
 
-if ! pnpm exec eas-cli whoami >/dev/null 2>&1; then
-  echo "ERROR: EAS にログインしていません。pnpm exec eas-cli login を実行してください。" >&2
+if ! pnpm dlx eas-cli whoami >/dev/null 2>&1; then
+  echo "ERROR: EAS にログインしていません。pnpm dlx eas-cli login を実行してください。" >&2
   exit 1
 fi
 
-pnpm exec eas-cli build --platform android --profile development "$@"
+pnpm dlx eas-cli build --platform android --profile development "$@"
