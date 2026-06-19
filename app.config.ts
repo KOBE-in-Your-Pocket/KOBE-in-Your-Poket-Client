@@ -68,6 +68,7 @@ export default (): ExpoConfig => ({
   experiments: {
     typedRoutes: true,
     reactCompiler: true,
+    autolinkingModuleResolution: true,
   },
   extra: {
     eas: {

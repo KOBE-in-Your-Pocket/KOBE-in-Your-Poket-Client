@@ -7,31 +7,26 @@ const projectRoot = __dirname;
 const config = getDefaultConfig(projectRoot);
 
 // pnpm 環境で同一ネイティブモジュールが複数パスから解決されると
-// "Tried to register two views with the same name RNSScreenStackScreen" になる。
-config.watchFolders = [projectRoot];
+// RNSScreenStackScreen / RNSSafeAreaView などの二重登録エラーになる。
+config.resolver.unstable_enableSymlinks = true;
+config.resolver.unstable_enablePackageExports = true;
+config.resolver.disableHierarchicalLookup = true;
 config.resolver.nodeModulesPaths = [path.resolve(projectRoot, 'node_modules')];
 
-const dedupePackages = [
+const singletonPackages = [
+  'react',
+  'react-native',
+  'expo',
+  'expo-router',
   'react-native-screens',
   'react-native-safe-area-context',
   'react-native-gesture-handler',
   'react-native-reanimated',
 ];
 
-const originalResolveRequest = config.resolver.resolveRequest;
-config.resolver.resolveRequest = (context, moduleName, platform) => {
-  if (dedupePackages.includes(moduleName)) {
-    return {
-      type: 'sourceFile',
-      filePath: require.resolve(moduleName),
-    };
-  }
-
-  if (originalResolveRequest) {
-    return originalResolveRequest(context, moduleName, platform);
-  }
-
-  return context.resolveRequest(context, moduleName, platform);
-};
+config.resolver.extraNodeModules = singletonPackages.reduce((acc, name) => {
+  acc[name] = path.resolve(projectRoot, 'node_modules', name);
+  return acc;
+}, {});
 
 module.exports = config;
