@@ -2,7 +2,7 @@
 import { renderHook, waitFor } from '@testing-library/react-native';
 import * as Location from 'expo-location';
 
-import { useCurrentLocation } from '../use-current-location';
+import { useCurrentLocation } from '../hooks/use-current-location';
 
 jest.mock('expo-location');
 

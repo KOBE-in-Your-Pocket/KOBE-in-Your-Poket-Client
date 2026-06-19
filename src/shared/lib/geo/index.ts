@@ -2,4 +2,4 @@ export {
   useCurrentLocation,
   type CurrentLocationCoords,
   type UseCurrentLocationResult,
-} from './use-current-location';
+} from './hooks/use-current-location';
