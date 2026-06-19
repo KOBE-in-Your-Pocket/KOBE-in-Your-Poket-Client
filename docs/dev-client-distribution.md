@@ -35,7 +35,18 @@ pnpm dlx eas-cli whoami
 
 初回ビルド時に Expo プロジェクトの作成/リンクを求められたら指示に従ってください。
 
-### 2. Google Maps API キーを EAS 環境変数に登録
+### 2. チームが APK をダウンロードできるようにする（初回のみ）
+
+デフォルトでは **プロジェクト所有者の Expo アカウントだけ** がビルド URL にアクセスできます。
+メンバー全員が Expo アカウントなしで DL できるよう、次を **ON** にしてください。
+
+1. [expo.dev](https://expo.dev) → **KOBE-in-Your-Poket-Client**
+2. **Project settings**（歯車アイコン）
+3. **「Unauthenticated access to internal builds」** を **ON**
+
+> メンバーが「権限がない」と言ったら、この設定が OFF になっていないか確認してください。
+
+### 3. Google Maps API キーを EAS 環境変数に登録
 
 ```bash
 pnpm dlx eas-cli env:create development \
@@ -47,7 +58,7 @@ pnpm dlx eas-cli env:create development \
 
 GCP プロジェクト: **KOBE-in-Your-Poket**（`kobe-in-your-poket`）
 
-### 3. Dev Client APK をビルド
+### 4. Dev Client APK をビルド
 
 ```bash
 pnpm dev-client:build:android
@@ -55,7 +66,7 @@ pnpm dev-client:build:android
 
 ビルド完了後、EAS ダッシュボードに **APK ダウンロード URL** が表示されます。
 
-### 4. GCP API キーに EAS の SHA-1 を追加
+### 5. GCP API キーに EAS の SHA-1 を追加
 
 EAS Build で署名された APK 用の SHA-1 は、ローカル `android/app/debug.keystore` とは**異なります**。
 
@@ -75,7 +86,7 @@ EAS Build で署名された APK 用の SHA-1 は、ローカル `android/app/de
 >   -storepass android -keypass android | grep SHA1
 > ```
 
-### 5. チームへ共有
+### 6. チームへ共有
 
 Slack 等で以下を共有:
 
@@ -87,6 +98,8 @@ Slack 等で以下を共有:
 ## 各メンバー（受け取り側）
 
 ### 1. Dev Client APK をインストール（初回のみ）
+
+> **Expo アカウント不要** です（手順 2 の未認証アクセス ON 済みが前提）。
 
 **エミュレータ:**
 
@@ -168,6 +181,10 @@ adb logcat -d | rg -i "Authorization failure|Google Android Maps"
 ### `Dev Client が未インストール`
 
 共有 APK をインストールしていない状態です。上記「APK をインストール」を実施してください。
+
+### APK の URL で「権限がない」
+
+配布担当が expo.dev → Project settings → **Unauthenticated access to internal builds** を **ON** にしてください（§ 配布担当 手順 2）。
 
 ### Expo Go で起動してしまう / 地図が出ない
 
