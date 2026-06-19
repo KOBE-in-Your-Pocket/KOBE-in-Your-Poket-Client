@@ -1,4 +1,5 @@
 import * as Device from 'expo-device';
+import { Link } from 'expo-router';
 import { Platform, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -64,6 +65,16 @@ export default function HomeScreen() {
             title="Fresh start"
             hint={<ThemedText type="code">npm run reset-project</ThemedText>}
           />
+          {__DEV__ && (
+            <HintRow
+              title="Debug menu"
+              hint={
+                <Link href="/debug">
+                  <ThemedText type="linkPrimary">/debug を開く</ThemedText>
+                </Link>
+              }
+            />
+          )}
         </ThemedView>
 
         {Platform.OS === 'web' && <WebBadge />}
