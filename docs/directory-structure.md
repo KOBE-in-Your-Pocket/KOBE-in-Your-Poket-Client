@@ -50,16 +50,23 @@ KOBE-in-Your-Poket-Client/
 │   ├── features/               # 境界づけられたコンテキスト = モジュール
 │   ├── widgets/                # 複数モジュールを合成する画面
 │   ├── shared/                 # 全モジュール共通の基盤
-│   ├── components/             # （移行予定）Expo スターターの共通 UI
-│   ├── constants/              # （移行予定）Expo スターターの定数
-│   ├── hooks/                  # （移行予定）Expo スターターの hooks
-│   └── __tests__/              # Jest テスト
+│   │   ├── ui/                 # 汎用 UI primitive（ThemedText など）
+│   │   ├── lib/                # 共通 hooks / ユーティリティ
+│   │   │   ├── geo/            # 位置情報（useCurrentLocation など）
+│   │   │   ├── theme/          # テーマ / ダークモード
+│   │   │   ├── i18n/           # 多言語化
+│   │   │   └── storage/        # 永続化
+│   │   ├── config/             # テーマトークン・定数
+│   │   ├── types/              # グローバル型定義
+│   │   └── utils/              # 純粋ユーティリティ
+│   ├── global.css              # Tailwind / NativeWind グローバル CSS
+│   └── __tests__/              # スモークテストなどスコープ外テスト
 ├── assets/                     # 画像・フォントなど静的アセット
 ├── docs/                       # 開発ドキュメント
 └── scripts/                    # セットアップ・起動スクリプト
 ```
 
-> `components/` `constants/` `hooks/` は Expo スターター由来の配置です。今後 `src/shared/` へ段階的に移行します。
+> Expo スターター由来の `src/components/` `src/constants/` `src/hooks/` `src/i18n/` `src/types/` は #88 で `src/shared/` 配下へ移行済み。
 
 ---
 
@@ -255,4 +262,4 @@ src/shared/
 
 ### Q. Expo スターターの `src/components/` はどうする？
 
-段階的に `src/shared/ui/` へ移行します。新規の共通 UI コンポーネントは `src/shared/ui/` に置いてください。
+**#88 で `src/shared/ui/` に移行済み**。新規の共通 UI コンポーネントは `src/shared/ui/` に置き、`src/shared/ui/index.ts` で公開してください。同様に `src/constants/` → `src/shared/config/`、`src/hooks/` → `src/shared/lib/{geo,theme}/`、`src/i18n/` → `src/shared/lib/i18n/`、`src/types/` → `src/shared/types/` も移行済みです。

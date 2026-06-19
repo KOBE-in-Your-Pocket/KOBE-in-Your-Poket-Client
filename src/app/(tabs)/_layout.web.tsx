@@ -9,9 +9,8 @@ import {
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, useColorScheme, View } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
+import { Colors, MaxContentWidth, Spacing } from '@/shared/config';
+import { ThemedText, ThemedView } from '@/shared/ui';
 
 const TABS = [
   { name: 'tourism', label: '観光', href: '/(tabs)/tourism', symbol: 'mappin.and.ellipse' },

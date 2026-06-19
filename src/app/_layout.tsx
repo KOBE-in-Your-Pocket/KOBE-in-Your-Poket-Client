@@ -2,8 +2,8 @@ import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { I18nextProvider } from 'react-i18next';
 import { useColorScheme } from 'react-native';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import { initI18n } from '@/i18n';
+import { initI18n } from '@/shared/lib/i18n';
+import { AnimatedSplashOverlay } from '@/shared/ui';
 
 const i18n = initI18n();
 
