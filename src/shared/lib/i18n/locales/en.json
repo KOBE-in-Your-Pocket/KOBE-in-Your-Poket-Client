@@ -2,5 +2,11 @@
   "hello": "Hello",
   "common": {
     "appName": "KOBE in Your Pocket"
+  },
+  "tabs": {
+    "tourism": "Tourism",
+    "manner": "Manners",
+    "evacuation": "Evacuation",
+    "settings": "Settings"
   }
 }

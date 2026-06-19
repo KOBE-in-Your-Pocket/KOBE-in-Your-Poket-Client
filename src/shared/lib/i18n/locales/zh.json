@@ -2,5 +2,11 @@
   "hello": "你好",
   "common": {
     "appName": "KOBE in Your Pocket"
+  },
+  "tabs": {
+    "tourism": "旅游",
+    "manner": "礼仪",
+    "evacuation": "疏散",
+    "settings": "设置"
   }
 }
