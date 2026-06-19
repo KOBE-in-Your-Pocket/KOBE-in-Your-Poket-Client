@@ -118,7 +118,7 @@ if [[ -n "${GOOGLE_MAPS_API_KEY:-}" ]]; then
   echo "✓ GOOGLE_MAPS_API_KEY を検出（Dev Client モード）"
   if dev_client_installed; then
     echo "▶ Dev Client (${ANDROID_PACKAGE}) + Metro を ${TARGET_AVD} に向けて起動..."
-    run_expo start --dev-client --android --scheme "${EXPO_SCHEME}"
+    run_expo start --dev-client --android --scheme "${EXPO_SCHEME}" --clear
   else
     if adb shell pm list packages 2>/dev/null | tr -d '\r' | grep -q "com.anonymous.KOBEinYourPoketClient"; then
       echo "⚠ 古い Dev Client (com.anonymous.KOBEinYourPoketClient) が残っています"
