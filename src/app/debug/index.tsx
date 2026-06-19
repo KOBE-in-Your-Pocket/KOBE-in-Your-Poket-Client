@@ -6,12 +6,17 @@ import { Spacing } from '@/shared/config';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
 type DebugEntry = {
-  href: '/debug/use-current-location';
+  href: '/debug/map' | '/debug/use-current-location';
   title: string;
   description: string;
 };
 
 const entries: DebugEntry[] = [
+  {
+    href: '/debug/map',
+    title: 'Map',
+    description: 'react-native-maps MapView 雛形（神戸市中心の初期表示）',
+  },
   {
     href: '/debug/use-current-location',
     title: 'useCurrentLocation',
