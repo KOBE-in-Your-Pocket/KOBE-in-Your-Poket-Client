@@ -112,24 +112,34 @@ source "$SCRIPT_DIR/lib/load-env.sh"
 load_env_file "$PROJECT_ROOT/.env"
 
 # ── Expo 起動 ─────────────────────────────────────
-# GOOGLE_MAPS_API_KEY がある場合は Dev Client 経由（Expo Go では Maps 設定が反映されない）。
-# Dev Client が端末に入っていなければ expo run:android でビルド＆インストールする。
-if [[ -n "${GOOGLE_MAPS_API_KEY:-}" ]]; then
-  echo "✓ GOOGLE_MAPS_API_KEY を検出（Dev Client モード）"
-  if dev_client_installed; then
-    echo "▶ Dev Client (${ANDROID_PACKAGE}) + Metro を ${TARGET_AVD} に向けて起動..."
-    run_expo start --dev-client --android --scheme "${EXPO_SCHEME}" --clear
+# チーム共通: 全員 `pnpm android`（エミュレータ起動 + Dev Client + Metro）。
+# Dev Client インストール済みなら .env なし（EAS APK）でも Dev Client モードで起動する。
+if dev_client_installed; then
+  if [[ -n "${GOOGLE_MAPS_API_KEY:-}" ]]; then
+    echo "✓ Dev Client (${ANDROID_PACKAGE}) + .env（ローカル開発）"
   else
-    if adb shell pm list packages 2>/dev/null | tr -d '\r' | grep -q "com.anonymous.KOBEinYourPoketClient"; then
-      echo "⚠ 古い Dev Client (com.anonymous.KOBEinYourPoketClient) が残っています"
-      echo "  ビルド後に問題があれば: adb uninstall com.anonymous.KOBEinYourPoketClient"
-    fi
-    echo "▶ Dev Client (${ANDROID_PACKAGE}) をビルドして ${TARGET_AVD} にインストール（数分かかります）..."
-    run_expo run:android
+    echo "✓ Dev Client (${ANDROID_PACKAGE})（EAS 配布 APK — .env 不要）"
   fi
+  if [[ ! -d "${PROJECT_ROOT}/node_modules/expo-dev-client" ]]; then
+    echo "ERROR: expo-dev-client が未インストールです。ブランチ切替後は pnpm install を実行してください。" >&2
+    exit 1
+  fi
+  echo "▶ Dev Client + Metro を ${TARGET_AVD} に向けて起動（保存でリロード）..."
+  run_expo start --dev-client --android --scheme "${EXPO_SCHEME}" --clear
+elif [[ -n "${GOOGLE_MAPS_API_KEY:-}" ]]; then
+  if [[ ! -d "${PROJECT_ROOT}/node_modules/expo-dev-client" ]]; then
+    echo "ERROR: expo-dev-client が未インストールです。ブランチ切替後は pnpm install を実行してください。" >&2
+    exit 1
+  fi
+  if adb shell pm list packages 2>/dev/null | tr -d '\r' | grep -q "com.anonymous.KOBEinYourPoketClient"; then
+    echo "⚠ 古い Dev Client (com.anonymous.KOBEinYourPoketClient) が残っています"
+    echo "  ビルド後に問題があれば: adb uninstall com.anonymous.KOBEinYourPoketClient"
+  fi
+  echo "✓ GOOGLE_MAPS_API_KEY を検出 — Dev Client をローカルビルドします（初回のみ数分）"
+  run_expo run:android
 else
-  echo "⚠ GOOGLE_MAPS_API_KEY 未設定 → Expo Go で起動（地図タイルは表示されません）"
-  echo "  .env.example を .env にコピーしてキーを設定すると Dev Client モードになります"
-  echo "▶ Expo Go を ${TARGET_AVD} に向けて起動..."
-  run_expo start --android
+  echo "ERROR: Dev Client (${ANDROID_PACKAGE}) が未インストールです。" >&2
+  echo "  チームメンバー: 配布 APK をインストールしてください → docs/dev-client-distribution.md" >&2
+  echo "  配布担当 / ローカル初回: .env に GOOGLE_MAPS_API_KEY を設定して pnpm android を再実行" >&2
+  exit 1
 fi
