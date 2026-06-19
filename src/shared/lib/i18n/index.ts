@@ -7,7 +7,12 @@ import ja from './locales/ja.json';
 import ko from './locales/ko.json';
 import zh from './locales/zh.json';
 
-export { FALLBACK_LANGUAGE, resolveLanguage, SUPPORTED_LANGUAGES } from './language';
+export {
+  FALLBACK_LANGUAGE,
+  LANGUAGE_AUTONYMS,
+  resolveLanguage,
+  SUPPORTED_LANGUAGES,
+} from './language';
 export type { SupportedLanguage } from './language';
 
 let i18nInstance: I18nInstance | null = null;
