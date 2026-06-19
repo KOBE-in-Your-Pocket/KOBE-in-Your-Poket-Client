@@ -10,6 +10,20 @@
 set -euo pipefail
 
 TARGET_AVD="Pixel_8_API34"
+ANDROID_PACKAGE="com.kobeinyourpocket.client"
+EXPO_SCHEME="kobeinyourpoketclient"
+
+dev_client_installed() {
+  adb shell pm list packages 2>/dev/null | tr -d '\r' | grep -qx "package:${ANDROID_PACKAGE}"
+}
+
+run_expo() {
+  if command -v pnpm >/dev/null 2>&1; then
+    exec pnpm exec expo "$@"
+  else
+    exec npx -y pnpm@11.7.0 exec expo "$@"
+  fi
+}
 
 # ── ANDROID_HOME 自動検出（Mac brew / Android Studio / WSL / Linux） ──
 # シェルに ANDROID_HOME が無くてもよく使う場所を順番に試す。
@@ -90,10 +104,32 @@ else
   echo "✓ boot 完了"
 fi
 
+# ── .env 読み込み（Maps API キーなど） ─────────────
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+# shellcheck source=lib/load-env.sh
+source "$SCRIPT_DIR/lib/load-env.sh"
+load_env_file "$PROJECT_ROOT/.env"
+
 # ── Expo 起動 ─────────────────────────────────────
-echo "▶ Expo を ${TARGET_AVD} に向けて起動..."
-if command -v pnpm >/dev/null 2>&1; then
-  exec pnpm exec expo start --android
+# GOOGLE_MAPS_API_KEY がある場合は Dev Client 経由（Expo Go では Maps 設定が反映されない）。
+# Dev Client が端末に入っていなければ expo run:android でビルド＆インストールする。
+if [[ -n "${GOOGLE_MAPS_API_KEY:-}" ]]; then
+  echo "✓ GOOGLE_MAPS_API_KEY を検出（Dev Client モード）"
+  if dev_client_installed; then
+    echo "▶ Dev Client (${ANDROID_PACKAGE}) + Metro を ${TARGET_AVD} に向けて起動..."
+    run_expo start --dev-client --android --scheme "${EXPO_SCHEME}" --clear
+  else
+    if adb shell pm list packages 2>/dev/null | tr -d '\r' | grep -q "com.anonymous.KOBEinYourPoketClient"; then
+      echo "⚠ 古い Dev Client (com.anonymous.KOBEinYourPoketClient) が残っています"
+      echo "  ビルド後に問題があれば: adb uninstall com.anonymous.KOBEinYourPoketClient"
+    fi
+    echo "▶ Dev Client (${ANDROID_PACKAGE}) をビルドして ${TARGET_AVD} にインストール（数分かかります）..."
+    run_expo run:android
+  fi
 else
-  exec npx -y pnpm@11.7.0 exec expo start --android
+  echo "⚠ GOOGLE_MAPS_API_KEY 未設定 → Expo Go で起動（地図タイルは表示されません）"
+  echo "  .env.example を .env にコピーしてキーを設定すると Dev Client モードになります"
+  echo "▶ Expo Go を ${TARGET_AVD} に向けて起動..."
+  run_expo start --android
 fi
