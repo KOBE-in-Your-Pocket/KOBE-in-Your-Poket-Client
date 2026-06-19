@@ -33,8 +33,9 @@ if [[ -z "${ANDROID_HOME:-}" ]]; then
     "/usr/local/share/android-commandlinetools"      # Mac Intel (brew)
     "$HOME/Library/Android/sdk"                       # Mac (Android Studio 既定)
     "$HOME/Android/Sdk"                               # Linux / WSL (Android Studio 既定)
+    "$HOME/android-sdk"                               # WSL ネイティブ (setup-wsl.sh が作る)
     "$HOME/.android/sdk"                              # 一部の Linux/WSL 設定
-    "/usr/lib/android-sdk"                            # Debian/Ubuntu apt パッケージ
+    "/usr/lib/android-sdk"                            # Debian/Ubuntu apt パッケージ（emulator 無しのことが多い）
     "/mnt/c/Users/$USER/AppData/Local/Android/Sdk"    # WSL から Windows 側 Android Studio を見る場合
   )
   for candidate in "${CANDIDATES[@]}"; do
