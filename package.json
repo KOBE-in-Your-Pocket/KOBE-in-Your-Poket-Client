@@ -12,6 +12,8 @@
     "start": "expo start",
     "android": "bash scripts/start-android.sh",
     "android:raw": "expo start --android",
+    "dev-client:build:android": "bash scripts/build-dev-client-android.sh",
+    "dev-client:start": "expo start --dev-client --scheme kobeinyourpoketclient --clear",
     "ios": "bash scripts/start-ios.sh",
     "ios:raw": "expo start --ios",
     "web": "expo start --web",
