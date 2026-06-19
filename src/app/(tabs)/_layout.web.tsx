@@ -7,32 +7,40 @@ import {
   Tabs,
 } from 'expo-router/ui';
 import { SymbolView } from 'expo-symbols';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, useColorScheme, View } from 'react-native';
 
 import { Colors, MaxContentWidth, Spacing } from '@/shared/config';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
-const TABS = [
-  { name: 'tourism', label: '観光', href: '/(tabs)/tourism', symbol: 'mappin.and.ellipse' },
-  { name: 'manners', label: 'マナー', href: '/(tabs)/manners', symbol: 'text.book.closed' },
+const TAB_DEFS = [
+  {
+    name: 'tourism',
+    labelKey: 'tabs.tourism',
+    href: '/(tabs)/tourism',
+    symbol: 'mappin.and.ellipse',
+  },
+  { name: 'manners', labelKey: 'tabs.manner', href: '/(tabs)/manners', symbol: 'text.book.closed' },
   {
     name: 'evacuation',
-    label: '避難',
+    labelKey: 'tabs.evacuation',
     href: '/(tabs)/evacuation',
     symbol: 'exclamationmark.triangle',
   },
-  { name: 'settings', label: '設定', href: '/(tabs)/settings', symbol: 'gear' },
+  { name: 'settings', labelKey: 'tabs.settings', href: '/(tabs)/settings', symbol: 'gear' },
 ] as const;
 
 export default function TabsLayoutWeb() {
+  const { t } = useTranslation();
+
   return (
     <Tabs>
       <TabSlot style={{ height: '100%' }} />
       <TabList asChild>
         <CustomTabList>
-          {TABS.map((tab) => (
+          {TAB_DEFS.map((tab) => (
             <TabTrigger key={tab.name} name={tab.name} href={tab.href} asChild>
-              <TabButton symbol={tab.symbol}>{tab.label}</TabButton>
+              <TabButton symbol={tab.symbol}>{t(tab.labelKey)}</TabButton>
             </TabTrigger>
           ))}
         </CustomTabList>
