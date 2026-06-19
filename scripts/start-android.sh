@@ -14,7 +14,12 @@ ANDROID_PACKAGE="com.kobeinyourpocket.client"
 EXPO_SCHEME="kobeinyourpoketclient"
 
 dev_client_installed() {
-  adb shell pm list packages 2>/dev/null | tr -d '\r' | grep -qx "package:${ANDROID_PACKAGE}"
+  # pm list packages の出力は大きいため、grep -q で途中までしか読まないと
+  # 上流が SIGPIPE で死に、set -o pipefail によりパッケージが有っても失敗扱いになる。
+  # 一度変数に受けてから grep して SIGPIPE を回避する。
+  local pkgs
+  pkgs=$(adb shell pm list packages 2>/dev/null | tr -d '\r')
+  grep -qx "package:${ANDROID_PACKAGE}" <<< "$pkgs"
 }
 
 run_expo() {
@@ -132,7 +137,7 @@ elif [[ -n "${GOOGLE_MAPS_API_KEY:-}" ]]; then
     echo "ERROR: expo-dev-client が未インストールです。ブランチ切替後は pnpm install を実行してください。" >&2
     exit 1
   fi
-  if adb shell pm list packages 2>/dev/null | tr -d '\r' | grep -q "com.anonymous.KOBEinYourPoketClient"; then
+  if grep -q "com.anonymous.KOBEinYourPoketClient" <<< "$(adb shell pm list packages 2>/dev/null | tr -d '\r')"; then
     echo "⚠ 古い Dev Client (com.anonymous.KOBEinYourPoketClient) が残っています"
     echo "  ビルド後に問題があれば: adb uninstall com.anonymous.KOBEinYourPoketClient"
   fi
