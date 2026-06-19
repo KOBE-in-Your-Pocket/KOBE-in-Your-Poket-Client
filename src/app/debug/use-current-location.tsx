@@ -1,10 +1,9 @@
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
-import { useCurrentLocation } from '@/hooks/use-current-location';
+import { Spacing } from '@/shared/config';
+import { useCurrentLocation } from '@/shared/lib/geo';
+import { ThemedText, ThemedView } from '@/shared/ui';
 
 export default function UseCurrentLocationDebugScreen() {
   const { loading, error, coords } = useCurrentLocation();
