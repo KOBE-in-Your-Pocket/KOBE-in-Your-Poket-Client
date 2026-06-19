@@ -47,10 +47,11 @@ describe('useCurrentLocation', () => {
 
     expect(result.current.coords).toEqual(sampleCoords);
     expect(result.current.error).toBeNull();
+    expect(result.current.permissionDenied).toBe(false);
     expect(mockedGetCurrentPosition).toHaveBeenCalledTimes(1);
   });
 
-  it('sets an error when permission is denied', async () => {
+  it('flags permissionDenied and sets an error when permission is denied', async () => {
     mockedRequestPermissions.mockResolvedValue({
       status: 'denied',
     } as Awaited<ReturnType<typeof Location.requestForegroundPermissionsAsync>>);
@@ -63,6 +64,7 @@ describe('useCurrentLocation', () => {
 
     expect(result.current.coords).toBeNull();
     expect(result.current.error).toBeInstanceOf(Error);
+    expect(result.current.permissionDenied).toBe(true);
     expect(mockedGetCurrentPosition).not.toHaveBeenCalled();
   });
 
@@ -80,5 +82,6 @@ describe('useCurrentLocation', () => {
 
     expect(result.current.coords).toBeNull();
     expect(result.current.error).toEqual(new Error('location unavailable'));
+    expect(result.current.permissionDenied).toBe(false);
   });
 });
