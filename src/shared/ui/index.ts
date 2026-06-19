@@ -1,4 +1,5 @@
 export { AnimatedIcon, AnimatedSplashOverlay } from './animated-icon';
+export { AppProviders } from './app-providers';
 export { Collapsible } from './collapsible';
 export { ExternalLink } from './external-link';
 export { ThemedText, type ThemedTextProps } from './themed-text';
