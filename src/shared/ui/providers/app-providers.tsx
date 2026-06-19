@@ -3,7 +3,7 @@ import type { PropsWithChildren } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { useColorScheme } from 'react-native';
 
-import { AnimatedSplashOverlay } from './animated-icon';
+import { AnimatedSplashOverlay } from '../branding/animated-icon';
 
 import { initI18n } from '@/shared/lib/i18n';
 
