@@ -14,6 +14,11 @@ export {
   SUPPORTED_LANGUAGES,
 } from './language';
 export type { SupportedLanguage } from './language';
+export {
+  LANGUAGE_STORAGE_KEY,
+  loadPersistedLanguage,
+  resolveInitialLanguage,
+} from './persisted-language';
 
 let i18nInstance: I18nInstance | null = null;
 
