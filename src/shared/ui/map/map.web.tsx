@@ -9,6 +9,7 @@ import type { MapProps } from './map.types';
 /**
  * Web 向けフォールバック。
  * react-native-maps は Web 未サポートのため、代替の案内を表示する。
+ * `currentLocation` はネイティブ版とのシグネチャ互換のため受け取るが、ここでは使わない。
  */
 export function Map({ style }: MapProps) {
   return (

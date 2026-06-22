@@ -8,5 +8,8 @@
     "manner": "매너",
     "evacuation": "대피",
     "settings": "설정"
+  },
+  "location": {
+    "permissionDeniedNotice": "현재 위치를 표시하려면 위치 정보 권한이 필요합니다"
   }
 }
