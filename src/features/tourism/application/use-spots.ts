@@ -1,0 +1,22 @@
+import { useQuery } from '@tanstack/react-query';
+
+import { fetchSpots } from '../infrastructure/api/mock-spots';
+
+import type { Spot } from '../domain';
+
+/** 観光スポット系クエリのキー名前空間。 */
+export const SPOTS_QUERY_KEY = ['tourism', 'spots'] as const;
+
+/**
+ * 観光スポット一覧を取得する application 層フック。
+ *
+ * infrastructure の `fetchSpots()` を useQuery でラップし、ui 層には
+ * キャッシュ・ローディング・エラー状態を含む宣言的なインターフェースだけを公開する。
+ * 実 API への差し替え時も `fetchSpots` のシグネチャが保たれる限りこのフックは変更不要。
+ */
+export function useSpots() {
+  return useQuery<Spot[]>({
+    queryKey: SPOTS_QUERY_KEY,
+    queryFn: fetchSpots,
+  });
+}
