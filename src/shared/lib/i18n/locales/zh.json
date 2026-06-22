@@ -9,7 +9,7 @@
     "evacuation": "疏散",
     "settings": "设置"
   },
-  "location": {
-    "permissionDeniedNotice": "显示当前位置需要位置信息权限"
+  "settings": {
+    "language": "语言"
   }
 }

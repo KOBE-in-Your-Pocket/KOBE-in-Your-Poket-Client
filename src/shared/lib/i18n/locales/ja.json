@@ -9,7 +9,7 @@
     "evacuation": "避難",
     "settings": "設定"
   },
-  "location": {
-    "permissionDeniedNotice": "現在地の表示には位置情報の許可が必要です"
+  "settings": {
+    "language": "言語"
   }
 }
