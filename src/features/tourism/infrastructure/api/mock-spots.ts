@@ -9,33 +9,63 @@ const MOCK_SPOTS: Spot[] = [
     id: 'kobe-port-tower',
     name: '神戸ポートタワー',
     genre: 'landmark',
+    categoryLabel: 'ウォーターフロント',
     description: '神戸港のシンボル。鼓を思わせる赤い鉄塔で、展望フロアから街と海を一望できる。',
+    imageUrl:
+      'https://images.unsplash.com/photo-1570091160392-39f6a6596f46?auto=format&fit=crop&w=800&q=80',
+    coordinates: { latitude: 34.6826, longitude: 135.1863 },
+    rating: 4.5,
+    businessHours: '9:00 – 21:00',
   },
   {
     id: 'kitano-ijinkan',
     name: '北野異人館街',
     genre: 'history',
+    categoryLabel: '歴史地区',
     description:
       '開港期に外国人が暮らした洋館が立ち並ぶ地区。風見鶏の館をはじめ異国情緒あふれる街並みが残る。',
+    imageUrl:
+      'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80',
+    coordinates: { latitude: 34.6989, longitude: 135.1896 },
+    rating: 4.7,
+    businessHours: '9:00 – 18:00',
   },
   {
     id: 'nankinmachi',
     name: '南京町',
     genre: 'gourmet',
+    categoryLabel: '中華街',
     description: '西日本有数の中華街。豚まんや点心など食べ歩きグルメでにぎわう。',
+    imageUrl:
+      'https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=800&q=80',
+    coordinates: { latitude: 34.6889, longitude: 135.1877 },
+    rating: 4.4,
+    businessHours: '10:00 – 20:00',
   },
   {
     id: 'arima-onsen',
     name: '有馬温泉',
     genre: 'onsen',
+    categoryLabel: '温泉',
     description: '日本三古湯のひとつ。鉄分を含む茶褐色の「金泉」と無色透明の「銀泉」で知られる。',
+    imageUrl:
+      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+    coordinates: { latitude: 34.7956, longitude: 135.2468 },
+    rating: 4.8,
+    businessHours: 'Open 24 hours',
   },
   {
     id: 'mount-rokko',
     name: '六甲山',
     genre: 'nature',
+    categoryLabel: '自然',
     description:
       '神戸の街を見下ろす山。ハイキングや植物園が楽しめ、山上から望む夜景は日本三大夜景に数えられる。',
+    imageUrl:
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80',
+    coordinates: { latitude: 34.7488, longitude: 135.2231 },
+    rating: 4.6,
+    businessHours: '9:00 – 17:00',
   },
 ];
 
@@ -53,5 +83,5 @@ export async function fetchSpots(): Promise<Spot[]> {
   await new Promise<void>((resolve) => setTimeout(resolve, MOCK_LATENCY_MS));
 
   // 呼び出し側が内部の mock を変更できないよう、毎回新しい配列・オブジェクトを返す。
-  return MOCK_SPOTS.map((spot) => ({ ...spot }));
+  return MOCK_SPOTS.map((spot) => ({ ...spot, coordinates: { ...spot.coordinates } }));
 }
