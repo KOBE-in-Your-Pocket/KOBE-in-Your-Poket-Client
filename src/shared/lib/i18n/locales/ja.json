@@ -8,5 +8,8 @@
     "manner": "マナー",
     "evacuation": "避難",
     "settings": "設定"
+  },
+  "settings": {
+    "language": "言語"
   }
 }
