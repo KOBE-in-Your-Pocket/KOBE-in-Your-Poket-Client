@@ -90,7 +90,10 @@ if adb devices 2>/dev/null | tr -d '\r' | awk 'NR>1 && $2=="device"' | grep -q '
   echo "✓ Android Emulator は既に起動済み"
 else
   echo "▶ ${TARGET_AVD} を起動（バックグラウンド）..."
-  nohup emulator -avd "${TARGET_AVD}" -no-snapshot-load >/tmp/emulator.log 2>&1 &
+  # WSL から Windows の emulator.exe を起動すると ANDROID_HOME が Unix パスのため
+  # skin.name(=pixel_8) の名前解決に失敗し `unknown skin name 'pixel_8'` で落ちる。
+  # 解像度ベースの -skin を渡せば skins フォルダ参照が不要になり環境に依存せず起動できる。
+  nohup emulator -avd "${TARGET_AVD}" -no-snapshot-load -skin 1080x2400 >/tmp/emulator.log 2>&1 &
   EMU_PID=$!
   echo "  PID: $EMU_PID"
 
@@ -108,6 +111,22 @@ else
     fi
   done
   echo "✓ boot 完了"
+fi
+
+# ── WSL → Windows エミュ間の Metro 接続を 127.0.0.1 経由に固定 ──
+# WSL2(mirrored) では Metro が WSL 側の LAN IP(例 192.168.x.x)を広告するが、
+# Windows 上のエミュからはそのIPに到達できず「Error loading app / could not
+# connect」になる。adb reverse で emulator:8081 → host:8081 を張ったうえで
+# PACKAGER_HOSTNAME を 127.0.0.1 に固定すると mirrored の IPv4 ループバック
+# 経由で WSL の Metro に届く。
+# 注: ここは "localhost" ではなく必ず "127.0.0.1" にする。Windows では
+#     localhost が先に IPv6(::1) に解決され、IPv4 で待つ WSL の Metro に
+#     繋がらずハングするため（検証済み: 127.0.0.1=OK / localhost=timeout）。
+# WSL でないネイティブ環境（Mac/Linux）では何もしない。
+if grep -qiE "microsoft|wsl" /proc/version 2>/dev/null; then
+  echo "▶ WSL を検出 — Metro を 127.0.0.1 経由に固定（adb reverse 8081）"
+  adb reverse tcp:8081 tcp:8081 >/dev/null 2>&1 || true
+  export REACT_NATIVE_PACKAGER_HOSTNAME=127.0.0.1
 fi
 
 # ── .env 読み込み（Maps API キーなど） ─────────────
