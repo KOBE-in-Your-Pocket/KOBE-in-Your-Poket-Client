@@ -1,12 +1,14 @@
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Spacing } from '@/shared/config';
+
 import { useCurrentLocation } from '@/shared/lib/geo';
 import { LocationPermissionNotice, Map, ThemedView } from '@/shared/ui';
 
+
 export function TourismScreen() {
   const { coords, permissionDenied } = useCurrentLocation();
+
 
   return (
     <ThemedView style={styles.container}>
