@@ -4,12 +4,10 @@
     "appName": "KOBE in Your Pocket"
   },
   "tabs": {
-    "tourism": "Tourism",
+    "map": "Map",
+    "tourism": "Spots",
     "manner": "Manners",
     "evacuation": "Evacuation",
     "settings": "Settings"
-  },
-  "settings": {
-    "language": "Language"
   }
 }

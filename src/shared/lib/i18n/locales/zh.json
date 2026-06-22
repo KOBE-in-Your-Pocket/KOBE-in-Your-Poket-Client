@@ -4,12 +4,10 @@
     "appName": "KOBE in Your Pocket"
   },
   "tabs": {
-    "tourism": "旅游",
+    "map": "地图",
+    "tourism": "观光地",
     "manner": "礼仪",
     "evacuation": "疏散",
     "settings": "设置"
-  },
-  "settings": {
-    "language": "语言"
   }
 }
