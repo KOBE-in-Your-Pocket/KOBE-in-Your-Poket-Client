@@ -1,11 +1,14 @@
 # Dev Client チーム配布ガイド
 
 地図（`react-native-maps`）などネイティブ依存を使うため、**Expo Go ではなく Dev Client** が必要です。
-全員がローカルで `expo run:android` する代わりに、**EAS Build で APK を1本ビルドして配布**する手順です。
+全員がローカルで `expo run:*` する代わりに、**EAS Build で成果物を1本ビルドして配布**する手順です。
+
+- **Android**: `pnpm android`（エミュレータ + Dev Client + Metro）→ 本ページ前半
+- **iOS**: `pnpm ios`（シミュレータ + Dev Client + Metro）→ 本ページ「iOS（Apple）」セクション
 
 > Issue: **#64**（EAS Dev Client セットアップとチーム配布）
 >
-> **日常の開発コマンドは全員 `pnpm android` に統一**（エミュレータ起動 + Dev Client + Metro + ホットリロード）。
+> **日常の開発コマンドは Android=`pnpm android` / iOS=`pnpm ios` に統一**（端末起動 + Dev Client + Metro + ホットリロード）。
 
 ---
 
@@ -137,6 +140,72 @@ pnpm android
 
 ---
 
+## iOS（Apple）
+
+Android と同じ思想で、**EAS で Dev Client をビルドして配布**します。iOS は配布先が
+2種類あるため、用途に応じてプロファイルを使い分けます。
+
+| 用途                       | EAS プロファイル      | Apple 証明書 | インストール先 |
+| -------------------------- | --------------------- | ------------ | -------------- |
+| シミュレータ（Mac 日常用） | `development-ios-sim` | **不要**     | iOS Simulator  |
+| 実機（実機確認 / 配布）    | `development-ios`     | 必要         | iPhone 実機    |
+
+> ネイティブ dir（`ios/`）は `.gitignore` 済みで、EAS が `app.config.ts` から毎回再生成します。
+> ローカルに古い `ios/`（`com.anonymous.KOBEinYourPoketClient`）が残っていても EAS ビルドには影響しません。
+> 気になる場合は `rm -rf ios` で削除可（`expo prebuild` で再生成されます）。
+
+### 配布担当: シミュレータ用 Dev Client をビルド（Apple 証明書 不要）
+
+```bash
+pnpm dlx eas-cli build -p ios --profile development-ios-sim
+```
+
+完了後、EAS ダッシュボードに **`.app`（.tar.gz）ダウンロード URL** が表示されます。
+Android の APK と同様、`.env` 不要で配布できます（手順 2 の未認証アクセス ON が前提）。
+
+### 配布担当: 実機用 Dev Client をビルド
+
+```bash
+pnpm dlx eas-cli build -p ios --profile development-ios
+```
+
+実機用は Apple Developer のプロビジョニングが必要です。初回はテスト端末の UDID 登録を
+EAS CLI の対話に従って行ってください。
+
+### 各メンバー（シミュレータ）
+
+1. **Dev Client をインストール（初回 / 更新時のみ）**
+
+   ```bash
+   # iPhone 15 シミュレータを起動しておく（pnpm ios が自動 boot でも可）
+   curl -L -o dev-client-sim.tar.gz "<EAS の .app URL>"
+   tar -xzf dev-client-sim.tar.gz                       # → *.app が展開される
+   xcrun simctl install booted *.app
+   ```
+
+2. **開発開始（毎日これだけ）**
+
+   ```bash
+   pnpm ios
+   ```
+
+   - シミュレータ（iPhone 15）を自動起動
+   - Dev Client (`com.kobeinyourpocket.client`) を検出して Dev Client + Metro を起動
+   - **コードを保存するとシミュレータ上で自動リロード**
+   - 未インストールなら、上記ビルド/導入手順を案内して停止します
+
+### 各メンバー（実機）
+
+配布された Dev Client を実機にインストール後、USB 接続して:
+
+```bash
+IOS_TARGET=device pnpm ios
+```
+
+接続中の実機を選択して Dev Client + Metro を起動します。
+
+---
+
 ## 再ビルドが必要なタイミング
 
 | 変更内容                                        | 再ビルド                         |
@@ -149,11 +218,15 @@ pnpm android
 
 ## コマンド一覧
 
-| コマンド                        | 用途                                                    |
-| ------------------------------- | ------------------------------------------------------- |
-| **`pnpm android`**              | **全員: 日常開発**（エミュレータ + Dev Client + Metro） |
-| `pnpm dev-client:build:android` | 配布担当: EAS で Android APK ビルド                     |
-| `pnpm dev-client:start`         | 上級者向け: Metro のみ（通常は使わない）                |
+| コマンド                                                      | 用途                                                         |
+| ------------------------------------------------------------- | ------------------------------------------------------------ |
+| **`pnpm android`**                                            | **全員: 日常開発（Android）**（エミュ + Dev Client + Metro） |
+| **`pnpm ios`**                                                | **全員: 日常開発（iOS）**（シミュ + Dev Client + Metro）     |
+| `IOS_TARGET=device pnpm ios`                                  | iOS を実機に向けて起動                                       |
+| `pnpm dev-client:build:android`                               | 配布担当: EAS で Android APK ビルド                          |
+| `pnpm dlx eas-cli build -p ios --profile development-ios-sim` | 配布担当: EAS で iOS シミュレータ用 Dev Client ビルド        |
+| `pnpm dlx eas-cli build -p ios --profile development-ios`     | 配布担当: EAS で iOS 実機用 Dev Client ビルド                |
+| `pnpm dev-client:start`                                       | 上級者向け: Metro のみ（通常は使わない）                     |
 
 ---
 
@@ -180,7 +253,19 @@ adb logcat -d | rg -i "Authorization failure|Google Android Maps"
 
 ### `Dev Client が未インストール`
 
-共有 APK をインストールしていない状態です。上記「APK をインストール」を実施してください。
+共有 Dev Client をインストールしていない状態です。
+Android は「APK をインストール」、iOS は「iOS（Apple）→ Dev Client をインストール」を実施してください。
+
+### iOS: `No development build ... is installed` / シミュレータ宛先が見つからない
+
+- Dev Client `.app` を未導入 → 「iOS（Apple）→ Dev Client をインストール」を実施。
+- `pnpm ios` ではなく `expo run:ios`（ローカル Xcode ビルド）を使うと、Xcode に対応する
+  iOS シミュレータ・ランタイムが無い場合に宛先解決で失敗します。**ローカルビルドではなく
+  EAS 製 Dev Client + `pnpm ios`** を使ってください。
+- 古い Dev Client が残って不調なら:
+  ```bash
+  xcrun simctl uninstall booted com.anonymous.KOBEinYourPoketClient
+  ```
 
 ### APK の URL で「権限がない」
 

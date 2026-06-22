@@ -8,5 +8,8 @@
     "manner": "Manners",
     "evacuation": "Evacuation",
     "settings": "Settings"
+  },
+  "location": {
+    "permissionDeniedNotice": "Location permission is required to show your current location"
   }
 }
