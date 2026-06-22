@@ -6,6 +6,8 @@ import { useColorScheme } from 'react-native';
 
 import { AnimatedSplashOverlay } from '../branding/animated-icon';
 
+import { useLanguageBootstrap } from './use-language-bootstrap';
+
 import { initI18n } from '@/shared/lib/i18n';
 import { createQueryClient } from '@/shared/lib/query';
 
@@ -14,6 +16,7 @@ const queryClient = createQueryClient();
 
 export function AppProviders({ children }: PropsWithChildren) {
   const colorScheme = useColorScheme();
+  useLanguageBootstrap();
   return (
     <QueryClientProvider client={queryClient}>
       <I18nextProvider i18n={i18n}>
