@@ -4,7 +4,10 @@ const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
 
 if (!googleMapsApiKey) {
   console.warn(
-    '[app.config] GOOGLE_MAPS_API_KEY が未設定です。Android で地図タイルが表示されません。.env.example を参照してください。',
+    '[app.config] GOOGLE_MAPS_API_KEY が未設定です。\n' +
+      '  この値はネイティブビルド時（EAS build / expo run:android）に AndroidManifest へ焼き込まれます。\n' +
+      '  EAS 配布 APK を Dev Client として使っている場合はビルド済みのキーが入っているため、この警告は無視できます。\n' +
+      '  ローカルでネイティブを作り直す場合のみ .env に設定してください（.env.example 参照）。',
   );
 }
 
