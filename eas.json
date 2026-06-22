@@ -14,6 +14,13 @@
     "development-ios": {
       "developmentClient": true,
       "distribution": "internal"
+    },
+    "development-ios-sim": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      }
     }
   }
 }
