@@ -17,7 +17,8 @@
     "spotList": {
       "title": "观光景点",
       "subtitle": "附近景点",
-      "loadError": "无法加载景点。"
+      "loadError": "无法加载景点。",
+      "routeButton": "路线"
     }
   }
 }

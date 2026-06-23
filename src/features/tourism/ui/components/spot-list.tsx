@@ -1,8 +1,9 @@
 import { Image } from 'expo-image';
+import { router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, FlatList, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useSpots } from '../../application/use-spots';
@@ -22,6 +23,7 @@ type SpotWithDistance = Spot & {
 
 function SpotListItem({ spot }: { spot: SpotWithDistance }) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <ThemedView style={styles.card}>
@@ -70,6 +72,26 @@ function SpotListItem({ spot }: { spot: SpotWithDistance }) {
             {spot.businessHours}
           </ThemedText>
         </View>
+
+        <Pressable
+          style={styles.routeButton}
+          onPress={() => router.push({ pathname: '/map', params: { spotId: spot.id } })}
+          accessibilityRole="button"
+          accessibilityLabel={t('tourism.spotList.routeButton')}
+        >
+          <SymbolView
+            tintColor="#FFFFFF"
+            name={{
+              ios: 'arrow.triangle.turn.up.right.diamond.fill',
+              android: 'directions',
+              web: 'directions',
+            }}
+            size={16}
+          />
+          <ThemedText style={styles.routeButtonText}>
+            {t('tourism.spotList.routeButton')}
+          </ThemedText>
+        </Pressable>
       </View>
     </ThemedView>
   );
