@@ -19,5 +19,12 @@
       "subtitle": "近くのスポット",
       "loadError": "スポットを読み込めませんでした。"
     }
+  },
+  "map": {
+    "spotCard": {
+      "detail": "詳細を見る",
+      "navigate": "経路案内",
+      "close": "閉じる"
+    }
   }
 }

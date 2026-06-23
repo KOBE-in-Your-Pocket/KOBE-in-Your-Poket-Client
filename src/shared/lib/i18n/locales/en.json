@@ -19,5 +19,12 @@
       "subtitle": "Nearby spots",
       "loadError": "Could not load spots."
     }
+  },
+  "map": {
+    "spotCard": {
+      "detail": "Spot Detail",
+      "navigate": "Directions",
+      "close": "Close"
+    }
   }
 }
