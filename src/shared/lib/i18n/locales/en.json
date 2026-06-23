@@ -17,7 +17,8 @@
     "spotList": {
       "title": "Tourist Spots",
       "subtitle": "Nearby spots",
-      "loadError": "Could not load spots."
+      "loadError": "Could not load spots.",
+      "routeButton": "Route"
     }
   }
 }
