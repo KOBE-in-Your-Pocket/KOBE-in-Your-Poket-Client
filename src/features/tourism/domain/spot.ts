@@ -14,7 +14,7 @@ export type SpotCoordinates = {
 };
 
 /**
- * 観光スポットのコアドメインモデル。
+ * 観光スポットのドメインモデル。
  */
 export type Spot = {
   id: string;
