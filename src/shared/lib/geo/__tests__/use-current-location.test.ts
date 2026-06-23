@@ -2,9 +2,22 @@
 import { renderHook, waitFor } from '@testing-library/react-native';
 import * as Location from 'expo-location';
 
+import {
+  createDevDefaultCoords,
+  SANNOMIYA_STATION_COORDS,
+  shouldUseDevDefaultLocation,
+} from '../dev-default-coordinates';
 import { useCurrentLocation } from '../hooks/use-current-location';
 
 jest.mock('expo-location');
+jest.mock('../dev-default-coordinates', () => ({
+  ...jest.requireActual('../dev-default-coordinates'),
+  shouldUseDevDefaultLocation: jest.fn(() => false),
+}));
+
+const mockedShouldUseDevDefaultLocation = shouldUseDevDefaultLocation as jest.MockedFunction<
+  typeof shouldUseDevDefaultLocation
+>;
 
 const mockedRequestPermissions = Location.requestForegroundPermissionsAsync as jest.MockedFunction<
   typeof Location.requestForegroundPermissionsAsync
@@ -26,6 +39,7 @@ const sampleCoords: Location.LocationObjectCoords = {
 describe('useCurrentLocation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockedShouldUseDevDefaultLocation.mockReturnValue(false);
   });
 
   it('returns coords when permission is granted', async () => {
@@ -83,5 +97,22 @@ describe('useCurrentLocation', () => {
     expect(result.current.coords).toBeNull();
     expect(result.current.error).toEqual(new Error('location unavailable'));
     expect(result.current.permissionDenied).toBe(false);
+  });
+
+  it('uses Sannomiya Station as default in dev environments', async () => {
+    mockedShouldUseDevDefaultLocation.mockReturnValue(true);
+
+    const { result } = renderHook(() => useCurrentLocation());
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    expect(result.current.coords).toEqual(createDevDefaultCoords());
+    expect(result.current.coords).toEqual(SANNOMIYA_STATION_COORDS);
+    expect(result.current.error).toBeNull();
+    expect(result.current.permissionDenied).toBe(false);
+    expect(mockedRequestPermissions).not.toHaveBeenCalled();
+    expect(mockedGetCurrentPosition).not.toHaveBeenCalled();
   });
 });
