@@ -1,3 +1,7 @@
+import type { SpotCategory } from './spot-category';
+import type { SpotMedia } from './spot-media';
+import type { SpotRating } from './spot-rating';
+
 /**
  * 観光スポットのジャンル区分。
  * 実 API 導入後もこの区分を契約として共有する。
@@ -10,18 +14,16 @@ export type SpotCoordinates = {
 };
 
 /**
- * 観光スポットのドメインモデル。
+ * 観光スポットのコアドメインモデル。
  */
 export type Spot = {
   id: string;
   name: string;
   genre: SpotGenre;
-  /** UI 向けのカテゴリ表示名（例: 歴史地区）。 */
-  categoryLabel: string;
   description: string;
-  imageUrl: string;
   coordinates: SpotCoordinates;
-  /** 5段階評価（例: 4.7）。 */
-  rating: number;
   businessHours: string;
+  category: SpotCategory;
+  media: SpotMedia;
+  rating: SpotRating;
 };

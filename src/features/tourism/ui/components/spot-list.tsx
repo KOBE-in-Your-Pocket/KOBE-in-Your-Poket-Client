@@ -26,7 +26,7 @@ function SpotListItem({ spot }: { spot: SpotWithDistance }) {
   return (
     <ThemedView style={styles.card}>
       <View style={styles.imageWrapper}>
-        <Image source={{ uri: spot.imageUrl }} style={styles.image} contentFit="cover" />
+        <Image source={{ uri: spot.media.imageUrl }} style={styles.image} contentFit="cover" />
         {spot.distanceKm !== null ? (
           <View style={styles.distanceBadge}>
             <ThemedText style={styles.distanceText}>{formatDistanceKm(spot.distanceKm)}</ThemedText>
@@ -36,14 +36,14 @@ function SpotListItem({ spot }: { spot: SpotWithDistance }) {
 
       <View style={styles.content}>
         <View style={styles.metaRow}>
-          <ThemedText style={styles.category}>{spot.categoryLabel}</ThemedText>
+          <ThemedText style={styles.category}>{spot.category.label}</ThemedText>
           <View style={styles.ratingRow}>
             <SymbolView
               tintColor={RATING_STAR_COLOR}
               name={{ ios: 'star.fill', android: 'star', web: 'star' }}
               size={14}
             />
-            <ThemedText type="smallBold">{spot.rating.toFixed(1)}</ThemedText>
+            <ThemedText type="smallBold">{spot.rating.value.toFixed(1)}</ThemedText>
           </View>
         </View>
 

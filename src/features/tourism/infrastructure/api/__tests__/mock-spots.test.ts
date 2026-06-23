@@ -15,12 +15,12 @@ describe('fetchSpots', () => {
       expect(spot.id).toBeTruthy();
       expect(spot.name).toBeTruthy();
       expect(spot.genre).toBeTruthy();
-      expect(spot.categoryLabel).toBeTruthy();
+      expect(spot.category.label).toBeTruthy();
       expect(spot.description).toBeTruthy();
-      expect(spot.imageUrl).toMatch(/^https?:\/\//);
+      expect(spot.media.imageUrl).toMatch(/^https?:\/\//);
       expect(spot.coordinates.latitude).toBeDefined();
       expect(spot.coordinates.longitude).toBeDefined();
-      expect(spot.rating).toBeGreaterThan(0);
+      expect(spot.rating.value).toBeGreaterThan(0);
       expect(spot.businessHours).toBeTruthy();
     }
   });
