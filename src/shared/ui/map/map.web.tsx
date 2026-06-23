@@ -1,8 +1,7 @@
-import { StyleSheet } from 'react-native';
-
-import { Spacing } from '@/shared/config';
 import { ThemedText } from '../themed/themed-text';
 import { ThemedView } from '../themed/themed-view';
+
+import { styles } from './styles/map.web.styles';
 
 import type { MapProps } from './map.types';
 
@@ -18,12 +17,3 @@ export function Map({ style }: MapProps) {
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  placeholder: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: Spacing.four,
-  },
-});
