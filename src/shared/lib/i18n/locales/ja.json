@@ -9,5 +9,15 @@
     "manner": "マナー",
     "evacuation": "避難",
     "settings": "設定"
+  },
+  "settings": {
+    "language": "言語"
+  },
+  "tourism": {
+    "spotList": {
+      "title": "観光スポット",
+      "subtitle": "近くのスポット",
+      "loadError": "スポットを読み込めませんでした。"
+    }
   }
 }

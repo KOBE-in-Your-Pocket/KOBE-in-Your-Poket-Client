@@ -1,4 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
+
+import { resolveLanguage } from '@/shared/lib/i18n';
 
 import { fetchSpots } from '../infrastructure/api/mock-spots';
 
@@ -15,8 +18,11 @@ export const SPOTS_QUERY_KEY = ['tourism', 'spots'] as const;
  * 実 API への差し替え時も `fetchSpots` のシグネチャが保たれる限りこのフックは変更不要。
  */
 export function useSpots() {
+  const { i18n } = useTranslation();
+  const language = resolveLanguage(i18n.language);
+
   return useQuery<Spot[]>({
-    queryKey: SPOTS_QUERY_KEY,
-    queryFn: fetchSpots,
+    queryKey: [...SPOTS_QUERY_KEY, language],
+    queryFn: () => fetchSpots(language),
   });
 }
