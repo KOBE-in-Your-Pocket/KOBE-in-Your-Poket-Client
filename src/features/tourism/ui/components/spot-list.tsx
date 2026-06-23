@@ -1,20 +1,19 @@
 import { Image } from 'expo-image';
 import { SymbolView } from 'expo-symbols';
 import { useMemo } from 'react';
-import { ActivityIndicator, FlatList, Platform, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useSpots } from '../../application/use-spots';
 
 import type { Spot } from '../../domain/spot';
 
+import { RATING_STAR_COLOR, styles } from '../../ui/styles/spot-list.styles';
+
 import { Spacing } from '@/shared/config';
 import { formatDistanceKm, getDistanceKm, useCurrentLocation } from '@/shared/lib/geo';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
-
-const CATEGORY_COLOR = '#C67B4A';
-const RATING_STAR_COLOR = '#F5A623';
 
 type SpotWithDistance = Spot & {
   distanceKm: number | null;
@@ -144,93 +143,3 @@ export function SpotList() {
     />
   );
 }
-
-const styles = StyleSheet.create({
-  centered: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  listContent: {
-    paddingHorizontal: Spacing.three,
-    gap: Spacing.three,
-    paddingBottom: Spacing.five,
-  },
-  header: {
-    gap: Spacing.one,
-    marginBottom: Spacing.one,
-  },
-  title: {
-    fontSize: 28,
-    lineHeight: 34,
-  },
-  card: {
-    borderRadius: Spacing.three,
-    overflow: 'hidden',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 3,
-      },
-      default: {},
-    }),
-  },
-  imageWrapper: {
-    position: 'relative',
-    height: 180,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  distanceBadge: {
-    position: 'absolute',
-    top: Spacing.two,
-    right: Spacing.two,
-    backgroundColor: 'rgba(0, 0, 0, 0.65)',
-    borderRadius: Spacing.three,
-    paddingHorizontal: Spacing.two,
-    paddingVertical: Spacing.one,
-  },
-  distanceText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  content: {
-    padding: Spacing.three,
-    gap: Spacing.two,
-  },
-  metaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  category: {
-    color: CATEGORY_COLOR,
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  ratingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.one,
-  },
-  name: {
-    fontSize: 18,
-    lineHeight: 24,
-  },
-  description: {
-    lineHeight: 20,
-  },
-  hoursRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.one,
-  },
-});
