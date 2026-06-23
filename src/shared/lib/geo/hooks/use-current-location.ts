@@ -1,5 +1,9 @@
+import * as Device from 'expo-device';
 import * as Location from 'expo-location';
 import { useEffect, useState } from 'react';
+import { Platform } from 'react-native';
+
+import { createDevDefaultCoords, shouldUseDevDefaultLocation } from '../dev-default-coordinates';
 
 export type CurrentLocationCoords = Location.LocationObjectCoords;
 
@@ -22,6 +26,12 @@ export function useCurrentLocation(): UseCurrentLocationResult {
 
     (async () => {
       try {
+        if (shouldUseDevDefaultLocation(Device.isDevice, Platform.OS)) {
+          if (cancelled) return;
+          setCoords(createDevDefaultCoords());
+          return;
+        }
+
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (cancelled) return;
 
