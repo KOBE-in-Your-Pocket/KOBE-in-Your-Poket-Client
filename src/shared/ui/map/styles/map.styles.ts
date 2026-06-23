@@ -3,6 +3,9 @@ import { StyleSheet } from 'react-native';
 /** 現在地ドットの色（アプリのテーマブルー）。 */
 const CURRENT_LOCATION_BLUE = '#208AEF';
 
+/** 経路ライン（Polyline）の色。 */
+export const ROUTE_STROKE_COLOR = '#208AEF';
+
 export const styles = StyleSheet.create({
   map: {
     flex: 1,
