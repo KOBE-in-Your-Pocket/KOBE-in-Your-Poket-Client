@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
 import { SymbolView } from 'expo-symbols';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -76,14 +77,15 @@ function SpotListItem({ spot }: { spot: SpotWithDistance }) {
 
 function ListHeader() {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   return (
     <View style={[styles.header, { paddingTop: insets.top + Spacing.three }]}>
       <ThemedText type="subtitle" style={styles.title}>
-        観光スポット
+        {t('tourism.spotList.title')}
       </ThemedText>
       <ThemedText type="smallBold" themeColor="textSecondary">
-        近くのスポット
+        {t('tourism.spotList.subtitle')}
       </ThemedText>
     </View>
   );
@@ -96,6 +98,7 @@ function ListHeader() {
  * 画像・距離・評価・営業時間を含むカード一覧を表示する。
  */
 export function SpotList() {
+  const { t } = useTranslation();
   const { data: spots, isPending, isError } = useSpots();
   const { coords } = useCurrentLocation();
 
@@ -128,7 +131,7 @@ export function SpotList() {
   if (isError) {
     return (
       <ThemedView style={styles.centered}>
-        <ThemedText themeColor="textSecondary">スポットを読み込めませんでした。</ThemedText>
+        <ThemedText themeColor="textSecondary">{t('tourism.spotList.loadError')}</ThemedText>
       </ThemedView>
     );
   }

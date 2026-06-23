@@ -9,5 +9,15 @@
     "manner": "Manners",
     "evacuation": "Evacuation",
     "settings": "Settings"
+  },
+  "settings": {
+    "language": "Language"
+  },
+  "tourism": {
+    "spotList": {
+      "title": "Tourist Spots",
+      "subtitle": "Nearby spots",
+      "loadError": "Could not load spots."
+    }
   }
 }

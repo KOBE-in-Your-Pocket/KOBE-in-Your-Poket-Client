@@ -9,5 +9,15 @@
     "manner": "매너",
     "evacuation": "대피",
     "settings": "설정"
+  },
+  "settings": {
+    "language": "언어"
+  },
+  "tourism": {
+    "spotList": {
+      "title": "관광 스폿",
+      "subtitle": "주변 스폿",
+      "loadError": "스폿을 불러올 수 없습니다."
+    }
   }
 }
