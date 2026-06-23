@@ -26,4 +26,8 @@ export type MapProps = {
   currentLocation?: MapCoordinate | null;
   /** 地図上に表示するマーカー一覧（観光スポットなど）。 */
   markers?: MapMarker[];
+  /** マーカーがタップされたときのコールバック。 */
+  onMarkerPress?: (marker: MapMarker) => void;
+  /** 経路として描画する座標列（現在地→目的地の道なり経路など）。 */
+  routeCoordinates?: MapCoordinate[];
 };
