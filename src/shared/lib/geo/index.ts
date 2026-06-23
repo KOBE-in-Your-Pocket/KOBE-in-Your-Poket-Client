@@ -1,3 +1,4 @@
+export { formatDistanceKm, getDistanceKm, type GeoCoordinates } from './distance';
 export {
   useCurrentLocation,
   type CurrentLocationCoords,

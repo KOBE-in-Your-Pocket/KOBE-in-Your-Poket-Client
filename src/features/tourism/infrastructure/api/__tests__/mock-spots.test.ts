@@ -8,14 +8,20 @@ describe('fetchSpots', () => {
     expect(spots.length).toBeLessThanOrEqual(5);
   });
 
-  it('各スポットは name・genre・description を持つ', async () => {
+  it('各スポットは一覧表示に必要なフィールドを持つ', async () => {
     const spots = await fetchSpots();
 
     for (const spot of spots) {
       expect(spot.id).toBeTruthy();
       expect(spot.name).toBeTruthy();
       expect(spot.genre).toBeTruthy();
+      expect(spot.category.label).toBeTruthy();
       expect(spot.description).toBeTruthy();
+      expect(spot.media.imageUrl).toMatch(/^https?:\/\//);
+      expect(spot.coordinates.latitude).toBeDefined();
+      expect(spot.coordinates.longitude).toBeDefined();
+      expect(spot.rating.value).toBeGreaterThan(0);
+      expect(spot.businessHours).toBeTruthy();
     }
   });
 
