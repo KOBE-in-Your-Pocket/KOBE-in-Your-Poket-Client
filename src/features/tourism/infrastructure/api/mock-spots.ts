@@ -1,4 +1,4 @@
-import type { Spot } from '../../domain';
+import type { Spot } from '../../domain/spot';
 
 /**
  * mock の観光スポット一覧（神戸の代表的な名所）。

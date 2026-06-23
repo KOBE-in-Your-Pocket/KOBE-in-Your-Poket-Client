@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { fetchSpots } from '../infrastructure/api/mock-spots';
 
-import type { Spot } from '../domain';
+import type { Spot } from '../domain/spot';
 
 /** 観光スポット系クエリのキー名前空間。 */
 export const SPOTS_QUERY_KEY = ['tourism', 'spots'] as const;

@@ -4,9 +4,9 @@ import { useMemo } from 'react';
 import { ActivityIndicator, FlatList, Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useSpots } from '../../application';
+import { useSpots } from '../../application/use-spots';
 
-import type { Spot } from '../../domain';
+import type { Spot } from '../../domain/spot';
 
 import { Spacing } from '@/shared/config';
 import { formatDistanceKm, getDistanceKm, useCurrentLocation } from '@/shared/lib/geo';
