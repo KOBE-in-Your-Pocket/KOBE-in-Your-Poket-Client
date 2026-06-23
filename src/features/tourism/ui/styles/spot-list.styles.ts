@@ -4,6 +4,7 @@ import { Spacing } from '@/shared/config';
 
 export const CATEGORY_COLOR = '#C67B4A';
 export const RATING_STAR_COLOR = '#F5A623';
+export const ROUTE_BUTTON_COLOR = '#208AEF';
 
 export const styles = StyleSheet.create({
   centered: {
@@ -92,5 +93,20 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.one,
+  },
+  routeButton: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.one,
+    marginTop: Spacing.one,
+    backgroundColor: ROUTE_BUTTON_COLOR,
+    paddingVertical: Spacing.two,
+    paddingHorizontal: Spacing.three,
+    borderRadius: Spacing.five,
+  },
+  routeButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
   },
 });

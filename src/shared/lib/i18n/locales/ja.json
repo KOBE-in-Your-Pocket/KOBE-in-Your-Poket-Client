@@ -17,7 +17,8 @@
     "spotList": {
       "title": "観光スポット",
       "subtitle": "近くのスポット",
-      "loadError": "スポットを読み込めませんでした。"
+      "loadError": "スポットを読み込めませんでした。",
+      "routeButton": "経路"
     }
   },
   "map": {

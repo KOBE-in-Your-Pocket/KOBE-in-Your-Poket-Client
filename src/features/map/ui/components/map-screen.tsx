@@ -1,3 +1,4 @@
+import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import { Alert, Platform } from 'react-native';
 
@@ -18,7 +19,9 @@ const EXTERNAL_MAP_APP_NAME = Platform.OS === 'ios' ? 'Apple マップ' : 'Googl
 export function MapScreen() {
   const { coords } = useCurrentLocation();
   const { data: spots } = useSpots();
+  const { spotId } = useLocalSearchParams<{ spotId?: string }>();
   const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
+  const [appliedSpotId, setAppliedSpotId] = useState<string | undefined>(undefined);
 
   const spotMarkers = useMemo<MapMarker[]>(
     () =>
@@ -29,6 +32,17 @@ export function MapScreen() {
       })),
     [spots],
   );
+
+  // 観光地リストの「経路」ボタンから spotId 付きで遷移してきたら、その地点を選択状態にする。
+  // render 中に前回適用した spotId と比較して反映する（effect 内 setState を避ける公式パターン）。
+  // spots が後から読み込まれた場合も、該当スポットが見つかった時点で一度だけ適用される。
+  if (spotId && spotId !== appliedSpotId) {
+    const spot = spots?.find((candidate) => candidate.id === spotId);
+    if (spot) {
+      setAppliedSpotId(spotId);
+      setSelectedSpot(spot);
+    }
+  }
 
   const { data: route } = useRoute(coords, selectedSpot?.coordinates);
 
