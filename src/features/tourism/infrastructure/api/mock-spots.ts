@@ -59,7 +59,6 @@ const MOCK_SPOT_BASES: MockSpotBase[] = [
       imageUrl: resolveSpotImageUrl('kobe-port-tower'),
     },
     coordinates: { latitude: 34.6826, longitude: 135.1863 },
-    rating: { value: 4.5 },
   },
   {
     id: 'kitano-ijinkan',
@@ -68,7 +67,6 @@ const MOCK_SPOT_BASES: MockSpotBase[] = [
       imageUrl: resolveSpotImageUrl('kitano-ijinkan'),
     },
     coordinates: { latitude: 34.6989, longitude: 135.1896 },
-    rating: { value: 4.7 },
   },
   {
     id: 'nankinmachi',
@@ -77,7 +75,6 @@ const MOCK_SPOT_BASES: MockSpotBase[] = [
       imageUrl: resolveSpotImageUrl('nankinmachi'),
     },
     coordinates: { latitude: 34.6889, longitude: 135.1877 },
-    rating: { value: 4.4 },
   },
   {
     id: 'arima-onsen',
@@ -86,7 +83,6 @@ const MOCK_SPOT_BASES: MockSpotBase[] = [
       imageUrl: resolveSpotImageUrl('arima-onsen'),
     },
     coordinates: { latitude: 34.7956, longitude: 135.2468 },
-    rating: { value: 4.8 },
   },
   {
     id: 'mount-rokko',
@@ -95,7 +91,6 @@ const MOCK_SPOT_BASES: MockSpotBase[] = [
       imageUrl: resolveSpotImageUrl('mount-rokko'),
     },
     coordinates: { latitude: 34.7488, longitude: 135.2231 },
-    rating: { value: 4.6 },
   },
 ];
 
@@ -120,7 +115,7 @@ function buildSpot(base: MockSpotBase, language: SupportedLanguage): Spot {
     category: { label: localized.categoryLabel },
     coordinates: { ...base.coordinates },
     media: { ...base.media },
-    rating: { ...base.rating },
+    rating: base.rating ? { ...base.rating } : undefined,
   };
 }
 
@@ -130,7 +125,7 @@ function cloneSpot(spot: Spot): Spot {
     coordinates: { ...spot.coordinates },
     category: { ...spot.category },
     media: { ...spot.media },
-    rating: { ...spot.rating },
+    rating: spot.rating ? { ...spot.rating } : undefined,
   };
 }
 
