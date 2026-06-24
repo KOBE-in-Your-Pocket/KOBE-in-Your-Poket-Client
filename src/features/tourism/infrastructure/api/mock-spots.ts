@@ -1,4 +1,5 @@
 import { FALLBACK_LANGUAGE, type SupportedLanguage } from '@/shared/lib/i18n';
+import { buildSpotImageUrl } from '@/shared/config/spot-image';
 
 import type { Spot } from '../../domain/spot';
 
@@ -12,6 +13,40 @@ type MockSpotBase = Omit<Spot, 'name' | 'description' | 'businessHours' | 'categ
   id: MockSpotId;
 };
 
+/** S3 にアップロード済みのスポット（未アップロードは Unsplash にフォールバック）。 */
+const S3_SPOT_IMAGE_FILES: Partial<Record<MockSpotId, string>> = {
+  'kobe-port-tower': 'main.webp',
+  'kitano-ijinkan': 'main.webp',
+  nankinmachi: 'main.webp',
+  'arima-onsen': 'main.webp',
+  'mount-rokko': 'main.webp',
+};
+
+const FALLBACK_SPOT_IMAGE_URLS: Record<MockSpotId, string> = {
+  'kobe-port-tower':
+    'https://images.unsplash.com/photo-1570091160392-39f6a6596f46?auto=format&fit=crop&w=800&q=80',
+  'kitano-ijinkan':
+    'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80',
+  nankinmachi:
+    'https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=800&q=80',
+  'arima-onsen':
+    'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+  'mount-rokko':
+    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80',
+};
+
+function resolveSpotImageUrl(spotId: MockSpotId): string {
+  const s3Filename = S3_SPOT_IMAGE_FILES[spotId];
+  if (s3Filename) {
+    const s3Url = buildSpotImageUrl(spotId, s3Filename);
+    if (s3Url) {
+      return s3Url;
+    }
+  }
+
+  return FALLBACK_SPOT_IMAGE_URLS[spotId];
+}
+
 /**
  * mock の観光スポット一覧（神戸の代表的な名所）。
  * 言語依存の文言は {@link MOCK_SPOT_LOCALIZATIONS} で管理する。
@@ -21,8 +56,7 @@ const MOCK_SPOT_BASES: MockSpotBase[] = [
     id: 'kobe-port-tower',
     genre: 'landmark',
     media: {
-      imageUrl:
-        'https://images.unsplash.com/photo-1570091160392-39f6a6596f46?auto=format&fit=crop&w=800&q=80',
+      imageUrl: resolveSpotImageUrl('kobe-port-tower'),
     },
     coordinates: { latitude: 34.6826, longitude: 135.1863 },
     rating: { value: 4.5 },
@@ -31,8 +65,7 @@ const MOCK_SPOT_BASES: MockSpotBase[] = [
     id: 'kitano-ijinkan',
     genre: 'history',
     media: {
-      imageUrl:
-        'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80',
+      imageUrl: resolveSpotImageUrl('kitano-ijinkan'),
     },
     coordinates: { latitude: 34.6989, longitude: 135.1896 },
     rating: { value: 4.7 },
@@ -41,8 +74,7 @@ const MOCK_SPOT_BASES: MockSpotBase[] = [
     id: 'nankinmachi',
     genre: 'gourmet',
     media: {
-      imageUrl:
-        'https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=800&q=80',
+      imageUrl: resolveSpotImageUrl('nankinmachi'),
     },
     coordinates: { latitude: 34.6889, longitude: 135.1877 },
     rating: { value: 4.4 },
@@ -51,8 +83,7 @@ const MOCK_SPOT_BASES: MockSpotBase[] = [
     id: 'arima-onsen',
     genre: 'onsen',
     media: {
-      imageUrl:
-        'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+      imageUrl: resolveSpotImageUrl('arima-onsen'),
     },
     coordinates: { latitude: 34.7956, longitude: 135.2468 },
     rating: { value: 4.8 },
@@ -61,8 +92,7 @@ const MOCK_SPOT_BASES: MockSpotBase[] = [
     id: 'mount-rokko',
     genre: 'nature',
     media: {
-      imageUrl:
-        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80',
+      imageUrl: resolveSpotImageUrl('mount-rokko'),
     },
     coordinates: { latitude: 34.7488, longitude: 135.2231 },
     rating: { value: 4.6 },
