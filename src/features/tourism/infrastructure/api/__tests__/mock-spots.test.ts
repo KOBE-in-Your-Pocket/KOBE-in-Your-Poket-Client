@@ -20,7 +20,11 @@ describe('fetchSpots', () => {
       expect(spot.media.imageUrl).toMatch(/^https?:\/\//);
       expect(spot.coordinates.latitude).toBeDefined();
       expect(spot.coordinates.longitude).toBeDefined();
-      expect(spot.rating.value).toBeGreaterThan(0);
+      // rating は任意。データがあれば妥当な範囲に収まること（無ければ UI 非表示）。
+      if (spot.rating) {
+        expect(spot.rating.value).toBeGreaterThan(0);
+        expect(spot.rating.value).toBeLessThanOrEqual(5);
+      }
       expect(spot.businessHours).toBeTruthy();
     }
   });

@@ -25,5 +25,9 @@ export type Spot = {
   businessHours: string;
   category: SpotCategory;
   media: SpotMedia;
-  rating: SpotRating;
+  /**
+   * 評価情報。データが無い場合は `undefined`（UI 側で非表示）。
+   * 実評価はバックエンド導入後に付与する想定。
+   */
+  rating?: SpotRating;
 };

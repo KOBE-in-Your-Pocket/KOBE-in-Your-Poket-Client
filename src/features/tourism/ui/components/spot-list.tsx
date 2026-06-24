@@ -39,14 +39,16 @@ function SpotListItem({ spot }: { spot: SpotWithDistance }) {
       <View style={styles.content}>
         <View style={styles.metaRow}>
           <ThemedText style={styles.category}>{spot.category.label}</ThemedText>
-          <View style={styles.ratingRow}>
-            <SymbolView
-              tintColor={RATING_STAR_COLOR}
-              name={{ ios: 'star.fill', android: 'star', web: 'star' }}
-              size={14}
-            />
-            <ThemedText type="smallBold">{spot.rating.value.toFixed(1)}</ThemedText>
-          </View>
+          {spot.rating ? (
+            <View style={styles.ratingRow}>
+              <SymbolView
+                tintColor={RATING_STAR_COLOR}
+                name={{ ios: 'star.fill', android: 'star', web: 'star' }}
+                size={14}
+              />
+              <ThemedText type="smallBold">{spot.rating.value.toFixed(1)}</ThemedText>
+            </View>
+          ) : null}
         </View>
 
         <ThemedText type="smallBold" style={styles.name}>

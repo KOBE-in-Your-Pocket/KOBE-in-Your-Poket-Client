@@ -57,14 +57,16 @@ export function SpotCard({ spot, distanceKm, onClose, onDetail, onNavigate }: Sp
             <ThemedText style={styles.name} numberOfLines={1}>
               {spot.name}
             </ThemedText>
-            <View style={styles.ratingRow}>
-              <SymbolView
-                tintColor={RATING_STAR_COLOR}
-                name={{ ios: 'star.fill', android: 'star', web: 'star' }}
-                size={15}
-              />
-              <ThemedText style={styles.ratingText}>{spot.rating.value.toFixed(1)}</ThemedText>
-            </View>
+            {spot.rating ? (
+              <View style={styles.ratingRow}>
+                <SymbolView
+                  tintColor={RATING_STAR_COLOR}
+                  name={{ ios: 'star.fill', android: 'star', web: 'star' }}
+                  size={15}
+                />
+                <ThemedText style={styles.ratingText}>{spot.rating.value.toFixed(1)}</ThemedText>
+              </View>
+            ) : null}
           </View>
         </View>
       </View>
