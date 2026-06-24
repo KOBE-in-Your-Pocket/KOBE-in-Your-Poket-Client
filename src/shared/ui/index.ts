@@ -5,8 +5,10 @@ export { ExternalLink } from './components/external-link';
 export {
   LocationPermissionNotice,
   type LocationPermissionNoticeProps,
-} from './components/location-permission-notice';
+  LocationServicesModal,
+  type LocationServicesModalProps,
+} from './components/location';
+export { WebBadge } from './components/web-badge';
 export { Map, KOBE_INITIAL_REGION, type MapProps, type MapCoordinate, type MapMarker } from './map';
 export { ThemedText, type ThemedTextProps } from './themed/themed-text';
 export { ThemedView, type ThemedViewProps } from './themed/themed-view';
-export { WebBadge } from './components/web-badge';

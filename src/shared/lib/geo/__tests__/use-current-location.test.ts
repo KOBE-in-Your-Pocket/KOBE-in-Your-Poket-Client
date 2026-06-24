@@ -25,6 +25,9 @@ const mockedRequestPermissions = Location.requestForegroundPermissionsAsync as j
 const mockedGetCurrentPosition = Location.getCurrentPositionAsync as jest.MockedFunction<
   typeof Location.getCurrentPositionAsync
 >;
+const mockedHasServicesEnabled = Location.hasServicesEnabledAsync as jest.MockedFunction<
+  typeof Location.hasServicesEnabledAsync
+>;
 
 const sampleCoords: Location.LocationObjectCoords = {
   latitude: 34.69,
@@ -40,6 +43,7 @@ describe('useCurrentLocation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockedShouldUseDevDefaultLocation.mockReturnValue(false);
+    mockedHasServicesEnabled.mockResolvedValue(true);
   });
 
   it('returns coords when permission is granted', async () => {
@@ -62,7 +66,30 @@ describe('useCurrentLocation', () => {
     expect(result.current.coords).toEqual(sampleCoords);
     expect(result.current.error).toBeNull();
     expect(result.current.permissionDenied).toBe(false);
+    expect(result.current.servicesDisabled).toBe(false);
     expect(mockedGetCurrentPosition).toHaveBeenCalledTimes(1);
+  });
+
+  it('flags servicesDisabled before requesting permission when services are off', async () => {
+    // iOS ではサービスのグローバルオフが権限拒否として返ることがあるため、
+    // 権限より先にサービス状態を確認し、権限要求には進まないことを検証する。
+    mockedHasServicesEnabled.mockResolvedValue(false);
+    mockedRequestPermissions.mockResolvedValue({
+      status: 'denied',
+    } as Awaited<ReturnType<typeof Location.requestForegroundPermissionsAsync>>);
+
+    const { result } = renderHook(() => useCurrentLocation());
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    expect(result.current.coords).toBeNull();
+    expect(result.current.servicesDisabled).toBe(true);
+    expect(result.current.permissionDenied).toBe(false);
+    expect(result.current.error).toBeInstanceOf(Error);
+    expect(mockedRequestPermissions).not.toHaveBeenCalled();
+    expect(mockedGetCurrentPosition).not.toHaveBeenCalled();
   });
 
   it('flags permissionDenied and sets an error when permission is denied', async () => {

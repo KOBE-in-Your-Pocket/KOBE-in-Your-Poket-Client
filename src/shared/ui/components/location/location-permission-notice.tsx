@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 
 import { Spacing } from '@/shared/config';
-import { ThemedText } from '../themed/themed-text';
-import { ThemedView } from '../themed/themed-view';
+import { ThemedText } from '../../themed/themed-text';
+import { ThemedView } from '../../themed/themed-view';
 
 export type LocationPermissionNoticeProps = {
   style?: StyleProp<ViewStyle>;
