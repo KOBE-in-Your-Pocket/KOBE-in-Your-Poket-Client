@@ -20,5 +20,12 @@
       "loadError": "Could not load spots.",
       "routeButton": "Route"
     }
+  },
+  "map": {
+    "spotCard": {
+      "detail": "Spot Detail",
+      "navigate": "Directions",
+      "close": "Close"
+    }
   }
 }

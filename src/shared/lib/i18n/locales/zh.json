@@ -20,5 +20,12 @@
       "loadError": "无法加载景点。",
       "routeButton": "路线"
     }
+  },
+  "map": {
+    "spotCard": {
+      "detail": "查看详情",
+      "navigate": "路线导航",
+      "close": "关闭"
+    }
   }
 }

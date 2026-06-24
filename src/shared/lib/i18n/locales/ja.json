@@ -20,5 +20,12 @@
       "loadError": "スポットを読み込めませんでした。",
       "routeButton": "経路"
     }
+  },
+  "map": {
+    "spotCard": {
+      "detail": "詳細を見る",
+      "navigate": "経路案内",
+      "close": "閉じる"
+    }
   }
 }
