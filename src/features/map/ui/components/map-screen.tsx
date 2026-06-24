@@ -1,12 +1,12 @@
 import { useLocalSearchParams } from 'expo-router';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Platform } from 'react-native';
 
 import type { Spot } from '@/features/tourism';
 import { useSpots } from '@/features/tourism';
 import { openDirections } from '@/shared/lib/directions';
 import { getDistanceKm, useCurrentLocation } from '@/shared/lib/geo';
-import { Map, ThemedView } from '@/shared/ui';
+import { LocationServicesModal, Map, ThemedView } from '@/shared/ui';
 import type { MapMarker } from '@/shared/ui';
 
 import { useRoute } from '../../application/use-route';
@@ -17,11 +17,31 @@ import { SpotCard } from './spot-card';
 const EXTERNAL_MAP_APP_NAME = Platform.OS === 'ios' ? 'Apple マップ' : 'Google マップ';
 
 export function MapScreen() {
-  const { coords } = useCurrentLocation();
+  const { coords, servicesDisabled, permissionDenied } = useCurrentLocation();
   const { data: spots } = useSpots();
   const { spotId } = useLocalSearchParams<{ spotId?: string }>();
   const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
   const [appliedSpotId, setAppliedSpotId] = useState<string | undefined>(undefined);
+  const [showServicesModal, setShowServicesModal] = useState(false);
+
+  // 一度でも現在地が取れたあとに、位置情報が使えなくなった瞬間だけモーダルを開く。
+  // iOS ではサービスのグローバルオフが権限拒否として返ることもあるため、
+  // servicesDisabled / permissionDenied のどちらでもオフとして扱う。
+  // オフの間は coords が null になり、現在地ピンは地図上から消える。
+  const wasLocationAvailable = useRef(false);
+  useEffect(() => {
+    if (coords) {
+      wasLocationAvailable.current = true;
+      return;
+    }
+    if ((servicesDisabled || permissionDenied) && wasLocationAvailable.current) {
+      setShowServicesModal(true);
+    }
+  }, [coords, servicesDisabled, permissionDenied]);
+
+  const handleCloseServicesModal = useCallback(() => {
+    setShowServicesModal(false);
+  }, []);
 
   const spotMarkers = useMemo<MapMarker[]>(
     () =>
@@ -105,6 +125,8 @@ export function MapScreen() {
           onNavigate={handleStartNavigation}
         />
       ) : null}
+
+      <LocationServicesModal visible={showServicesModal} onClose={handleCloseServicesModal} />
     </ThemedView>
   );
 }

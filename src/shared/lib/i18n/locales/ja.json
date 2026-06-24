@@ -27,5 +27,12 @@
       "navigate": "経路案内",
       "close": "閉じる"
     }
+  },
+  "location": {
+    "permissionDeniedNotice": "位置情報が許可されていないため、現在地を表示できません。",
+    "servicesDisabledTitle": "位置情報がオフになりました",
+    "servicesDisabledMessage": "現在地を地図に表示するには、端末の設定で位置情報をオンにしてください。",
+    "openSettings": "設定を開く",
+    "close": "閉じる"
   }
 }

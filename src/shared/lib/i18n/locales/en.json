@@ -27,5 +27,12 @@
       "navigate": "Directions",
       "close": "Close"
     }
+  },
+  "location": {
+    "permissionDeniedNotice": "Location access is off, so your current location can't be shown.",
+    "servicesDisabledTitle": "Location Services Turned Off",
+    "servicesDisabledMessage": "To show your location on the map, turn on Location Services in your device settings.",
+    "openSettings": "Open Settings",
+    "close": "Close"
   }
 }
