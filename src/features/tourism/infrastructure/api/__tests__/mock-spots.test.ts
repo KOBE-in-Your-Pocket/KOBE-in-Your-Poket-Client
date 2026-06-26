@@ -1,3 +1,5 @@
+import { SUPPORTED_LANGUAGES } from '@/shared/lib/i18n';
+
 import { fetchSpotById, fetchSpots } from '../mock-spots';
 
 describe('fetchSpots', () => {
@@ -65,5 +67,34 @@ describe('fetchSpotById', () => {
     const spot = await fetchSpotById('does-not-exist', 'ja');
 
     expect(spot).toBeNull();
+  });
+
+  it('一覧の各スポットと詳細取得の内容が一致する', async () => {
+    const spots = await fetchSpots('ja');
+
+    for (const listSpot of spots) {
+      const detail = await fetchSpotById(listSpot.id, 'ja');
+      expect(detail).toEqual(listSpot);
+    }
+  });
+
+  it('全対応言語で詳細を取得できる', async () => {
+    for (const language of SUPPORTED_LANGUAGES) {
+      const detail = await fetchSpotById('kobe-port-tower', language);
+
+      expect(detail?.id).toBe('kobe-port-tower');
+      expect(detail?.name).toBeTruthy();
+      expect(detail?.description).toBeTruthy();
+      expect(detail?.address).toBeTruthy();
+    }
+  });
+
+  it('返却オブジェクトは複製で、変更しても次回取得に影響しない', async () => {
+    const first = await fetchSpotById('kobe-port-tower', 'ja');
+    if (!first) throw new Error('spot not found');
+    first.name = 'mutated';
+
+    const second = await fetchSpotById('kobe-port-tower', 'ja');
+    expect(second?.name).toBe('神戸ポートタワー');
   });
 });
