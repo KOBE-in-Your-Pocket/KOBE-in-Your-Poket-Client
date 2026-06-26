@@ -32,6 +32,12 @@
       "subtitle": "附近景点",
       "loadError": "无法加载景点。",
       "routeButton": "路线"
+    },
+    "spotDetail": {
+      "back": "返回",
+      "reviews": "评论",
+      "noReviews": "暂无评论。",
+      "loadError": "无法加载景点详情。"
     }
   },
   "map": {

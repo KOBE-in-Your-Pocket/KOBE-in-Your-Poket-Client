@@ -32,6 +32,12 @@
       "subtitle": "近くのスポット",
       "loadError": "スポットを読み込めませんでした。",
       "routeButton": "経路"
+    },
+    "spotDetail": {
+      "back": "戻る",
+      "reviews": "レビュー",
+      "noReviews": "まだレビューはありません。",
+      "loadError": "スポットの詳細を読み込めませんでした。"
     }
   },
   "map": {
