@@ -4,11 +4,24 @@
     "appName": "KOBE in Your Pocket"
   },
   "tabs": {
+    "home": "首页",
     "map": "地图",
     "tourism": "观光地",
     "manner": "礼仪",
     "evacuation": "疏散",
     "settings": "设置"
+  },
+  "home": {
+    "title": "首页",
+    "subtitle": "KOBE in Your Pocket",
+    "placeholderNote": "首页正在建设中，内容即将添加。",
+    "shortcutsTitle": "功能入口",
+    "shortcuts": {
+      "tourism": "查找景点",
+      "map": "查看地图",
+      "manners": "查看礼仪",
+      "settings": "设置"
+    }
   },
   "settings": {
     "language": "语言"

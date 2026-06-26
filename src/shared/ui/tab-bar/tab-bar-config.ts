@@ -21,6 +21,12 @@ export type TabDefinition = {
 
 export const TAB_DEFS = [
   {
+    name: 'home',
+    labelKey: 'tabs.home',
+    href: '/(tabs)/home',
+    symbol: { ios: 'house', android: 'home', web: 'home' },
+  },
+  {
     name: 'map',
     labelKey: 'tabs.map',
     href: '/(tabs)/map',
