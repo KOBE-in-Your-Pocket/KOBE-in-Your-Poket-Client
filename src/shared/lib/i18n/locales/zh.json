@@ -41,6 +41,11 @@
       "locationLabel": "位置信息",
       "notFound": "未找到景点。",
       "loadError": "无法加载景点详情。"
+    },
+    "reviewList": {
+      "heading": "评价",
+      "loadError": "无法加载评价。",
+      "empty": "暂无评价。"
     }
   },
   "map": {

@@ -5,5 +5,6 @@ export type { Spot, SpotCoordinates, SpotGenre } from './domain/spot';
 export type { Review } from './domain/review';
 export { SpotDetailScreen } from './ui/components/spot-detail-screen';
 export { SpotDetail } from './ui/components/spot-detail';
+export { ReviewList } from './ui/components/review-list';
 export { SpotList } from './ui/components/spot-list';
 export { TourismScreen } from './ui/components/tourism-screen';
