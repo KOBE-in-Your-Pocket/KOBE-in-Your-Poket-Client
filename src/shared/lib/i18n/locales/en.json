@@ -32,6 +32,12 @@
       "subtitle": "Nearby spots",
       "loadError": "Could not load spots.",
       "routeButton": "Route"
+    },
+    "spotDetail": {
+      "back": "Back",
+      "reviews": "Reviews",
+      "noReviews": "No reviews yet.",
+      "loadError": "Could not load spot details."
     }
   },
   "map": {
