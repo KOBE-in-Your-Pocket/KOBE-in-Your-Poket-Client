@@ -4,11 +4,24 @@
     "appName": "KOBE in Your Pocket"
   },
   "tabs": {
+    "home": "Home",
     "map": "Map",
     "tourism": "Spots",
     "manner": "Manners",
     "evacuation": "Evacuation",
     "settings": "Settings"
+  },
+  "home": {
+    "title": "Home",
+    "subtitle": "KOBE in Your Pocket",
+    "placeholderNote": "The home screen is under construction. Content will be added soon.",
+    "shortcutsTitle": "Explore features",
+    "shortcuts": {
+      "tourism": "Find spots",
+      "map": "Open the map",
+      "manners": "Check manners",
+      "settings": "Settings"
+    }
   },
   "settings": {
     "language": "Language"

@@ -4,11 +4,24 @@
     "appName": "KOBE in Your Pocket"
   },
   "tabs": {
+    "home": "ホーム",
     "map": "地図",
     "tourism": "観光地",
     "manner": "マナー",
     "evacuation": "避難",
     "settings": "設定"
+  },
+  "home": {
+    "title": "ホーム",
+    "subtitle": "KOBE in Your Pocket",
+    "placeholderNote": "ホーム画面は準備中です。掲載内容は今後追加されます。",
+    "shortcutsTitle": "各機能へ",
+    "shortcuts": {
+      "tourism": "観光スポットを探す",
+      "map": "地図を見る",
+      "manners": "マナーを確認する",
+      "settings": "設定"
+    }
   },
   "settings": {
     "language": "言語"
