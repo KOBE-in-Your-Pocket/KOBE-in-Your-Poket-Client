@@ -3,7 +3,7 @@ import { SymbolView } from 'expo-symbols';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
 
-import { useSpot } from '../../application/use-spot';
+import { useSpotDetail } from '../../application/use-spot-detail';
 
 import { RATING_STAR_COLOR, styles } from '../../ui/styles/spot-detail.styles';
 
@@ -87,12 +87,12 @@ function SpotDetailContent({ spot }: { spot: Spot }) {
 /**
  * 観光スポットの詳細を表示するコンポーネント。
  *
- * application 層の `useSpot()` でデータを取得し、写真・名称・説明・住所・
+ * application 層の `useSpotDetail()` でデータを取得し、写真・名称・説明・住所・
  * 位置情報を表示する。
  */
 export function SpotDetail({ spotId }: { spotId: string }) {
   const { t } = useTranslation();
-  const { data: spot, isPending, isError } = useSpot(spotId);
+  const { data: spot, isPending, isError } = useSpotDetail(spotId);
 
   if (isPending) {
     return (
