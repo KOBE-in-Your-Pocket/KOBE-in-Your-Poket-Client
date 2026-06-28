@@ -1,4 +1,3 @@
-export { useSpot } from './application/use-spot';
 export { useSpots, SPOTS_QUERY_KEY } from './application/use-spots';
 export { useSpotDetail } from './application/use-spot-detail';
 export { useSpotReviews, SPOT_REVIEWS_QUERY_KEY } from './application/use-spot-reviews';
