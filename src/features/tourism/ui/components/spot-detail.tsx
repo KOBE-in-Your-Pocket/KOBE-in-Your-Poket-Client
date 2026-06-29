@@ -9,6 +9,8 @@ import { RATING_STAR_COLOR, styles } from '../../ui/styles/spot-detail.styles';
 
 import type { Spot } from '../../domain/spot';
 
+import { ReviewList } from './review-list';
+
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
@@ -79,6 +81,8 @@ function SpotDetailContent({ spot }: { spot: Spot }) {
             {formatCoordinates(spot)}
           </ThemedText>
         </View>
+
+        <ReviewList spotId={spot.id} />
       </View>
     </ScrollView>
   );
