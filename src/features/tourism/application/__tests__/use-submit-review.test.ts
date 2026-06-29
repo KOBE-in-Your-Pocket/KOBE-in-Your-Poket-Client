@@ -24,7 +24,7 @@ describe('useSubmitReview', () => {
     expect(list).toHaveLength(1);
     expect(list[0]).toMatchObject({
       rating: { value: 4 },
-      comment: 'よかった',
+      comment: '景色がきれいで素晴らしかったです！また行きたいです。',
       language: 'ja',
     });
     expect(list[0].id).toBeTruthy();

@@ -17,7 +17,6 @@ export function mergeReviews(seed: Review[], submitted: Review[]): Review[] {
   return [...seed, ...submitted].sort((a, b) => b.postedAt.localeCompare(a.postedAt));
 }
 
-/** seed（mock fetch）とユーザー投稿（store）を結合した、指定スポットのレビュー一覧。 */
 export function useSpotReviews(spotId: string | null | undefined) {
   const { i18n } = useTranslation();
   const language = resolveLanguage(i18n.language);
