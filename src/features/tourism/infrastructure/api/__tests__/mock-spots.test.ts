@@ -1,4 +1,4 @@
-import { fetchSpots } from '../mock-spots';
+import { fetchSpotById, fetchSpots } from '../mock-spots';
 
 describe('fetchSpots', () => {
   it('3〜5件の観光スポットを返す', async () => {
@@ -17,6 +17,7 @@ describe('fetchSpots', () => {
       expect(spot.genre).toBeTruthy();
       expect(spot.category.label).toBeTruthy();
       expect(spot.description).toBeTruthy();
+      expect(spot.address).toBeTruthy();
       expect(spot.media.imageUrl).toMatch(/^https?:\/\//);
       expect(spot.coordinates.latitude).toBeDefined();
       expect(spot.coordinates.longitude).toBeDefined();
@@ -42,5 +43,27 @@ describe('fetchSpots', () => {
 
     expect(jaSpots.find((spot) => spot.id === 'kobe-port-tower')?.name).toBe('神戸ポートタワー');
     expect(enSpots.find((spot) => spot.id === 'kobe-port-tower')?.name).toBe('Kobe Port Tower');
+  });
+});
+
+describe('fetchSpotById', () => {
+  it('指定 ID のスポットを返す', async () => {
+    const spot = await fetchSpotById('kobe-port-tower', 'ja');
+
+    expect(spot?.id).toBe('kobe-port-tower');
+    expect(spot?.name).toBe('神戸ポートタワー');
+    expect(spot?.address).toBeTruthy();
+  });
+
+  it('指定した言語の文言を返す', async () => {
+    const spot = await fetchSpotById('kobe-port-tower', 'en');
+
+    expect(spot?.name).toBe('Kobe Port Tower');
+  });
+
+  it('存在しない ID では null を返す', async () => {
+    const spot = await fetchSpotById('does-not-exist', 'ja');
+
+    expect(spot).toBeNull();
   });
 });

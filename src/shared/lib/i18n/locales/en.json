@@ -37,6 +37,9 @@
       "back": "Back",
       "reviews": "Reviews",
       "noReviews": "No reviews yet.",
+      "addressLabel": "Address",
+      "locationLabel": "Location",
+      "notFound": "Spot not found.",
       "loadError": "Could not load spot details."
     }
   },
