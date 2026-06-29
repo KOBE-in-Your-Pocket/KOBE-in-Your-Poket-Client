@@ -117,6 +117,7 @@ function buildReview(base: MockReviewBase, language: SupportedLanguage): Review 
   const localized = resolveLocalization(language, base.id);
 
   return {
+    id: base.id,
     rating: { value: base.rating },
     comment: localized.comment,
     author: {
@@ -124,6 +125,7 @@ function buildReview(base: MockReviewBase, language: SupportedLanguage): Review 
       iconUrl: base.authorIconUrl,
     },
     postedAt: base.postedAt,
+    language,
   };
 }
 
