@@ -6,6 +6,7 @@ export { useSpotReviews, SPOT_REVIEWS_QUERY_KEY } from './application/use-spot-r
 export { useFilteredSpots } from './application/use-filtered-spots';
 export { useGenreFilterStore } from './store/use-genre-filter-store';
 export type { SelectedGenre } from './store/use-genre-filter-store';
+export { GenreFilter } from './ui/components/genre-filter';
 export { SpotDetailScreen } from './ui/components/spot-detail-screen';
 export { SpotDetail } from './ui/components/spot-detail';
 export { ReviewList } from './ui/components/review-list';

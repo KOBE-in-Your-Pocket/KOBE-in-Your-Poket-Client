@@ -42,6 +42,14 @@
       "heading": "评价",
       "loadError": "无法加载评价。",
       "empty": "暂无评价。"
+    },
+    "genreFilter": {
+      "all": "全部",
+      "landmark": "地标",
+      "nature": "自然",
+      "history": "历史",
+      "gourmet": "美食",
+      "onsen": "温泉"
     }
   },
   "map": {

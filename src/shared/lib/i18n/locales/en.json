@@ -42,6 +42,14 @@
       "heading": "Reviews",
       "loadError": "Could not load reviews.",
       "empty": "No reviews yet."
+    },
+    "genreFilter": {
+      "all": "All",
+      "landmark": "Landmark",
+      "nature": "Nature",
+      "history": "History",
+      "gourmet": "Gourmet",
+      "onsen": "Hot Spring"
     }
   },
   "map": {
