@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateReview } from '../infrastructure/api/mock-reviews';
 import type { UpdateReviewInput } from '../domain/review';
 import { REVIEWS_QUERY_KEY } from './use-reviews';
+import { SPOT_REVIEWS_QUERY_KEY } from './use-spot-reviews';
 import { SPOTS_QUERY_KEY } from './use-spots';
 
 type UpdateReviewVariables = {
@@ -23,6 +24,7 @@ export function useUpdateReview(spotId: string) {
       updateReview(spotId, reviewId, input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [...REVIEWS_QUERY_KEY, spotId] });
+      queryClient.invalidateQueries({ queryKey: [...SPOT_REVIEWS_QUERY_KEY, spotId] });
       queryClient.invalidateQueries({ queryKey: SPOTS_QUERY_KEY });
     },
   });

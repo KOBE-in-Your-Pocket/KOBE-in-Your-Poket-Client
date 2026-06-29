@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postReview } from '../infrastructure/api/mock-reviews';
 import type { CreateReviewInput } from '../domain/review';
 import { REVIEWS_QUERY_KEY } from './use-reviews';
+import { SPOT_REVIEWS_QUERY_KEY } from './use-spot-reviews';
 import { SPOTS_QUERY_KEY } from './use-spots';
 
 /**
@@ -18,6 +19,7 @@ export function usePostReview(spotId: string) {
     mutationFn: (input: CreateReviewInput) => postReview(spotId, input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [...REVIEWS_QUERY_KEY, spotId] });
+      queryClient.invalidateQueries({ queryKey: [...SPOT_REVIEWS_QUERY_KEY, spotId] });
       queryClient.invalidateQueries({ queryKey: SPOTS_QUERY_KEY });
     },
   });
