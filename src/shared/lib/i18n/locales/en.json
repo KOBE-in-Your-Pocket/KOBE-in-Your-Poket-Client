@@ -58,6 +58,16 @@
       "detail": "Spot Detail",
       "navigate": "Directions",
       "close": "Close"
+    },
+    "openDirections": {
+      "confirmTitle": "Start Navigation",
+      "confirmMessage": "You will be redirected to {{mapAppName}} to start turn-by-turn directions.",
+      "cancel": "Cancel",
+      "confirm": "Open",
+      "errorTitle": "Error",
+      "errorMessage": "Could not open the maps app.",
+      "appleMaps": "Apple Maps",
+      "googleMaps": "Google Maps"
     }
   },
   "location": {

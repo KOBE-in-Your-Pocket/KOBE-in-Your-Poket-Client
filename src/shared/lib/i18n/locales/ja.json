@@ -58,6 +58,16 @@
       "detail": "詳細を見る",
       "navigate": "経路案内",
       "close": "閉じる"
+    },
+    "openDirections": {
+      "confirmTitle": "ナビを開始",
+      "confirmMessage": "※ {{mapAppName}}に移動して経路案内を開始します。",
+      "cancel": "キャンセル",
+      "confirm": "移動する",
+      "errorTitle": "エラー",
+      "errorMessage": "地図アプリを開けませんでした。",
+      "appleMaps": "Apple マップ",
+      "googleMaps": "Google マップ"
     }
   },
   "location": {

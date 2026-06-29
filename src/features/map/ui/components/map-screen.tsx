@@ -1,10 +1,10 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, Platform } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import type { Spot } from '@/features/tourism';
 import { useSpots } from '@/features/tourism';
-import { openDirections } from '@/shared/lib/directions';
+import { confirmOpenDirections } from '@/shared/lib/directions';
 import { getDistanceKm, useCurrentLocation } from '@/shared/lib/geo';
 import { LocationServicesModal, Map, ThemedView } from '@/shared/ui';
 import type { MapMarker } from '@/shared/ui';
@@ -13,10 +13,8 @@ import { useRoute } from '../../application/use-route';
 import { styles } from '../styles/map-screen.styles';
 import { SpotCard } from './spot-card';
 
-/** ナビ開始時に遷移する外部地図アプリ名（OS で出し分け）。 */
-const EXTERNAL_MAP_APP_NAME = Platform.OS === 'ios' ? 'Apple マップ' : 'Google マップ';
-
 export function MapScreen() {
+  const { t } = useTranslation();
   const { coords, servicesDisabled, permissionDenied } = useCurrentLocation();
   const { data: spots } = useSpots();
   const { spotId } = useLocalSearchParams<{ spotId?: string }>();
@@ -93,20 +91,8 @@ export function MapScreen() {
 
   const handleStartNavigation = useCallback(() => {
     if (!selectedSpot) return;
-    Alert.alert('ナビを開始', `※ ${EXTERNAL_MAP_APP_NAME}に移動して経路案内を開始します。`, [
-      { text: 'キャンセル', style: 'cancel' },
-      {
-        text: '移動する',
-        onPress: () => {
-          openDirections(selectedSpot.coordinates, { origin: coords, mode: 'walking' }).catch(
-            () => {
-              Alert.alert('エラー', '地図アプリを開けませんでした。');
-            },
-          );
-        },
-      },
-    ]);
-  }, [selectedSpot, coords]);
+    confirmOpenDirections(t, selectedSpot.coordinates, { origin: coords });
+  }, [selectedSpot, coords, t]);
 
   return (
     <ThemedView style={styles.container}>
