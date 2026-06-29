@@ -12,15 +12,11 @@
     "settings": "设置"
   },
   "home": {
-    "title": "首页",
-    "subtitle": "KOBE in Your Pocket",
-    "placeholderNote": "首页正在建设中，内容即将添加。",
-    "shortcutsTitle": "功能入口",
     "shortcuts": {
-      "tourism": "查找景点",
-      "map": "查看地图",
-      "manners": "查看礼仪",
-      "settings": "设置"
+      "tourism": "观光景点",
+      "map": "地图",
+      "manners": "礼仪",
+      "evacuation": "疏散场所"
     }
   },
   "settings": {
