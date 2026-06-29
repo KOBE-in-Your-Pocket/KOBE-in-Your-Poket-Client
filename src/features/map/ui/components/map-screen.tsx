@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Platform } from 'react-native';
 
@@ -86,8 +86,10 @@ export function MapScreen() {
     setSelectedSpot(null);
   }, []);
 
-  // 詳細ページは未実装のため現時点では未配線。実装後にスポット詳細画面へ遷移させる。
-  const handleOpenDetail = useCallback(() => {}, []);
+  const handleOpenDetail = useCallback(() => {
+    if (!selectedSpot) return;
+    router.push({ pathname: '/tourism/[id]', params: { id: selectedSpot.id } });
+  }, [selectedSpot]);
 
   const handleStartNavigation = useCallback(() => {
     if (!selectedSpot) return;
