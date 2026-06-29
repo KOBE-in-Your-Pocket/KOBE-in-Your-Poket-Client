@@ -92,7 +92,7 @@ export function ReviewList({ spotId }: { spotId: string }) {
       ) : (
         <View style={styles.list}>
           {reviews.map((review) => (
-            <ReviewItem key={`${review.author.name}-${review.postedAt}`} review={review} />
+            <ReviewItem key={review.id} review={review} />
           ))}
         </View>
       )}
