@@ -37,7 +37,7 @@
       "locationLabel": "位置情報",
       "notFound": "スポットが見つかりませんでした。",
       "loadError": "スポットの詳細を読み込めませんでした。",
-      "openDirectionsButton": "経路を開く"
+      "openDirectionsButton": "ナビを開始"
     },
     "reviewList": {
       "heading": "レビュー",

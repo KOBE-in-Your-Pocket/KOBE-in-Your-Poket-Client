@@ -37,7 +37,7 @@
       "locationLabel": "Location",
       "notFound": "Spot not found.",
       "loadError": "Could not load spot details.",
-      "openDirectionsButton": "Open directions"
+      "openDirectionsButton": "Start navigation"
     },
     "reviewList": {
       "heading": "Reviews",
