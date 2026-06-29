@@ -1,4 +1,6 @@
 export { useSpots, SPOTS_QUERY_KEY } from './application/use-spots';
+export { useGenreFilterStore } from './store/use-genre-filter-store';
+export type { SelectedGenre } from './store/use-genre-filter-store';
 export { useSpotDetail } from './application/use-spot-detail';
 export { useSpotReviews, SPOT_REVIEWS_QUERY_KEY } from './application/use-spot-reviews';
 export type { Spot, SpotCoordinates, SpotGenre } from './domain/spot';
