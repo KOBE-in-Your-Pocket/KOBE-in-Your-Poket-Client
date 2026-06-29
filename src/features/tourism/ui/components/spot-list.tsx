@@ -12,8 +12,9 @@ import type { Spot } from '../../domain/spot';
 
 import { RATING_STAR_COLOR, styles } from '../../ui/styles/spot-list.styles';
 
-import { Spacing } from '@/shared/config';
 import { GenreFilter } from './genre-filter';
+
+import { Spacing } from '@/shared/config';
 import { formatDistanceKm, getDistanceKm, useCurrentLocation } from '@/shared/lib/geo';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
@@ -128,7 +129,7 @@ function ListHeader() {
 /**
  * 観光スポット一覧を表示するコンポーネント。
  *
- * application 層の `useSpots()` 経由でデータを取得し、各スポットの
+ * application 層の `useFilteredSpots()` 経由でデータを取得し、各スポットの
  * 画像・距離・評価・営業時間を含むカード一覧を表示する。
  */
 export function SpotList() {
