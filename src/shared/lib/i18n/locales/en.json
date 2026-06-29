@@ -44,6 +44,13 @@
       "loadError": "Could not load reviews.",
       "empty": "No reviews yet."
     },
+    "reviewForm": {
+      "placeholder": "Write a review...",
+      "commentPlaceholder": "Enter your comment",
+      "submit": "Post",
+      "cancel": "Cancel",
+      "starLabel": "{{count}} stars"
+    },
     "genreFilter": {
       "all": "All",
       "landmark": "Landmark",

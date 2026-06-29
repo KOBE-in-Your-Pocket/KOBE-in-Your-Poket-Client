@@ -44,6 +44,13 @@
       "loadError": "无法加载评价。",
       "empty": "暂无评价。"
     },
+    "reviewForm": {
+      "placeholder": "写评价...",
+      "commentPlaceholder": "请输入评论",
+      "submit": "发布",
+      "cancel": "取消",
+      "starLabel": "{{count}}星"
+    },
     "genreFilter": {
       "all": "全部",
       "landmark": "地标",

@@ -44,6 +44,13 @@
       "loadError": "レビューを読み込めませんでした。",
       "empty": "まだレビューはありません。"
     },
+    "reviewForm": {
+      "placeholder": "レビューを書く...",
+      "commentPlaceholder": "コメントを入力してください",
+      "submit": "投稿する",
+      "cancel": "キャンセル",
+      "starLabel": "{{count}}星"
+    },
     "genreFilter": {
       "all": "すべて",
       "landmark": "ランドマーク",

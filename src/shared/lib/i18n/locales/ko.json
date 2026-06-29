@@ -44,6 +44,13 @@
       "loadError": "리뷰를 불러올 수 없습니다.",
       "empty": "아직 리뷰가 없습니다."
     },
+    "reviewForm": {
+      "placeholder": "리뷰를 작성하세요...",
+      "commentPlaceholder": "댓글을 입력하세요",
+      "submit": "게시",
+      "cancel": "취소",
+      "starLabel": "별 {{count}}개"
+    },
     "genreFilter": {
       "all": "전체",
       "landmark": "랜드마크",

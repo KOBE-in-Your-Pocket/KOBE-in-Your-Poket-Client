@@ -9,6 +9,8 @@ import { EMPTY_STAR_COLOR, RATING_STAR_COLOR, styles } from '../../ui/styles/rev
 
 import type { Review } from '../../domain/review';
 
+import { ReviewForm } from './review-form';
+
 import { ThemedText, ThemedView } from '@/shared/ui';
 
 const MAX_RATING = 5;
@@ -61,12 +63,6 @@ function ReviewItem({ review }: { review: Review }) {
   );
 }
 
-/**
- * 観光スポットに投稿されたレビュー一覧を表示するコンポーネント。
- *
- * application 層の `useSpotReviews()` でデータを取得し、星評価・コメント本文・
- * 投稿者名・投稿者アイコン・投稿日時を表示する。
- */
 export function ReviewList({ spotId }: { spotId: string }) {
   const { t } = useTranslation();
   const { data: reviews, isPending, isError } = useSpotReviews(spotId);
@@ -76,6 +72,8 @@ export function ReviewList({ spotId }: { spotId: string }) {
       <ThemedText type="smallBold" themeColor="textSecondary">
         {t('tourism.reviewList.heading')}
       </ThemedText>
+
+      <ReviewForm spotId={spotId} />
 
       {isPending ? (
         <View style={styles.centered}>
