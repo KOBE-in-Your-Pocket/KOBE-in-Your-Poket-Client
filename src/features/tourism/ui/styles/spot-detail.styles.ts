@@ -4,10 +4,7 @@ import { Spacing } from '@/shared/config';
 
 export const CATEGORY_COLOR = '#C67B4A';
 export const RATING_STAR_COLOR = '#F5A623';
-/** スポット一覧の「経路」ボタン（アプリ内マップへ遷移）。 */
 export const ROUTE_BUTTON_COLOR = '#208AEF';
-/** 詳細画面の「ナビを開始」ボタン（外部マップ起動）。一覧の経路ボタンと色で区別する。 */
-export const NAV_BUTTON_COLOR = CATEGORY_COLOR;
 
 export const styles = StyleSheet.create({
   container: {
@@ -86,7 +83,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.one,
-    backgroundColor: NAV_BUTTON_COLOR,
+    backgroundColor: ROUTE_BUTTON_COLOR,
     paddingVertical: Spacing.two,
     paddingHorizontal: Spacing.three,
     borderRadius: Spacing.five,
