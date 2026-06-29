@@ -36,7 +36,8 @@
       "addressLabel": "地址",
       "locationLabel": "位置信息",
       "notFound": "未找到景点。",
-      "loadError": "无法加载景点详情。"
+      "loadError": "无法加载景点详情。",
+      "openDirectionsButton": "打开路线"
     },
     "reviewList": {
       "heading": "评价",

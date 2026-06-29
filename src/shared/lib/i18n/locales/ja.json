@@ -36,7 +36,8 @@
       "addressLabel": "住所",
       "locationLabel": "位置情報",
       "notFound": "スポットが見つかりませんでした。",
-      "loadError": "スポットの詳細を読み込めませんでした。"
+      "loadError": "スポットの詳細を読み込めませんでした。",
+      "openDirectionsButton": "経路を開く"
     },
     "reviewList": {
       "heading": "レビュー",

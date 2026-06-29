@@ -36,7 +36,8 @@
       "addressLabel": "Address",
       "locationLabel": "Location",
       "notFound": "Spot not found.",
-      "loadError": "Could not load spot details."
+      "loadError": "Could not load spot details.",
+      "openDirectionsButton": "Open directions"
     },
     "reviewList": {
       "heading": "Reviews",

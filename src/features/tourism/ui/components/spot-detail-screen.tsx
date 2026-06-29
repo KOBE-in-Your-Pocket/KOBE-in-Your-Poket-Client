@@ -1,8 +1,9 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Alert, Platform, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useSpotDetail } from '../../application/use-spot-detail';
@@ -14,8 +15,13 @@ import type { Spot } from '../../domain/spot';
 import { RATING_STAR_COLOR, styles } from '../styles/spot-detail.styles';
 
 import { Spacing } from '@/shared/config';
+import { openDirections } from '@/shared/lib/directions';
+import { useCurrentLocation } from '@/shared/lib/geo';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
+
+/** 経路案内起動時に遷移する外部地図アプリ名（OS で出し分け）。 */
+const EXTERNAL_MAP_APP_NAME = Platform.OS === 'ios' ? 'Apple マップ' : 'Google マップ';
 
 function BackButton({ label }: { label: string }) {
   const insets = useSafeAreaInsets();
@@ -68,7 +74,22 @@ function ReviewCard({ review }: { review: Review }) {
 function SpotDetailContent({ spot }: { spot: Spot }) {
   const theme = useTheme();
   const { t } = useTranslation();
+  const { coords } = useCurrentLocation();
   const { data: reviews, isPending: isReviewsPending } = useSpotReviews(spot.id);
+
+  const handleOpenDirections = useCallback(() => {
+    Alert.alert('ナビを開始', `※ ${EXTERNAL_MAP_APP_NAME}に移動して経路案内を開始します。`, [
+      { text: 'キャンセル', style: 'cancel' },
+      {
+        text: '移動する',
+        onPress: () => {
+          openDirections(spot.coordinates, { origin: coords, mode: 'walking' }).catch(() => {
+            Alert.alert('エラー', '地図アプリを開けませんでした。');
+          });
+        },
+      },
+    ]);
+  }, [spot.coordinates, coords]);
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -113,9 +134,9 @@ function SpotDetailContent({ spot }: { spot: Spot }) {
 
         <Pressable
           style={styles.routeButton}
-          onPress={() => router.push({ pathname: '/map', params: { spotId: spot.id } })}
+          onPress={handleOpenDirections}
           accessibilityRole="button"
-          accessibilityLabel={t('tourism.spotList.routeButton')}
+          accessibilityLabel={t('tourism.spotDetail.openDirectionsButton')}
         >
           <SymbolView
             tintColor="#FFFFFF"
@@ -127,7 +148,7 @@ function SpotDetailContent({ spot }: { spot: Spot }) {
             size={16}
           />
           <ThemedText style={styles.routeButtonText}>
-            {t('tourism.spotList.routeButton')}
+            {t('tourism.spotDetail.openDirectionsButton')}
           </ThemedText>
         </Pressable>
 
