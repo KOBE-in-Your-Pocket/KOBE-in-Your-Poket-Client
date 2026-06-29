@@ -17,7 +17,10 @@ describe('useSubmitReview', () => {
     const { result } = renderHook(() => useSubmitReview('spot-a'));
 
     act(() => {
-      result.current({ rating: { value: 4 }, comment: 'よかった' });
+      result.current({
+        rating: { value: 4 },
+        comment: '景色がきれいで素晴らしかったです！また行きたいです。',
+      });
     });
 
     const list = useReviewStore.getState().submittedReviews['spot-a'];
