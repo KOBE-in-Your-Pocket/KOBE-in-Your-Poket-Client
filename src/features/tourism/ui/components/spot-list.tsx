@@ -6,13 +6,14 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useSpots } from '../../application/use-spots';
+import { useFilteredSpots } from '../../application/use-filtered-spots';
 
 import type { Spot } from '../../domain/spot';
 
 import { RATING_STAR_COLOR, styles } from '../../ui/styles/spot-list.styles';
 
 import { Spacing } from '@/shared/config';
+import { GenreFilter } from './genre-filter';
 import { formatDistanceKm, getDistanceKm, useCurrentLocation } from '@/shared/lib/geo';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
@@ -119,6 +120,7 @@ function ListHeader() {
       <ThemedText type="smallBold" themeColor="textSecondary">
         {t('tourism.spotList.subtitle')}
       </ThemedText>
+      <GenreFilter />
     </View>
   );
 }
@@ -131,7 +133,7 @@ function ListHeader() {
  */
 export function SpotList() {
   const { t } = useTranslation();
-  const { data: spots, isPending, isError } = useSpots();
+  const { data: spots, isPending, isError } = useFilteredSpots();
   const { coords } = useCurrentLocation();
 
   const spotsWithDistance = useMemo((): SpotWithDistance[] | undefined => {
