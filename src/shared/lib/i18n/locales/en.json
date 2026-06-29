@@ -12,15 +12,11 @@
     "settings": "Settings"
   },
   "home": {
-    "title": "Home",
-    "subtitle": "KOBE in Your Pocket",
-    "placeholderNote": "The home screen is under construction. Content will be added soon.",
-    "shortcutsTitle": "Explore features",
     "shortcuts": {
-      "tourism": "Find spots",
-      "map": "Open the map",
-      "manners": "Check manners",
-      "settings": "Settings"
+      "tourism": "Tourist Spots",
+      "map": "Map",
+      "manners": "Manners",
+      "evacuation": "Shelters"
     }
   },
   "settings": {

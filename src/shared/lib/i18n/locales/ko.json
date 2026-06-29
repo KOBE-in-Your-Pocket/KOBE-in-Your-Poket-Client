@@ -12,15 +12,11 @@
     "settings": "설정"
   },
   "home": {
-    "title": "홈",
-    "subtitle": "KOBE in Your Pocket",
-    "placeholderNote": "홈 화면은 준비 중입니다. 콘텐츠가 곧 추가됩니다.",
-    "shortcutsTitle": "기능 바로가기",
     "shortcuts": {
-      "tourism": "관광 스폿 찾기",
-      "map": "지도 보기",
-      "manners": "매너 확인",
-      "settings": "설정"
+      "tourism": "관광 스폿",
+      "map": "지도",
+      "manners": "매너",
+      "evacuation": "대피소"
     }
   },
   "settings": {
