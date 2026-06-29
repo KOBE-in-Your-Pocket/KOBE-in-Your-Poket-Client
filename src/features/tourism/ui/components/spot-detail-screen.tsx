@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,6 +15,8 @@ import type { Spot } from '../../domain/spot';
 import { RATING_STAR_COLOR, styles } from '../styles/spot-detail.styles';
 
 import { Spacing } from '@/shared/config';
+import { confirmOpenDirections } from '@/shared/lib/directions';
+import { useCurrentLocation } from '@/shared/lib/geo';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
@@ -68,7 +71,12 @@ function ReviewCard({ review }: { review: Review }) {
 function SpotDetailContent({ spot }: { spot: Spot }) {
   const theme = useTheme();
   const { t } = useTranslation();
+  const { coords } = useCurrentLocation();
   const { data: reviews, isPending: isReviewsPending } = useSpotReviews(spot.id);
+
+  const handleOpenDirections = useCallback(() => {
+    confirmOpenDirections(t, spot.coordinates, { origin: coords });
+  }, [spot.coordinates, coords, t]);
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -113,9 +121,9 @@ function SpotDetailContent({ spot }: { spot: Spot }) {
 
         <Pressable
           style={styles.routeButton}
-          onPress={() => router.push({ pathname: '/map', params: { spotId: spot.id } })}
+          onPress={handleOpenDirections}
           accessibilityRole="button"
-          accessibilityLabel={t('tourism.spotList.routeButton')}
+          accessibilityLabel={t('tourism.spotDetail.openDirectionsButton')}
         >
           <SymbolView
             tintColor="#FFFFFF"
@@ -127,7 +135,7 @@ function SpotDetailContent({ spot }: { spot: Spot }) {
             size={16}
           />
           <ThemedText style={styles.routeButtonText}>
-            {t('tourism.spotList.routeButton')}
+            {t('tourism.spotDetail.openDirectionsButton')}
           </ThemedText>
         </Pressable>
 

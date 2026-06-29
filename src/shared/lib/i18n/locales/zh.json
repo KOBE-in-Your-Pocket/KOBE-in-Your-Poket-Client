@@ -36,7 +36,8 @@
       "addressLabel": "地址",
       "locationLabel": "位置信息",
       "notFound": "未找到景点。",
-      "loadError": "无法加载景点详情。"
+      "loadError": "无法加载景点详情。",
+      "openDirectionsButton": "开始导航"
     },
     "reviewList": {
       "heading": "评价",
@@ -57,6 +58,16 @@
       "detail": "查看详情",
       "navigate": "路线导航",
       "close": "关闭"
+    },
+    "openDirections": {
+      "confirmTitle": "开始导航",
+      "confirmMessage": "※ 将跳转到{{mapAppName}}开始路线导航。",
+      "cancel": "取消",
+      "confirm": "前往",
+      "errorTitle": "错误",
+      "errorMessage": "无法打开地图应用。",
+      "appleMaps": "Apple 地图",
+      "googleMaps": "Google 地图"
     }
   },
   "location": {

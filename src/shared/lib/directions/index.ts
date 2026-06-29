@@ -1,3 +1,4 @@
+export { confirmOpenDirections } from './confirm-open-directions';
 export {
   buildDirectionsUrl,
   openDirections,
