@@ -48,7 +48,8 @@
       "placeholder": "Write a review...",
       "commentPlaceholder": "Enter your comment",
       "submit": "Post",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "starLabel": "{{count}} stars"
     },
     "genreFilter": {
       "all": "All",

@@ -48,7 +48,8 @@
       "placeholder": "レビューを書く...",
       "commentPlaceholder": "コメントを入力してください",
       "submit": "投稿する",
-      "cancel": "キャンセル"
+      "cancel": "キャンセル",
+      "starLabel": "{{count}}星"
     },
     "genreFilter": {
       "all": "すべて",

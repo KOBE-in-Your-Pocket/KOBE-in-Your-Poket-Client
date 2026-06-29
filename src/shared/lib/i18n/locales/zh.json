@@ -48,7 +48,8 @@
       "placeholder": "写评价...",
       "commentPlaceholder": "请输入评论",
       "submit": "发布",
-      "cancel": "取消"
+      "cancel": "取消",
+      "starLabel": "{{count}}星"
     },
     "genreFilter": {
       "all": "全部",

@@ -14,6 +14,8 @@ import type { Spot } from '../../domain/spot';
 
 import { RATING_STAR_COLOR, styles } from '../styles/spot-detail.styles';
 
+import { ReviewForm } from './review-form';
+
 import { Spacing } from '@/shared/config';
 import { confirmOpenDirections } from '@/shared/lib/directions';
 import { useCurrentLocation } from '@/shared/lib/geo';
@@ -143,6 +145,7 @@ function SpotDetailContent({ spot }: { spot: Spot }) {
           <ThemedText type="smallBold" style={styles.sectionTitle}>
             {t('tourism.spotDetail.reviews')}
           </ThemedText>
+          <ReviewForm spotId={spot.id} />
           {isReviewsPending ? (
             <ActivityIndicator />
           ) : reviews && reviews.length > 0 ? (

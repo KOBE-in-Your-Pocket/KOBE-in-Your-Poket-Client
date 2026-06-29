@@ -15,6 +15,7 @@ import { ThemedText, ThemedView } from '@/shared/ui';
 const MAX_RATING = 5;
 
 function StarInput({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  const { t } = useTranslation();
   return (
     <View style={styles.starsRow}>
       {Array.from({ length: MAX_RATING }, (_, i) => (
@@ -23,7 +24,7 @@ function StarInput({ value, onChange }: { value: number; onChange: (v: number) =
           style={styles.starButton}
           onPress={() => onChange(i + 1)}
           accessibilityRole="button"
-          accessibilityLabel={`${i + 1}星`}
+          accessibilityLabel={t('tourism.reviewForm.starLabel', { count: i + 1 })}
         >
           <SymbolView
             name={{ ios: 'star.fill', android: 'star', web: 'star' }}

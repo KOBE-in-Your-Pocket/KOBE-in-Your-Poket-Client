@@ -48,7 +48,8 @@
       "placeholder": "리뷰를 작성하세요...",
       "commentPlaceholder": "댓글을 입력하세요",
       "submit": "게시",
-      "cancel": "취소"
+      "cancel": "취소",
+      "starLabel": "별 {{count}}개"
     },
     "genreFilter": {
       "all": "전체",
