@@ -1,8 +1,11 @@
 export { useSpots, SPOTS_QUERY_KEY } from './application/use-spots';
 export { useSpotDetail } from './application/use-spot-detail';
 export { useSpotReviews, SPOT_REVIEWS_QUERY_KEY } from './application/use-spot-reviews';
+export { useReviews, REVIEWS_QUERY_KEY } from './application/use-reviews';
+export { usePostReview } from './application/use-post-review';
+export { useUpdateReview } from './application/use-update-review';
 export type { Spot, SpotCoordinates, SpotGenre } from './domain/spot';
-export type { Review } from './domain/review';
+export type { Review, ReviewRating, CreateReviewInput, UpdateReviewInput } from './domain/review';
 export { SpotDetailScreen } from './ui/components/spot-detail-screen';
 export { SpotDetail } from './ui/components/spot-detail';
 export { ReviewList } from './ui/components/review-list';
