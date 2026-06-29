@@ -33,7 +33,15 @@
       "back": "戻る",
       "reviews": "レビュー",
       "noReviews": "まだレビューはありません。",
+      "addressLabel": "住所",
+      "locationLabel": "位置情報",
+      "notFound": "スポットが見つかりませんでした。",
       "loadError": "スポットの詳細を読み込めませんでした。"
+    },
+    "reviewList": {
+      "heading": "レビュー",
+      "loadError": "レビューを読み込めませんでした。",
+      "empty": "まだレビューはありません。"
     }
   },
   "map": {

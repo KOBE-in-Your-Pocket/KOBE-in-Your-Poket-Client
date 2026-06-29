@@ -21,6 +21,7 @@ export type Spot = {
   name: string;
   genre: SpotGenre;
   description: string;
+  address: string;
   coordinates: SpotCoordinates;
   businessHours: string;
   category: SpotCategory;

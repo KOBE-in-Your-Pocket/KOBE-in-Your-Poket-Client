@@ -19,6 +19,9 @@ export const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: Spacing.five,
   },
+  content: {
+    paddingBottom: Spacing.five,
+  },
   hero: {
     position: 'relative',
     height: 260,
@@ -26,6 +29,10 @@ export const styles = StyleSheet.create({
   heroImage: {
     width: '100%',
     height: '100%',
+  },
+  image: {
+    width: '100%',
+    height: 260,
   },
   backButton: {
     position: 'absolute',
@@ -40,6 +47,9 @@ export const styles = StyleSheet.create({
   body: {
     padding: Spacing.three,
     gap: Spacing.three,
+  },
+  header: {
+    gap: Spacing.two,
   },
   metaRow: {
     flexDirection: 'row',
@@ -88,6 +98,14 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     lineHeight: 24,
+  },
+  sectionLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.one,
+  },
+  sectionValue: {
+    lineHeight: 22,
   },
   reviewCard: {
     borderRadius: Spacing.three,

@@ -1,8 +1,12 @@
 export { useSpots, SPOTS_QUERY_KEY } from './application/use-spots';
+export { useGenreFilterStore } from './store/use-genre-filter-store';
+export type { SelectedGenre } from './store/use-genre-filter-store';
 export { useSpotDetail } from './application/use-spot-detail';
 export { useSpotReviews, SPOT_REVIEWS_QUERY_KEY } from './application/use-spot-reviews';
 export type { Spot, SpotCoordinates, SpotGenre } from './domain/spot';
 export type { Review } from './domain/review';
 export { SpotDetailScreen } from './ui/components/spot-detail-screen';
+export { SpotDetail } from './ui/components/spot-detail';
+export { ReviewList } from './ui/components/review-list';
 export { SpotList } from './ui/components/spot-list';
 export { TourismScreen } from './ui/components/tourism-screen';

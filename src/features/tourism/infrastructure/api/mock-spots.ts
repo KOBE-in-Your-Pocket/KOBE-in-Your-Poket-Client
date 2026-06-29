@@ -9,7 +9,10 @@ import {
   type SpotLocalization,
 } from './mock-spot-localizations';
 
-type MockSpotBase = Omit<Spot, 'name' | 'description' | 'businessHours' | 'category'> & {
+type MockSpotBase = Omit<
+  Spot,
+  'name' | 'description' | 'address' | 'businessHours' | 'category'
+> & {
   id: MockSpotId;
 };
 
@@ -111,6 +114,7 @@ function buildSpot(base: MockSpotBase, language: SupportedLanguage): Spot {
     ...base,
     name: localized.name,
     description: localized.description,
+    address: localized.address,
     businessHours: localized.businessHours,
     category: { label: localized.categoryLabel },
     coordinates: { ...base.coordinates },
@@ -140,4 +144,23 @@ export async function fetchSpots(language: SupportedLanguage = FALLBACK_LANGUAGE
   await new Promise<void>((resolve) => setTimeout(resolve, MOCK_LATENCY_MS));
 
   return MOCK_SPOT_BASES.map((base) => cloneSpot(buildSpot(base, language)));
+}
+
+/**
+ * 指定 ID の観光スポットを取得する。該当が無ければ null を返す。
+ *
+ * `fetchSpots` と同様、実 REST API 導入後もこのシグネチャを維持する。
+ */
+export async function fetchSpotById(
+  id: string,
+  language: SupportedLanguage = FALLBACK_LANGUAGE,
+): Promise<Spot | null> {
+  await new Promise<void>((resolve) => setTimeout(resolve, MOCK_LATENCY_MS));
+
+  const base = MOCK_SPOT_BASES.find((spot) => spot.id === id);
+  if (!base) {
+    return null;
+  }
+
+  return cloneSpot(buildSpot(base, language));
 }
