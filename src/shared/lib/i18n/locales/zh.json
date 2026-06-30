@@ -44,6 +44,9 @@
       "loadError": "无法加载评价。",
       "empty": "暂无评价。"
     },
+    "reviewFilter": {
+      "all": "全部"
+    },
     "reviewForm": {
       "placeholder": "写评价...",
       "commentPlaceholder": "请输入评论",

@@ -44,6 +44,9 @@
       "loadError": "レビューを読み込めませんでした。",
       "empty": "まだレビューはありません。"
     },
+    "reviewFilter": {
+      "all": "すべて"
+    },
     "reviewForm": {
       "placeholder": "レビューを書く...",
       "commentPlaceholder": "コメントを入力してください",
