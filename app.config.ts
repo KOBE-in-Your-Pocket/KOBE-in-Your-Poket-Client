@@ -67,6 +67,7 @@ export default (): ExpoConfig => ({
         iosGoogleMapsApiKey: googleMapsApiKey,
       },
     ],
+    'expo-sqlite',
   ],
   experiments: {
     typedRoutes: true,

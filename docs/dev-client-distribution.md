@@ -214,6 +214,17 @@ IOS_TARGET=device pnpm ios
 | `app.config.ts` のプラグイン / 権限 / Maps キー | **必要**（配布担当が EAS Build） |
 | ネイティブ依存の追加・更新                      | **必要**                         |
 
+> **#199 で `expo-sqlite`（ネイティブモジュール）を追加しました。**
+> `expo-sqlite` のネイティブコードと `app.config.ts` の `expo-sqlite` プラグインを反映するため、
+> **配布担当が Dev Client を再ビルドして配り直す必要があります**（上表の「ネイティブ依存の追加」「プラグイン追加」に該当）。
+>
+> - Android: `pnpm dev-client:build:android`
+> - iOS（シミュレータ）: `pnpm dlx eas-cli build -p ios --profile development-ios-sim`
+> - iOS（実機）: `pnpm dlx eas-cli build -p ios --profile development-ios`
+>
+> 各メンバーは新しい Dev Client を入れ直したあと `pnpm install` → `pnpm android` / `pnpm ios` で開発を継続できます。
+> Drizzle ORM 自体は JS ライブラリのため、スキーマ追加やマイグレーション生成（`pnpm db:generate`）だけなら再ビルドは不要です。
+
 ---
 
 ## コマンド一覧
