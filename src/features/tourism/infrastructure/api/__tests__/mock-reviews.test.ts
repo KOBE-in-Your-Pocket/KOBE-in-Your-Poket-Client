@@ -1,11 +1,9 @@
-import { SUPPORTED_LANGUAGES } from '@/shared/lib/i18n';
-
 import { fetchReviews } from '../mock-reviews';
 import { fetchSpots } from '../mock-spots';
 
 describe('fetchReviews', () => {
   it('指定スポットのレビューを返す', async () => {
-    const reviews = await fetchReviews('kobe-port-tower', 'ja');
+    const reviews = await fetchReviews('kobe-port-tower');
 
     expect(reviews.length).toBeGreaterThan(0);
   });
@@ -14,45 +12,30 @@ describe('fetchReviews', () => {
     const spots = await fetchSpots('ja');
 
     for (const spot of spots) {
-      const reviews = await fetchReviews(spot.id, 'ja');
+      const reviews = await fetchReviews(spot.id);
       expect(reviews.length).toBeGreaterThan(0);
     }
   });
 
-  it('レビュー件数は言語に依存しない', async () => {
-    const counts = await Promise.all(
-      SUPPORTED_LANGUAGES.map(async (language) => {
-        const reviews = await fetchReviews('kobe-port-tower', language);
-        return reviews.length;
-      }),
-    );
+  it('各レビューは投稿時の言語で固定されている', async () => {
+    const reviews = await fetchReviews('kobe-port-tower');
 
-    expect(new Set(counts).size).toBe(1);
+    expect(reviews[0]?.language).toBe('ja');
+    expect(reviews[0]?.author.name).toBe('山田 健太');
+    expect(reviews[1]?.language).toBe('en');
+    expect(reviews[1]?.author.name).toBe('Misaki Sato');
   });
 
-  it('全対応言語で文言が欠落しない', async () => {
-    for (const language of SUPPORTED_LANGUAGES) {
-      const reviews = await fetchReviews('kobe-port-tower', language);
+  it('スポットによって異なる言語のレビューが混在する', async () => {
+    const reviews = await fetchReviews('kitano-ijinkan');
 
-      for (const review of reviews) {
-        expect(review.comment).toBeTruthy();
-        expect(review.author.name).toBeTruthy();
-      }
-    }
-  });
-
-  it('言語未指定ではフォールバック言語（en）の文言を返す', async () => {
-    const defaultReviews = await fetchReviews('kobe-port-tower');
-    const enReviews = await fetchReviews('kobe-port-tower', 'en');
-
-    expect(defaultReviews.map((review) => review.author.name)).toEqual(
-      enReviews.map((review) => review.author.name),
-    );
+    expect(reviews[0]?.language).toBe('ko');
+    expect(reviews[1]?.language).toBe('zh');
   });
 
   it('呼び出しごとに独立したオブジェクトを返す', async () => {
-    const first = await fetchReviews('kobe-port-tower', 'ja');
-    const second = await fetchReviews('kobe-port-tower', 'ja');
+    const first = await fetchReviews('kobe-port-tower');
+    const second = await fetchReviews('kobe-port-tower');
 
     expect(first[0]).not.toBe(second[0]);
 
@@ -61,7 +44,7 @@ describe('fetchReviews', () => {
   });
 
   it('各レビューは表示に必要なフィールドを持つ', async () => {
-    const reviews = await fetchReviews('nankinmachi', 'ja');
+    const reviews = await fetchReviews('nankinmachi');
 
     for (const review of reviews) {
       expect(review.rating.value).toBeGreaterThanOrEqual(1);
@@ -70,19 +53,12 @@ describe('fetchReviews', () => {
       expect(review.author.name).toBeTruthy();
       expect(review.author.iconUrl).toMatch(/^https?:\/\//);
       expect(Number.isNaN(Date.parse(review.postedAt))).toBe(false);
+      expect(review.language).toBeTruthy();
     }
   });
 
-  it('指定した言語の文言を返す', async () => {
-    const jaReviews = await fetchReviews('kobe-port-tower', 'ja');
-    const enReviews = await fetchReviews('kobe-port-tower', 'en');
-
-    expect(jaReviews[0]?.author.name).toBe('山田 健太');
-    expect(enReviews[0]?.author.name).toBe('Kenta Yamada');
-  });
-
   it('未知のスポット ID には空配列を返す', async () => {
-    const reviews = await fetchReviews('unknown-spot', 'ja');
+    const reviews = await fetchReviews('unknown-spot');
 
     expect(reviews).toEqual([]);
   });
