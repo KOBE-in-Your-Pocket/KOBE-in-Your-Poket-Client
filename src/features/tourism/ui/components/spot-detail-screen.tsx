@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,6 +15,7 @@ import type { Spot } from '../../domain/spot';
 import { RATING_STAR_COLOR, styles } from '../styles/spot-detail.styles';
 
 import { ReviewForm } from './review-form';
+import { ReviewLanguageFilter, type ReviewLangFilter } from './review-language-filter';
 
 import { Spacing } from '@/shared/config';
 import { confirmOpenDirections } from '@/shared/lib/directions';
@@ -75,10 +76,16 @@ function SpotDetailContent({ spot }: { spot: Spot }) {
   const { t } = useTranslation();
   const { coords } = useCurrentLocation();
   const { data: reviews, isPending: isReviewsPending } = useSpotReviews(spot.id);
+  const [reviewLang, setReviewLang] = useState<ReviewLangFilter>('all');
 
   const handleOpenDirections = useCallback(() => {
     confirmOpenDirections(t, spot.coordinates, { origin: coords });
   }, [spot.coordinates, coords, t]);
+
+  const filteredReviews =
+    reviewLang === 'all'
+      ? (reviews ?? [])
+      : (reviews ?? []).filter((r) => r.language === reviewLang);
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -146,10 +153,11 @@ function SpotDetailContent({ spot }: { spot: Spot }) {
             {t('tourism.spotDetail.reviews')}
           </ThemedText>
           <ReviewForm spotId={spot.id} />
+          <ReviewLanguageFilter value={reviewLang} onChange={setReviewLang} />
           {isReviewsPending ? (
             <ActivityIndicator />
-          ) : reviews && reviews.length > 0 ? (
-            reviews.map((review, index) => (
+          ) : filteredReviews.length > 0 ? (
+            filteredReviews.map((review, index) => (
               <ReviewCard
                 key={`${review.author.name}-${review.postedAt}-${index}`}
                 review={review}

@@ -44,6 +44,9 @@
       "loadError": "Could not load reviews.",
       "empty": "No reviews yet."
     },
+    "reviewFilter": {
+      "all": "All"
+    },
     "reviewForm": {
       "placeholder": "Write a review...",
       "commentPlaceholder": "Enter your comment",

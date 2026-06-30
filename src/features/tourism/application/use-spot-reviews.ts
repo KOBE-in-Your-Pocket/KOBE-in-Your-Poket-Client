@@ -1,8 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-
-import { resolveLanguage } from '@/shared/lib/i18n';
 
 import { fetchReviews } from '../infrastructure/api/mock-reviews';
 import { useReviewStore } from '../store/use-review-store';
@@ -18,13 +15,10 @@ export function mergeReviews(seed: Review[], submitted: Review[]): Review[] {
 }
 
 export function useSpotReviews(spotId: string | null | undefined) {
-  const { i18n } = useTranslation();
-  const language = resolveLanguage(i18n.language);
-
   const seedQuery = useQuery<Review[]>({
-    queryKey: [...SPOT_REVIEWS_QUERY_KEY, spotId, language],
+    queryKey: [...SPOT_REVIEWS_QUERY_KEY, spotId],
     enabled: Boolean(spotId),
-    queryFn: () => fetchReviews(spotId as string, language),
+    queryFn: () => fetchReviews(spotId as string),
   });
 
   const submitted = useReviewStore((state) =>
