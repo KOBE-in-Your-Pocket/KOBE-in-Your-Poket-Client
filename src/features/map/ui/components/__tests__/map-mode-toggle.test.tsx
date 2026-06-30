@@ -23,8 +23,9 @@ jest.mock('react-i18next', () => ({
 }));
 
 jest.mock('@/shared/store', () => ({
-  useUiStore: jest.fn((selector: (state: { language: string }) => unknown) =>
-    selector({ language: 'ja' }),
+  useUiStore: jest.fn(
+    (selector: (state: { language: string; setLanguage: jest.Mock }) => unknown) =>
+      selector({ language: 'ja', setLanguage: jest.fn() }),
   ),
 }));
 
@@ -66,7 +67,9 @@ describe('MapModeToggle', () => {
         },
       },
     } as ReturnType<typeof useTranslation>);
-    mockedUseUiStore.mockImplementation((selector) => selector({ language: 'ja' }));
+    mockedUseUiStore.mockImplementation((selector) =>
+      selector({ language: 'ja', setLanguage: jest.fn() }),
+    );
   });
 
   it('観光と避難のラベルを表示する', () => {
@@ -112,7 +115,9 @@ describe('MapModeToggle', () => {
         },
       },
     } as ReturnType<typeof useTranslation>);
-    mockedUseUiStore.mockImplementation((selector) => selector({ language: 'en' }));
+    mockedUseUiStore.mockImplementation((selector) =>
+      selector({ language: 'en', setLanguage: jest.fn() }),
+    );
 
     render(<MapModeToggle />);
 
