@@ -44,6 +44,10 @@
       "loadError": "Could not load reviews.",
       "empty": "No reviews yet."
     },
+    "reviewCard": {
+      "edit": "Edit",
+      "save": "Save"
+    },
     "reviewFilter": {
       "all": "All"
     },

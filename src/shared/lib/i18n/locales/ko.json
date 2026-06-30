@@ -44,6 +44,10 @@
       "loadError": "리뷰를 불러올 수 없습니다.",
       "empty": "아직 리뷰가 없습니다."
     },
+    "reviewCard": {
+      "edit": "편집",
+      "save": "저장"
+    },
     "reviewFilter": {
       "all": "전체"
     },

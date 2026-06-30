@@ -44,6 +44,10 @@
       "loadError": "无法加载评价。",
       "empty": "暂无评价。"
     },
+    "reviewCard": {
+      "edit": "编辑",
+      "save": "保存"
+    },
     "reviewFilter": {
       "all": "全部"
     },
