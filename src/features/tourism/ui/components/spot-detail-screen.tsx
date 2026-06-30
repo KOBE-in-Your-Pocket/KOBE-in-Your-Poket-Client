@@ -1,13 +1,23 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Pressable, ScrollView, TextInput, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useSpotDetail } from '../../application/use-spot-detail';
 import { useSpotReviews } from '../../application/use-spot-reviews';
+import { useDeleteReview } from '../../application/use-delete-review';
 import { useUpdateReview } from '../../application/use-update-review';
 
 import type { Review } from '../../domain/review';
@@ -53,16 +63,29 @@ function ReviewCard({
   review,
   isOwn,
   onUpdate,
+  onDelete,
 }: {
   review: Review;
   isOwn: boolean;
   onUpdate: (changes: ReviewEdit) => void;
+  onDelete: () => void;
 }) {
   const { t } = useTranslation();
   const theme = useTheme();
+  const { width: screenWidth } = useWindowDimensions();
+  const menuAnchorRef = useRef<View>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
   const [editing, setEditing] = useState(false);
   const [editRating, setEditRating] = useState(review.rating.value);
   const [editComment, setEditComment] = useState(review.comment);
+
+  function openMenu() {
+    menuAnchorRef.current?.measureInWindow((x, _y, w, h) => {
+      setMenuPos({ top: _y + h + 4, right: screenWidth - x - w });
+      setMenuOpen(true);
+    });
+  }
 
   function handleSave() {
     if (editRating === 0 || editComment.trim() === '') return;
@@ -152,45 +175,111 @@ function ReviewCard({
   }
 
   return (
-    <ThemedView type="backgroundElement" style={styles.reviewCard}>
-      <View style={styles.reviewHeader}>
-        <Image
-          source={{ uri: review.author.iconUrl }}
-          style={styles.reviewAvatar}
-          contentFit="cover"
-        />
-        <ThemedText type="smallBold" style={styles.reviewAuthor} numberOfLines={1}>
-          {review.author.name}
-        </ThemedText>
-        <View style={styles.ratingRow}>
-          <SymbolView
-            tintColor={RATING_STAR_COLOR}
-            name={{ ios: 'star.fill', android: 'star', web: 'star' }}
-            size={14}
+    <>
+      <ThemedView type="backgroundElement" style={styles.reviewCard}>
+        <View style={styles.reviewHeader}>
+          <Image
+            source={{ uri: review.author.iconUrl }}
+            style={styles.reviewAvatar}
+            contentFit="cover"
           />
-          <ThemedText type="smallBold">{review.rating.value.toFixed(1)}</ThemedText>
-        </View>
-        {isOwn && (
-          <Pressable
-            onPress={() => setEditing(true)}
-            accessibilityRole="button"
-            accessibilityLabel={t('tourism.reviewCard.edit')}
-            hitSlop={Spacing.two}
-          >
+          <ThemedText type="smallBold" style={styles.reviewAuthor} numberOfLines={1}>
+            {review.author.name}
+          </ThemedText>
+          <View style={styles.ratingRow}>
             <SymbolView
-              name={{ ios: 'pencil', android: 'edit', web: 'edit' }}
-              tintColor={theme.textSecondary}
-              size={16}
+              tintColor={RATING_STAR_COLOR}
+              name={{ ios: 'star.fill', android: 'star', web: 'star' }}
+              size={14}
             />
-          </Pressable>
-        )}
-      </View>
-      <ThemedText type="small" themeColor="textSecondary" style={styles.reviewComment}>
-        {review.comment}
-      </ThemedText>
-    </ThemedView>
+            <ThemedText type="smallBold">{review.rating.value.toFixed(1)}</ThemedText>
+          </View>
+          {isOwn && (
+            <View ref={menuAnchorRef}>
+              <Pressable
+                onPress={openMenu}
+                accessibilityRole="button"
+                accessibilityLabel="メニューを開く"
+                hitSlop={Spacing.two}
+              >
+                <SymbolView
+                  name={{ ios: 'ellipsis', android: 'more_vert', web: 'more_vert' }}
+                  tintColor={theme.textSecondary}
+                  size={18}
+                />
+              </Pressable>
+            </View>
+          )}
+        </View>
+        <ThemedText type="small" themeColor="textSecondary" style={styles.reviewComment}>
+          {review.comment}
+        </ThemedText>
+      </ThemedView>
+
+      {menuOpen && (
+        <Modal transparent animationType="none" onRequestClose={() => setMenuOpen(false)}>
+          <Pressable style={StyleSheet.absoluteFill} onPress={() => setMenuOpen(false)} />
+          <ThemedView
+            type="backgroundElement"
+            style={[dropdownStyles.menu, { top: menuPos.top, right: menuPos.right }]}
+          >
+            <Pressable
+              style={dropdownStyles.item}
+              onPress={() => {
+                setMenuOpen(false);
+                setEditing(true);
+              }}
+            >
+              <SymbolView
+                name={{ ios: 'pencil', android: 'edit', web: 'edit' }}
+                tintColor={theme.text}
+                size={16}
+              />
+              <ThemedText type="smallBold">{t('tourism.reviewCard.edit')}</ThemedText>
+            </Pressable>
+            <Pressable
+              style={dropdownStyles.item}
+              onPress={() => {
+                setMenuOpen(false);
+                onDelete();
+              }}
+            >
+              <SymbolView
+                name={{ ios: 'trash', android: 'delete', web: 'delete' }}
+                tintColor="#D45B45"
+                size={16}
+              />
+              <ThemedText type="smallBold" style={{ color: '#D45B45' }}>
+                {t('tourism.reviewCard.delete')}
+              </ThemedText>
+            </Pressable>
+          </ThemedView>
+        </Modal>
+      )}
+    </>
   );
 }
+
+const dropdownStyles = StyleSheet.create({
+  menu: {
+    position: 'absolute',
+    borderRadius: 10,
+    minWidth: 140,
+    paddingVertical: Spacing.one,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+    paddingVertical: Spacing.two,
+    paddingHorizontal: Spacing.three,
+  },
+});
 
 function SpotDetailContent({ spot }: { spot: Spot }) {
   const theme = useTheme();
@@ -200,6 +289,7 @@ function SpotDetailContent({ spot }: { spot: Spot }) {
   const [reviewLang, setReviewLang] = useState<ReviewLangFilter>('all');
   const currentUser = useCurrentUser();
   const updateReview = useUpdateReview(spot.id);
+  const deleteReview = useDeleteReview(spot.id);
 
   const handleOpenDirections = useCallback(() => {
     confirmOpenDirections(t, spot.coordinates, { origin: coords });
@@ -286,6 +376,7 @@ function SpotDetailContent({ spot }: { spot: Spot }) {
                 review={review}
                 isOwn={review.author.name === currentUser.name}
                 onUpdate={(changes) => updateReview(review.id, changes)}
+                onDelete={() => deleteReview(review.id)}
               />
             ))
           ) : (
