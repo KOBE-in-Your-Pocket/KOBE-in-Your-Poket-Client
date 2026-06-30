@@ -44,6 +44,10 @@
       "loadError": "レビューを読み込めませんでした。",
       "empty": "まだレビューはありません。"
     },
+    "reviewCard": {
+      "edit": "編集",
+      "save": "保存"
+    },
     "reviewFilter": {
       "all": "すべて"
     },
