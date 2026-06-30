@@ -46,7 +46,8 @@
     },
     "reviewCard": {
       "edit": "Edit",
-      "save": "Save"
+      "save": "Save",
+      "delete": "Delete"
     },
     "reviewFilter": {
       "all": "All"

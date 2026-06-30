@@ -15,6 +15,8 @@ type ReviewStoreState = {
   addReview: (spotId: string, review: Review) => void;
   /** 自分の投稿レビューを編集する（id 一致のものだけ rating / comment を更新）。 */
   updateReview: (spotId: string, reviewId: string, changes: ReviewEdit) => void;
+  /** 自分の投稿レビューを削除する（id 一致のものを除去）。 */
+  deleteReview: (spotId: string, reviewId: string) => void;
 };
 
 /**
@@ -34,10 +36,7 @@ export const useReviewStore = create<ReviewStoreState>((set) => ({
   updateReview: (spotId, reviewId, changes) =>
     set((state) => {
       const current = state.submittedReviews[spotId];
-      if (!current) {
-        return state;
-      }
-
+      if (!current) return state;
       return {
         submittedReviews: {
           ...state.submittedReviews,
@@ -47,4 +46,11 @@ export const useReviewStore = create<ReviewStoreState>((set) => ({
         },
       };
     }),
+  deleteReview: (spotId, reviewId) =>
+    set((state) => ({
+      submittedReviews: {
+        ...state.submittedReviews,
+        [spotId]: (state.submittedReviews[spotId] ?? []).filter((r) => r.id !== reviewId),
+      },
+    })),
 }));
