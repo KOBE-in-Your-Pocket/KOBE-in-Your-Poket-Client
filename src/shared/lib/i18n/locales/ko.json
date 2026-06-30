@@ -68,6 +68,10 @@
     }
   },
   "map": {
+    "modeToggle": {
+      "tourism": "관광",
+      "evacuation": "대피"
+    },
     "spotCard": {
       "detail": "상세 보기",
       "navigate": "길 안내",

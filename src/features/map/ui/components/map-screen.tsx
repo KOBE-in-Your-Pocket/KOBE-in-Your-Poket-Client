@@ -11,6 +11,7 @@ import type { MapMarker } from '@/shared/ui';
 
 import { useRoute } from '../../application/use-route';
 import { styles } from '../styles/map-screen.styles';
+import { MapModeToggle } from './map-mode-toggle';
 import { SpotCard } from './spot-card';
 
 export function MapScreen() {
@@ -103,6 +104,8 @@ export function MapScreen() {
         onMarkerPress={handleMarkerPress}
         routeCoordinates={route?.coordinates}
       />
+
+      <MapModeToggle />
 
       {selectedSpot ? (
         <SpotCard

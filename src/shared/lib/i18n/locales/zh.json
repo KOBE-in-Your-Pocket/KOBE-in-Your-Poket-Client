@@ -68,6 +68,10 @@
     }
   },
   "map": {
+    "modeToggle": {
+      "tourism": "观光",
+      "evacuation": "疏散"
+    },
     "spotCard": {
       "detail": "查看详情",
       "navigate": "路线导航",
