@@ -11,28 +11,24 @@ import {
 
 type MockReviewBase = {
   id: MockReviewId;
-  /** 星評価（1〜5）。 */
+  language: SupportedLanguage;
   rating: number;
-  /** 投稿者アイコンの画像 URL。 */
   authorIconUrl: string;
-  /** 投稿日時（ISO 8601 形式の文字列）。 */
   postedAt: string;
 };
 
-/**
- * スポットごとの mock レビュー（言語非依存の項目）。
- * 言語依存の文言は {@link MOCK_REVIEW_LOCALIZATIONS} で管理する。
- */
 const MOCK_REVIEWS_BY_SPOT: Record<MockSpotId, MockReviewBase[]> = {
   'kobe-port-tower': [
     {
       id: 'kobe-port-tower-1',
+      language: 'ja',
       rating: 5,
       authorIconUrl: 'https://i.pravatar.cc/150?img=12',
       postedAt: '2025-11-03T10:24:00.000Z',
     },
     {
       id: 'kobe-port-tower-2',
+      language: 'en',
       rating: 4,
       authorIconUrl: 'https://i.pravatar.cc/150?img=45',
       postedAt: '2025-10-18T07:50:00.000Z',
@@ -41,12 +37,14 @@ const MOCK_REVIEWS_BY_SPOT: Record<MockSpotId, MockReviewBase[]> = {
   'kitano-ijinkan': [
     {
       id: 'kitano-ijinkan-1',
+      language: 'ko',
       rating: 4,
       authorIconUrl: 'https://i.pravatar.cc/150?img=33',
       postedAt: '2025-09-27T05:10:00.000Z',
     },
     {
       id: 'kitano-ijinkan-2',
+      language: 'zh',
       rating: 5,
       authorIconUrl: 'https://i.pravatar.cc/150?img=23',
       postedAt: '2025-08-14T02:35:00.000Z',
@@ -55,12 +53,14 @@ const MOCK_REVIEWS_BY_SPOT: Record<MockSpotId, MockReviewBase[]> = {
   nankinmachi: [
     {
       id: 'nankinmachi-1',
+      language: 'ja',
       rating: 5,
       authorIconUrl: 'https://i.pravatar.cc/150?img=7',
       postedAt: '2025-12-01T11:05:00.000Z',
     },
     {
       id: 'nankinmachi-2',
+      language: 'en',
       rating: 3,
       authorIconUrl: 'https://i.pravatar.cc/150?img=49',
       postedAt: '2025-11-22T08:42:00.000Z',
@@ -69,12 +69,14 @@ const MOCK_REVIEWS_BY_SPOT: Record<MockSpotId, MockReviewBase[]> = {
   'arima-onsen': [
     {
       id: 'arima-onsen-1',
+      language: 'ko',
       rating: 5,
       authorIconUrl: 'https://i.pravatar.cc/150?img=15',
       postedAt: '2025-10-09T13:18:00.000Z',
     },
     {
       id: 'arima-onsen-2',
+      language: 'zh',
       rating: 4,
       authorIconUrl: 'https://i.pravatar.cc/150?img=27',
       postedAt: '2025-07-30T06:00:00.000Z',
@@ -83,12 +85,14 @@ const MOCK_REVIEWS_BY_SPOT: Record<MockSpotId, MockReviewBase[]> = {
   'mount-rokko': [
     {
       id: 'mount-rokko-1',
+      language: 'ja',
       rating: 5,
       authorIconUrl: 'https://i.pravatar.cc/150?img=51',
       postedAt: '2025-11-15T09:33:00.000Z',
     },
     {
       id: 'mount-rokko-2',
+      language: 'en',
       rating: 4,
       authorIconUrl: 'https://i.pravatar.cc/150?img=60',
       postedAt: '2025-09-02T04:21:00.000Z',
@@ -113,8 +117,8 @@ function resolveLocalization(
   );
 }
 
-function buildReview(base: MockReviewBase, language: SupportedLanguage): Review {
-  const localized = resolveLocalization(language, base.id);
+function buildReview(base: MockReviewBase): Review {
+  const localized = resolveLocalization(base.language, base.id);
 
   return {
     id: base.id,
@@ -125,7 +129,7 @@ function buildReview(base: MockReviewBase, language: SupportedLanguage): Review 
       iconUrl: base.authorIconUrl,
     },
     postedAt: base.postedAt,
-    language,
+    language: base.language,
   };
 }
 
@@ -137,15 +141,12 @@ function buildReview(base: MockReviewBase, language: SupportedLanguage): Review 
  * application / ui 層を変更せずに実装だけを入れ替えられる。
  * 未知のスポット ID には空配列を返す。
  */
-export async function fetchReviews(
-  spotId: string,
-  language: SupportedLanguage = FALLBACK_LANGUAGE,
-): Promise<Review[]> {
+export async function fetchReviews(spotId: string): Promise<Review[]> {
   await new Promise<void>((resolve) => setTimeout(resolve, MOCK_LATENCY_MS));
 
   if (!isMockSpotId(spotId)) {
     return [];
   }
 
-  return MOCK_REVIEWS_BY_SPOT[spotId].map((base) => buildReview(base, language));
+  return MOCK_REVIEWS_BY_SPOT[spotId].map(buildReview);
 }

@@ -4,7 +4,7 @@ import { Spacing } from '@/shared/config';
 
 export const CATEGORY_COLOR = '#C67B4A';
 export const RATING_STAR_COLOR = '#F5A623';
-export const ROUTE_BUTTON_COLOR = '#208AEF';
+export const ROUTE_BUTTON_COLOR = CATEGORY_COLOR;
 
 export const styles = StyleSheet.create({
   centered: {

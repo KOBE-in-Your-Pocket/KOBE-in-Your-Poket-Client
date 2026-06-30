@@ -36,12 +36,27 @@
       "addressLabel": "住所",
       "locationLabel": "位置情報",
       "notFound": "スポットが見つかりませんでした。",
-      "loadError": "スポットの詳細を読み込めませんでした。"
+      "loadError": "スポットの詳細を読み込めませんでした。",
+      "openDirectionsButton": "ナビを開始"
     },
     "reviewList": {
       "heading": "レビュー",
       "loadError": "レビューを読み込めませんでした。",
       "empty": "まだレビューはありません。"
+    },
+    "reviewCard": {
+      "edit": "編集",
+      "save": "保存"
+    },
+    "reviewFilter": {
+      "all": "すべて"
+    },
+    "reviewForm": {
+      "placeholder": "レビューを書く...",
+      "commentPlaceholder": "コメントを入力してください",
+      "submit": "投稿する",
+      "cancel": "キャンセル",
+      "starLabel": "{{count}}星"
     },
     "genreFilter": {
       "all": "すべて",
@@ -57,6 +72,16 @@
       "detail": "詳細を見る",
       "navigate": "経路案内",
       "close": "閉じる"
+    },
+    "openDirections": {
+      "confirmTitle": "ナビを開始",
+      "confirmMessage": "※ {{mapAppName}}に移動して経路案内を開始します。",
+      "cancel": "キャンセル",
+      "confirm": "移動する",
+      "errorTitle": "エラー",
+      "errorMessage": "地図アプリを開けませんでした。",
+      "appleMaps": "Apple マップ",
+      "googleMaps": "Google マップ"
     }
   },
   "location": {

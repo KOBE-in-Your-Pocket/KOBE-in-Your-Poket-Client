@@ -36,12 +36,27 @@
       "addressLabel": "Address",
       "locationLabel": "Location",
       "notFound": "Spot not found.",
-      "loadError": "Could not load spot details."
+      "loadError": "Could not load spot details.",
+      "openDirectionsButton": "Start navigation"
     },
     "reviewList": {
       "heading": "Reviews",
       "loadError": "Could not load reviews.",
       "empty": "No reviews yet."
+    },
+    "reviewCard": {
+      "edit": "Edit",
+      "save": "Save"
+    },
+    "reviewFilter": {
+      "all": "All"
+    },
+    "reviewForm": {
+      "placeholder": "Write a review...",
+      "commentPlaceholder": "Enter your comment",
+      "submit": "Post",
+      "cancel": "Cancel",
+      "starLabel": "{{count}} stars"
     },
     "genreFilter": {
       "all": "All",
@@ -57,6 +72,16 @@
       "detail": "Spot Detail",
       "navigate": "Directions",
       "close": "Close"
+    },
+    "openDirections": {
+      "confirmTitle": "Start Navigation",
+      "confirmMessage": "You will be redirected to {{mapAppName}} to start turn-by-turn directions.",
+      "cancel": "Cancel",
+      "confirm": "Open",
+      "errorTitle": "Error",
+      "errorMessage": "Could not open the maps app.",
+      "appleMaps": "Apple Maps",
+      "googleMaps": "Google Maps"
     }
   },
   "location": {
