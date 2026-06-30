@@ -1,4 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
+import { useTranslation } from 'react-i18next';
+import { Text as MockThemedText } from 'react-native';
+
+import { useUiStore } from '@/shared/store';
 
 import { useMapModeStore } from '../../../store/use-map-mode-store';
 
@@ -41,14 +45,28 @@ jest.mock('@/shared/lib/theme', () => ({
   }),
 }));
 
-jest.mock('@/shared/ui', () => {
-  const { Text } = require('react-native');
-  return { ThemedText: Text };
-});
+jest.mock('@/shared/ui', () => ({
+  ThemedText: MockThemedText,
+}));
+
+const mockedUseTranslation = jest.mocked(useTranslation);
+const mockedUseUiStore = jest.mocked(useUiStore);
 
 describe('MapModeToggle', () => {
   beforeEach(() => {
     useMapModeStore.setState({ mapMode: 'tourism' });
+    mockedUseTranslation.mockReturnValue({
+      i18n: {
+        getFixedT: () => (key: string) => {
+          const labels: Record<string, string> = {
+            'map.modeToggle.tourism': '観光',
+            'map.modeToggle.evacuation': '避難',
+          };
+          return labels[key] ?? key;
+        },
+      },
+    } as ReturnType<typeof useTranslation>);
+    mockedUseUiStore.mockImplementation((selector) => selector({ language: 'ja' }));
   });
 
   it('観光と避難のラベルを表示する', () => {
@@ -77,14 +95,7 @@ describe('MapModeToggle', () => {
   });
 
   it('uiStore の言語に応じたラベルを表示する', () => {
-    const { useUiStore } = jest.requireMock('@/shared/store') as {
-      useUiStore: jest.Mock;
-    };
-    const { useTranslation } = jest.requireMock('react-i18next') as {
-      useTranslation: jest.Mock;
-    };
-
-    useTranslation.mockReturnValue({
+    mockedUseTranslation.mockReturnValue({
       i18n: {
         getFixedT: (language: string) => (key: string) => {
           const labels: Record<string, Record<string, string>> = {
@@ -100,10 +111,8 @@ describe('MapModeToggle', () => {
           return labels[language]?.[key] ?? key;
         },
       },
-    });
-    useUiStore.mockImplementation((selector: (state: { language: string }) => unknown) =>
-      selector({ language: 'en' }),
-    );
+    } as ReturnType<typeof useTranslation>);
+    mockedUseUiStore.mockImplementation((selector) => selector({ language: 'en' }));
 
     render(<MapModeToggle />);
 
