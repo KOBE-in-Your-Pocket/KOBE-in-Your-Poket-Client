@@ -29,4 +29,7 @@ config.resolver.extraNodeModules = singletonPackages.reduce((acc, name) => {
   return acc;
 }, {});
 
+// Drizzle のマイグレーションファイル（.sql）を Metro が解決できるようにする。
+config.resolver.sourceExts.push('sql');
+
 module.exports = config;
