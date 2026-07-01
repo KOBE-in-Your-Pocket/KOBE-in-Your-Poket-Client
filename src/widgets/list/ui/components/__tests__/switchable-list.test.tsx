@@ -4,8 +4,8 @@ import { useListModeStore } from '../../../store/use-list-mode-store';
 
 import { SwitchableList } from '../switchable-list';
 
-const mockSpotList = jest.fn(() => null);
-const mockEvacuationList = jest.fn(() => null);
+const mockSpotList = jest.fn((_props: Record<string, unknown>) => null);
+const mockEvacuationList = jest.fn((_props: Record<string, unknown>) => null);
 
 jest.mock('@/features/tourism', () => ({
   SpotList: (props: Record<string, unknown>) => mockSpotList(props),
