@@ -1,3 +1,4 @@
+export { useEvacuationShelterDetail } from './application/use-evacuation-shelter-detail';
 export {
   EVACUATION_SHELTERS_QUERY_KEY,
   useEvacuationShelters,
