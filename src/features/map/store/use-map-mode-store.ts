@@ -1,7 +1,9 @@
 import { create } from 'zustand';
 
+import type { AppMode } from '@/shared/config';
+
 /** 地図画面の表示モード。観光名所ピン / 避難所ピンを切り替える。 */
-export type MapMode = 'tourism' | 'evacuation';
+export type MapMode = AppMode;
 
 type MapModeState = {
   /** 現在の地図モード。デフォルトは tourism。 */
