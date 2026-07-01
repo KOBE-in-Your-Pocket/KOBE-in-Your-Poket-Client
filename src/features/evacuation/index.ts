@@ -1,3 +1,7 @@
+export {
+  EVACUATION_SHELTERS_QUERY_KEY,
+  useEvacuationShelters,
+} from './application/use-evacuation-shelters';
 export type {
   EvacuationShelter,
   ShelterCoordinates,
