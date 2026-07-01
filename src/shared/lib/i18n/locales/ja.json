@@ -90,6 +90,11 @@
         "designated": "指定",
         "both": "兼用"
       }
+    },
+    "shelterCard": {
+      "detail": "詳細を見る",
+      "navigate": "経路案内",
+      "close": "閉じる"
     }
   },
   "map": {

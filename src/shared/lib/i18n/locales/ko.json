@@ -90,6 +90,11 @@
         "designated": "지정",
         "both": "겸용"
       }
+    },
+    "shelterCard": {
+      "detail": "상세 보기",
+      "navigate": "길 안내",
+      "close": "닫기"
     }
   },
   "map": {
