@@ -68,6 +68,12 @@
       "onsen": "온천"
     }
   },
+  "list": {
+    "modeToggle": {
+      "tourism": "관광지",
+      "evacuation": "대피소"
+    }
+  },
   "map": {
     "modeToggle": {
       "tourism": "관광",

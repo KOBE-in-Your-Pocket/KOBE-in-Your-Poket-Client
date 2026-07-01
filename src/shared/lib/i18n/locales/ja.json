@@ -68,6 +68,12 @@
       "onsen": "温泉"
     }
   },
+  "list": {
+    "modeToggle": {
+      "tourism": "スポット",
+      "evacuation": "避難所"
+    }
+  },
   "map": {
     "modeToggle": {
       "tourism": "観光",
