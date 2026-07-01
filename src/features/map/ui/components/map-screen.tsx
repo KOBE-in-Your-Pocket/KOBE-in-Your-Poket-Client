@@ -2,7 +2,8 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useEvacuationShelters } from '@/features/evacuation';
+import { EvacuationShelterCard, useEvacuationShelters } from '@/features/evacuation';
+import type { EvacuationShelter } from '@/features/evacuation';
 import type { Spot } from '@/features/tourism';
 import { useSpots } from '@/features/tourism';
 import { confirmOpenDirections } from '@/shared/lib/directions';
@@ -24,6 +25,7 @@ export function MapScreen() {
   const { data: shelters } = useEvacuationShelters();
   const { spotId } = useLocalSearchParams<{ spotId?: string }>();
   const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
+  const [selectedShelter, setSelectedShelter] = useState<EvacuationShelter | null>(null);
   const [appliedSpotId, setAppliedSpotId] = useState<string | undefined>(undefined);
   const [showServicesModal, setShowServicesModal] = useState(false);
 
@@ -78,15 +80,20 @@ export function MapScreen() {
     }
   }
 
-  // 避難モードへ切り替えたら観光スポットの選択を解除する。
-  // 保持したままだと観光モードへ戻った際に、ユーザーが開いていない SpotCard が再表示されてしまう。
+  // モード切替時は前モードの選択（カード・経路）を解除し、切替を即時反映する。
+  // 保持したままだと戻ったときにユーザーが開いていないカードが再表示されてしまう。
   // deep-link 反映と同じく、effect ではなく render 中に調整する公式パターンで揃える。
   if (mapMode !== 'tourism' && selectedSpot !== null) {
     setSelectedSpot(null);
   }
+  if (mapMode !== 'evacuation' && selectedShelter !== null) {
+    setSelectedShelter(null);
+  }
 
-  // スポット選択（カード・経路）は観光モード専用。避難モードでは目的地を渡さず経路取得もしない。
-  const routeDestination = mapMode === 'tourism' ? selectedSpot?.coordinates : undefined;
+  // 経路の目的地は現在モードの選択地点。観光=スポット / 避難=避難所。
+  // 選択が無ければ undefined になり useRoute は無効化される（経路取得なし）。
+  const routeDestination =
+    mapMode === 'tourism' ? selectedSpot?.coordinates : selectedShelter?.coordinates;
   const { data: route } = useRoute(coords, routeDestination);
 
   const selectedDistanceKm = useMemo(() => {
@@ -99,22 +106,32 @@ export function MapScreen() {
 
   const handleMarkerPress = useCallback(
     (marker: MapMarker) => {
-      // 避難所ピンの選択詳細は本 Issue の範囲外。タップ時は吹き出し（title/description）のみ表示する。
-      if (mapMode !== 'tourism') return;
+      if (mapMode === 'evacuation') {
+        const shelter = shelters?.find((candidate) => candidate.id === marker.id);
+        if (shelter) setSelectedShelter(shelter);
+        return;
+      }
       const spot = spots?.find((candidate) => candidate.id === marker.id);
       if (spot) setSelectedSpot(spot);
     },
-    [mapMode, spots],
+    [mapMode, spots, shelters],
   );
 
   const handleClearRoute = useCallback(() => {
     setSelectedSpot(null);
   }, []);
 
+  const handleClearShelter = useCallback(() => {
+    setSelectedShelter(null);
+  }, []);
+
   const handleOpenDetail = useCallback(() => {
     if (!selectedSpot) return;
     router.push({ pathname: '/tourism/[id]', params: { id: selectedSpot.id } });
   }, [selectedSpot]);
+
+  // 避難所詳細ページは未実装（別 Issue）。実装までは詳細ボタンを未配線にしておく。
+  const handleOpenShelterDetail = useCallback(() => {}, []);
 
   const handleStartNavigation = useCallback(() => {
     if (!selectedSpot) return;
@@ -128,7 +145,7 @@ export function MapScreen() {
         currentLocation={coords}
         markers={markers}
         onMarkerPress={handleMarkerPress}
-        routeCoordinates={mapMode === 'tourism' ? route?.coordinates : undefined}
+        routeCoordinates={route?.coordinates}
       />
 
       <MapModeToggle />
@@ -140,6 +157,15 @@ export function MapScreen() {
           onClose={handleClearRoute}
           onDetail={handleOpenDetail}
           onNavigate={handleStartNavigation}
+        />
+      ) : null}
+
+      {mapMode === 'evacuation' && selectedShelter ? (
+        <EvacuationShelterCard
+          shelter={selectedShelter}
+          currentLocation={coords}
+          onClose={handleClearShelter}
+          onDetail={handleOpenShelterDetail}
         />
       ) : null}
 

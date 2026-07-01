@@ -65,6 +65,9 @@ jest.mock('@/features/tourism', () => ({
 
 jest.mock('@/features/evacuation', () => ({
   useEvacuationShelters: () => ({ data: mockShelters }),
+  EvacuationShelterCard: ({ shelter }: { shelter: { id: string } }) => (
+    <MockText testID="shelter-card">{shelter.id}</MockText>
+  ),
 }));
 
 jest.mock('@/shared/lib/geo', () => ({
@@ -167,5 +170,35 @@ describe('MapScreen のマーカー出し分け', () => {
       useMapModeStore.setState({ mapMode: 'tourism' });
     });
     expect(screen.queryByTestId('spot-card')).toBeNull();
+  });
+
+  it('避難モードで避難所ピンをタップすると EvacuationShelterCard が表示される', () => {
+    useMapModeStore.setState({ mapMode: 'evacuation' });
+
+    render(<MapScreen />);
+    expect(screen.queryByTestId('shelter-card')).toBeNull();
+
+    fireEvent.press(screen.getByTestId('marker-shelter-1'));
+
+    expect(screen.getByTestId('shelter-card').props.children).toBe('shelter-1');
+  });
+
+  it('避難所選択中に観光モードへ切り替えるとカードがリセットされる', () => {
+    useMapModeStore.setState({ mapMode: 'evacuation' });
+
+    render(<MapScreen />);
+    fireEvent.press(screen.getByTestId('marker-shelter-1'));
+    expect(screen.getByTestId('shelter-card')).toBeTruthy();
+
+    act(() => {
+      useMapModeStore.setState({ mapMode: 'tourism' });
+    });
+    expect(screen.queryByTestId('shelter-card')).toBeNull();
+
+    // 避難モードへ戻しても、ユーザーが再選択していないカードは表示されない（selectedShelter がリセット済み）。
+    act(() => {
+      useMapModeStore.setState({ mapMode: 'evacuation' });
+    });
+    expect(screen.queryByTestId('shelter-card')).toBeNull();
   });
 });
