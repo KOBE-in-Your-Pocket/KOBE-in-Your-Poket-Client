@@ -20,10 +20,19 @@ import { ThemedText, ThemedView } from '@/shared/ui';
 function BackButton({ label }: { label: string }) {
   const insets = useSafeAreaInsets();
 
+  // 履歴が無い場合（通知・ディープリンクでの直接起動）は一覧へフォールバックする。
+  const handleBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/(tabs)/evacuation');
+    }
+  };
+
   return (
     <Pressable
       style={[styles.backButton, { top: insets.top + Spacing.two }]}
-      onPress={() => router.back()}
+      onPress={handleBack}
       accessibilityRole="button"
       accessibilityLabel={label}
       hitSlop={Spacing.two}
