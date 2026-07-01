@@ -2,31 +2,20 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 import { useTranslation } from 'react-i18next';
 import { Text as MockThemedText } from 'react-native';
 
-import { useUiStore } from '@/shared/store';
-
 import { useMapModeStore } from '../../../store/use-map-mode-store';
 
 import { MapModeToggle } from '../map-mode-toggle';
 
 jest.mock('react-i18next', () => ({
   useTranslation: jest.fn(() => ({
-    i18n: {
-      getFixedT: () => (key: string) => {
-        const labels: Record<string, string> = {
-          'map.modeToggle.tourism': '観光',
-          'map.modeToggle.evacuation': '避難',
-        };
-        return labels[key] ?? key;
-      },
+    t: (key: string) => {
+      const labels: Record<string, string> = {
+        'map.modeToggle.tourism': '観光',
+        'map.modeToggle.evacuation': '避難',
+      };
+      return labels[key] ?? key;
     },
   })),
-}));
-
-jest.mock('@/shared/store', () => ({
-  useUiStore: jest.fn(
-    (selector: (state: { language: string; setLanguage: jest.Mock }) => unknown) =>
-      selector({ language: 'ja', setLanguage: jest.fn() }),
-  ),
 }));
 
 jest.mock('react-native-safe-area-context', () => ({
@@ -51,25 +40,19 @@ jest.mock('@/shared/ui', () => ({
 }));
 
 const mockedUseTranslation = jest.mocked(useTranslation);
-const mockedUseUiStore = jest.mocked(useUiStore);
 
 describe('MapModeToggle', () => {
   beforeEach(() => {
     useMapModeStore.setState({ mapMode: 'tourism' });
     mockedUseTranslation.mockReturnValue({
-      i18n: {
-        getFixedT: () => (key: string) => {
-          const labels: Record<string, string> = {
-            'map.modeToggle.tourism': '観光',
-            'map.modeToggle.evacuation': '避難',
-          };
-          return labels[key] ?? key;
-        },
+      t: (key: string) => {
+        const labels: Record<string, string> = {
+          'map.modeToggle.tourism': '観光',
+          'map.modeToggle.evacuation': '避難',
+        };
+        return labels[key] ?? key;
       },
     } as ReturnType<typeof useTranslation>);
-    mockedUseUiStore.mockImplementation((selector) =>
-      selector({ language: 'ja', setLanguage: jest.fn() }),
-    );
   });
 
   it('観光と避難のラベルを表示する', () => {
@@ -97,27 +80,16 @@ describe('MapModeToggle', () => {
     expect(useMapModeStore.getState().mapMode).toBe('tourism');
   });
 
-  it('uiStore の言語に応じたラベルを表示する', () => {
+  it('i18n の t からラベルを表示する', () => {
     mockedUseTranslation.mockReturnValue({
-      i18n: {
-        getFixedT: (language: string) => (key: string) => {
-          const labels: Record<string, Record<string, string>> = {
-            en: {
-              'map.modeToggle.tourism': 'Tourism',
-              'map.modeToggle.evacuation': 'Evacuation',
-            },
-            ja: {
-              'map.modeToggle.tourism': '観光',
-              'map.modeToggle.evacuation': '避難',
-            },
-          };
-          return labels[language]?.[key] ?? key;
-        },
+      t: (key: string) => {
+        const labels: Record<string, string> = {
+          'map.modeToggle.tourism': 'Tourism',
+          'map.modeToggle.evacuation': 'Evacuation',
+        };
+        return labels[key] ?? key;
       },
     } as ReturnType<typeof useTranslation>);
-    mockedUseUiStore.mockImplementation((selector) =>
-      selector({ language: 'en', setLanguage: jest.fn() }),
-    );
 
     render(<MapModeToggle />);
 
