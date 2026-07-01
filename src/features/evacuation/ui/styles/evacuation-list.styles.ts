@@ -4,6 +4,8 @@ import { Spacing } from '@/shared/config';
 
 export const CATEGORY_COLOR = '#3A6EA5';
 export const ACCESSIBLE_COLOR = '#2E8B57';
+/** 最寄りバッジ専用のアクセントカラー。ACCESSIBLE_COLOR（バリアフリー表示）との意味の重複を避けるため分離。 */
+export const NEAREST_BADGE_COLOR = '#E8A317';
 
 export const styles = StyleSheet.create({
   centered: {
@@ -80,7 +82,7 @@ export const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   nearestBadge: {
-    backgroundColor: ACCESSIBLE_COLOR,
+    backgroundColor: NEAREST_BADGE_COLOR,
     borderRadius: Spacing.three,
     paddingHorizontal: Spacing.two,
     paddingVertical: 2,
