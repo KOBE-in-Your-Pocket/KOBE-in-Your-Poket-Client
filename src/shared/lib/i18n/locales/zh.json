@@ -95,6 +95,10 @@
       "detail": "查看详情",
       "navigate": "路线导航",
       "close": "关闭"
+    },
+    "shelterDetail": {
+      "back": "返回",
+      "loadError": "无法加载避难所详情。"
     }
   },
   "list": {
