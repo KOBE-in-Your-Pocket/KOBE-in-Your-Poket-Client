@@ -4,7 +4,7 @@ import { SymbolView } from 'expo-symbols';
 import { openBrowserAsync } from 'expo-web-browser';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useEvacuationShelterDetail } from '../../application/use-evacuation-shelter-detail';
@@ -55,8 +55,14 @@ function ShelterDetailContent({ shelter }: { shelter: EvacuationShelter }) {
 
   const { externalUrl } = shelter;
   const handleOpenExternalLink = useCallback(() => {
-    if (externalUrl) void openBrowserAsync(externalUrl);
-  }, [externalUrl]);
+    if (!externalUrl) return;
+    openBrowserAsync(externalUrl).catch(() => {
+      Alert.alert(
+        t('evacuation.shelterDetail.linkErrorTitle'),
+        t('evacuation.shelterDetail.linkErrorMessage'),
+      );
+    });
+  }, [externalUrl, t]);
 
   const handleOpenDirections = useCallback(() => {
     confirmOpenDirections(t, shelter.coordinates, { origin: coords });
@@ -70,7 +76,6 @@ function ShelterDetailContent({ shelter }: { shelter: EvacuationShelter }) {
           style={styles.heroImage}
           contentFit="cover"
         />
-        <BackButton label={t('evacuation.shelterDetail.back')} />
       </View>
 
       <View style={styles.body}>
@@ -199,6 +204,8 @@ export function EvacuationShelterDetailScreen({ shelterId }: { shelterId: string
       ) : (
         <ShelterDetailContent shelter={shelter} />
       )}
+      {/* 戻る操作は正常系・異常系を問わず提供する（AC: 戻る操作で一覧へ戻れる）。 */}
+      <BackButton label={t('evacuation.shelterDetail.back')} />
     </ThemedView>
   );
 }

@@ -102,7 +102,9 @@
       "back": "Back",
       "loadError": "Could not load shelter details.",
       "externalLink": "Check status (city page)",
-      "openDirectionsButton": "Open directions"
+      "openDirectionsButton": "Open directions",
+      "linkErrorTitle": "Error",
+      "linkErrorMessage": "Could not open the page."
     }
   },
   "list": {
