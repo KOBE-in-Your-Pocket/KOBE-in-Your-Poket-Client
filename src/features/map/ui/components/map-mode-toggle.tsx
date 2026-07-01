@@ -48,7 +48,6 @@ export function MapModeToggle() {
               accessibilityLabel={label}
             >
               <ThemedText
-                style={styles.segmentText}
                 type={isSelected ? 'smallBold' : 'small'}
                 themeColor={isSelected ? 'text' : 'textSecondary'}
               >

@@ -33,8 +33,4 @@ export const styles = StyleSheet.create({
     minWidth: 56,
     alignItems: 'center',
   },
-  segmentText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
 });
