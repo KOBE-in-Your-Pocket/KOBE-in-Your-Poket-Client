@@ -106,7 +106,7 @@ function ListHeader() {
  * application 層の `useEvacuationShelters()` 経由でデータを取得し、各避難所の
  * 画像・距離・施設種別・収容人数・バリアフリー情報を含むカード一覧を表示する。
  */
-export function EvacuationList() {
+export function EvacuationList({ showHeader = true }: { showHeader?: boolean } = {}) {
   const { t } = useTranslation();
   const { data: shelters, isPending, isError } = useEvacuationShelters();
   const { coords } = useCurrentLocation();
@@ -160,7 +160,7 @@ export function EvacuationList() {
       data={sheltersWithDistance}
       keyExtractor={(shelter) => shelter.id}
       renderItem={({ item }) => <ShelterListItem shelter={item} />}
-      ListHeaderComponent={ListHeader}
+      ListHeaderComponent={showHeader ? ListHeader : undefined}
       contentContainerStyle={styles.listContent}
     />
   );

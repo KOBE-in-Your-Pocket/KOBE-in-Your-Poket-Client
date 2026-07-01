@@ -1,1 +1,1 @@
-export { TourismScreen as default } from '@/features/tourism';
+export { ListScreen as default } from '@/widgets/list';
