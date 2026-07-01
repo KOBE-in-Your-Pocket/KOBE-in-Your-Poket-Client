@@ -75,6 +75,10 @@
     }
   },
   "map": {
+    "modeToggle": {
+      "tourism": "観光",
+      "evacuation": "避難"
+    },
     "spotCard": {
       "detail": "詳細を見る",
       "navigate": "経路案内",
