@@ -69,6 +69,10 @@
     }
   },
   "map": {
+    "modeToggle": {
+      "tourism": "Tourism",
+      "evacuation": "Evacuation"
+    },
     "spotCard": {
       "detail": "Spot Detail",
       "navigate": "Directions",
