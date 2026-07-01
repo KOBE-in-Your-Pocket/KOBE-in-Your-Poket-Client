@@ -9,29 +9,25 @@ import { useEvacuationShelters } from '../../application/use-evacuation-shelters
 
 import type { EvacuationShelter } from '../../domain/evacuation-shelter';
 
-import { ACCESSIBLE_COLOR, CAPACITY_TEXT_COLOR, styles } from '../styles/evacuation-list.styles';
+import { ACCESSIBLE_COLOR, styles } from '../styles/evacuation-list.styles';
 
 import { Spacing } from '@/shared/config';
 import { formatDistanceKm, getDistanceKm, useCurrentLocation } from '@/shared/lib/geo';
+import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
 type ShelterWithDistance = EvacuationShelter & {
   distanceKm: number | null;
-  rank: number;
 };
 
 function ShelterListItem({ shelter }: { shelter: ShelterWithDistance }) {
+  const theme = useTheme();
   const { t } = useTranslation();
 
   return (
     <ThemedView style={styles.card}>
       <View style={styles.imageWrapper}>
         <Image source={{ uri: shelter.media.imageUrl }} style={styles.image} contentFit="cover" />
-        <View style={styles.rankBadge}>
-          <ThemedText style={styles.rankBadgeText}>
-            {t('evacuation.list.rankBadge', { rank: shelter.rank })}
-          </ThemedText>
-        </View>
         {shelter.distanceKm !== null ? (
           <View style={styles.distanceBadge}>
             <ThemedText style={styles.distanceText}>
@@ -42,23 +38,9 @@ function ShelterListItem({ shelter }: { shelter: ShelterWithDistance }) {
       </View>
 
       <View style={styles.content}>
-        <View style={styles.metaRow}>
-          <ThemedText style={styles.category}>
-            {t(`evacuation.list.category.${shelter.facilityCategory}`)}
-          </ThemedText>
-          {shelter.capacity !== undefined ? (
-            <View style={styles.capacityBadge}>
-              <SymbolView
-                tintColor={CAPACITY_TEXT_COLOR}
-                name={{ ios: 'shield.fill', android: 'shield', web: 'shield' }}
-                size={14}
-              />
-              <ThemedText style={styles.capacityText}>
-                {t('evacuation.list.capacity', { count: shelter.capacity })}
-              </ThemedText>
-            </View>
-          ) : null}
-        </View>
+        <ThemedText style={styles.category}>
+          {t(`evacuation.list.category.${shelter.facilityCategory}`)}
+        </ThemedText>
 
         <ThemedText style={styles.name}>{shelter.name}</ThemedText>
 
@@ -66,21 +48,36 @@ function ShelterListItem({ shelter }: { shelter: ShelterWithDistance }) {
           {shelter.address}
         </ThemedText>
 
-        <View style={styles.footerRow}>
-          <SymbolView
-            tintColor={ACCESSIBLE_COLOR}
-            name={{
-              ios: 'figure.roll',
-              android: 'accessible',
-              web: 'accessible',
-            }}
-            size={16}
-          />
-          <ThemedText style={styles.accessibilityText}>
-            {shelter.accessible
-              ? t('evacuation.list.accessible.yes')
-              : t('evacuation.list.accessible.no')}
-          </ThemedText>
+        <View style={styles.infoRow}>
+          {shelter.capacity !== undefined ? (
+            <View style={styles.infoItem}>
+              <SymbolView
+                tintColor={theme.textSecondary}
+                name={{ ios: 'person.2.fill', android: 'groups', web: 'groups' }}
+                size={14}
+              />
+              <ThemedText type="small" themeColor="textSecondary">
+                {t('evacuation.list.capacity', { count: shelter.capacity })}
+              </ThemedText>
+            </View>
+          ) : null}
+
+          <View style={styles.infoItem}>
+            <SymbolView
+              tintColor={ACCESSIBLE_COLOR}
+              name={{
+                ios: 'figure.roll',
+                android: 'accessible',
+                web: 'accessible',
+              }}
+              size={14}
+            />
+            <ThemedText type="small" style={styles.accessibilityText}>
+              {shelter.accessible
+                ? t('evacuation.list.accessible.yes')
+                : t('evacuation.list.accessible.no')}
+            </ThemedText>
+          </View>
         </View>
       </View>
     </ThemedView>
@@ -131,10 +128,7 @@ export function EvacuationList() {
       ? [...withDistance].sort((a, b) => (a.distanceKm ?? 0) - (b.distanceKm ?? 0))
       : withDistance;
 
-    return sorted.map((shelter, index) => ({
-      ...shelter,
-      rank: index + 1,
-    }));
+    return sorted;
   }, [coords, shelters]);
 
   if (isPending) {

@@ -74,8 +74,7 @@
       "subtitle": "Nearby shelters",
       "loadError": "Could not load shelters.",
       "empty": "No shelters found.",
-      "rankBadge": "#{{rank}} Shelter",
-      "capacity": "{{count}}",
+      "capacity": "Capacity: {{count}}",
       "category": {
         "government": "Government Building",
         "school": "School",
@@ -83,8 +82,8 @@
         "gymnasium": "Gymnasium"
       },
       "accessible": {
-        "yes": "Yes",
-        "no": "No"
+        "yes": "Accessible",
+        "no": "Not accessible"
       },
       "type": {
         "emergency": "Emergency",

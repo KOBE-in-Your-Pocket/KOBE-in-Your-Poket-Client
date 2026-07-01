@@ -3,8 +3,6 @@ import { Platform, StyleSheet } from 'react-native';
 import { Spacing } from '@/shared/config';
 
 export const CATEGORY_COLOR = '#3A6EA5';
-export const CAPACITY_BADGE_COLOR = '#E8F1FA';
-export const CAPACITY_TEXT_COLOR = '#3A6EA5';
 export const ACCESSIBLE_COLOR = '#2E8B57';
 
 export const styles = StyleSheet.create({
@@ -51,20 +49,6 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  rankBadge: {
-    position: 'absolute',
-    top: Spacing.two,
-    left: Spacing.two,
-    backgroundColor: 'rgba(0, 0, 0, 0.65)',
-    borderRadius: Spacing.three,
-    paddingHorizontal: Spacing.two,
-    paddingVertical: Spacing.one,
-  },
-  rankBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
-  },
   distanceBadge: {
     position: 'absolute',
     top: Spacing.two,
@@ -83,33 +67,12 @@ export const styles = StyleSheet.create({
     padding: Spacing.three,
     gap: Spacing.two,
   },
-  metaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.two,
-  },
   category: {
-    flex: 1,
     color: CATEGORY_COLOR,
     fontSize: 12,
     fontWeight: '700',
     letterSpacing: 0.5,
     textTransform: 'uppercase',
-  },
-  capacityBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.one,
-    backgroundColor: CAPACITY_BADGE_COLOR,
-    borderRadius: Spacing.five,
-    paddingHorizontal: Spacing.two,
-    paddingVertical: Spacing.one,
-  },
-  capacityText: {
-    color: CAPACITY_TEXT_COLOR,
-    fontSize: 12,
-    fontWeight: '700',
   },
   name: {
     fontSize: 22,
@@ -119,15 +82,19 @@ export const styles = StyleSheet.create({
   address: {
     lineHeight: 20,
   },
-  footerRow: {
+  infoRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.three,
+    marginTop: Spacing.one,
+  },
+  infoItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
     gap: Spacing.one,
   },
   accessibilityText: {
     color: ACCESSIBLE_COLOR,
-    fontSize: 13,
     fontWeight: '600',
   },
 });

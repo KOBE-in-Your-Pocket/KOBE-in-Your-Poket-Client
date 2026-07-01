@@ -74,8 +74,7 @@
       "subtitle": "附近的避难所",
       "loadError": "无法加载避难所。",
       "empty": "未找到避难所。",
-      "rankBadge": "#{{rank}} 避难所",
-      "capacity": "{{count}}",
+      "capacity": "容纳 {{count}}人",
       "category": {
         "government": "公共建筑",
         "school": "学校",
@@ -83,8 +82,8 @@
         "gymnasium": "体育馆"
       },
       "accessible": {
-        "yes": "可",
-        "no": "不可"
+        "yes": "无障碍设施",
+        "no": "无无障碍设施"
       },
       "type": {
         "emergency": "紧急",
