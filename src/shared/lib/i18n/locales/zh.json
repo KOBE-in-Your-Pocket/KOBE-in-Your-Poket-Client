@@ -75,6 +75,7 @@
       "loadError": "无法加载避难所。",
       "empty": "未找到避难所。",
       "capacity": "容纳 {{count}}人",
+      "nearest": "最近",
       "category": {
         "government": "公共建筑",
         "school": "学校",
@@ -98,7 +99,8 @@
     },
     "shelterDetail": {
       "back": "返回",
-      "loadError": "无法加载避难所详情。"
+      "loadError": "无法加载避难所详情。",
+      "externalLink": "查看开放状态（政府页面）"
     }
   },
   "list": {

@@ -75,6 +75,7 @@
       "loadError": "避難所を読み込めませんでした。",
       "empty": "避難所が見つかりませんでした。",
       "capacity": "収容 {{count}}人",
+      "nearest": "最寄り",
       "category": {
         "government": "公共施設",
         "school": "学校",
@@ -98,7 +99,8 @@
     },
     "shelterDetail": {
       "back": "戻る",
-      "loadError": "避難所の詳細を読み込めませんでした。"
+      "loadError": "避難所の詳細を読み込めませんでした。",
+      "externalLink": "開設状況を確認（自治体ページ）"
     }
   },
   "list": {

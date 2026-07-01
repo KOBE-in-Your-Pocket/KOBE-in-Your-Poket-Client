@@ -18,6 +18,7 @@ const MOCK_SHELTERS: EvacuationShelter[] = [
     },
     capacity: 850,
     accessible: true,
+    externalUrl: 'https://www.city.kobe.lg.jp/bosai/',
   },
   {
     id: 'sannomiya-elementary',
@@ -32,6 +33,7 @@ const MOCK_SHELTERS: EvacuationShelter[] = [
     },
     capacity: 420,
     accessible: true,
+    externalUrl: 'https://www.city.kobe.lg.jp/bosai/',
   },
   {
     id: 'higashi-yuenchi',
@@ -46,6 +48,7 @@ const MOCK_SHELTERS: EvacuationShelter[] = [
     },
     capacity: 8000,
     accessible: false,
+    externalUrl: 'https://www.city.kobe.lg.jp/bosai/',
   },
   {
     id: 'kobe-central-gymnasium',
@@ -60,6 +63,7 @@ const MOCK_SHELTERS: EvacuationShelter[] = [
     },
     capacity: 1200,
     accessible: true,
+    externalUrl: 'https://www.city.kobe.lg.jp/bosai/',
   },
   {
     id: 'oji-park',
@@ -74,6 +78,7 @@ const MOCK_SHELTERS: EvacuationShelter[] = [
     },
     capacity: 5000,
     accessible: false,
+    externalUrl: 'https://www.city.kobe.lg.jp/bosai/',
   },
   {
     id: 'minatogawa-park',

@@ -21,7 +21,13 @@ type ShelterWithDistance = EvacuationShelter & {
   distanceKm: number | null;
 };
 
-function ShelterListItem({ shelter }: { shelter: ShelterWithDistance }) {
+function ShelterListItem({
+  shelter,
+  isNearest,
+}: {
+  shelter: ShelterWithDistance;
+  isNearest: boolean;
+}) {
   const theme = useTheme();
   const { t } = useTranslation();
 
@@ -44,9 +50,18 @@ function ShelterListItem({ shelter }: { shelter: ShelterWithDistance }) {
         </View>
 
         <View style={styles.content}>
-          <ThemedText style={styles.category}>
-            {t(`evacuation.list.category.${shelter.facilityCategory}`)}
-          </ThemedText>
+          <View style={styles.categoryRow}>
+            <ThemedText style={styles.category}>
+              {t(`evacuation.list.category.${shelter.facilityCategory}`)}
+            </ThemedText>
+            {isNearest ? (
+              <View style={styles.nearestBadge}>
+                <ThemedText style={styles.nearestBadgeText}>
+                  {t('evacuation.list.nearest')}
+                </ThemedText>
+              </View>
+            ) : null}
+          </View>
 
           <ThemedText style={styles.name}>{shelter.name}</ThemedText>
 
@@ -166,7 +181,9 @@ export function EvacuationList({ showHeader = true }: { showHeader?: boolean } =
     <FlatList
       data={sheltersWithDistance}
       keyExtractor={(shelter) => shelter.id}
-      renderItem={({ item }) => <ShelterListItem shelter={item} />}
+      renderItem={({ item, index }) => (
+        <ShelterListItem shelter={item} isNearest={coords !== null && index === 0} />
+      )}
       ListHeaderComponent={showHeader ? ListHeader : undefined}
       contentContainerStyle={styles.listContent}
     />
