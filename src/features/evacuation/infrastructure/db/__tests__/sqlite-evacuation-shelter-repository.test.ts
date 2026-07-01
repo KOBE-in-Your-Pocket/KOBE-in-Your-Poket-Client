@@ -74,4 +74,17 @@ describe('SqliteEvacuationShelterRepository', () => {
 
     await expect(repository.findAll()).resolves.toEqual([]);
   });
+
+  it('replaceAll で insert が失敗した場合は既存データを保持する', async () => {
+    const repository = createTestRepository();
+    await repository.replaceAll(sampleShelters);
+
+    const duplicateIdShelters = [
+      { ...sampleShelters[0], name: '重複A' },
+      { ...sampleShelters[0], name: '重複B' },
+    ];
+
+    await expect(repository.replaceAll(duplicateIdShelters)).rejects.toThrow();
+    await expect(repository.findAll()).resolves.toEqual(sampleShelters);
+  });
 });

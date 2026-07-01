@@ -27,13 +27,15 @@ export class SqliteEvacuationShelterRepository implements EvacuationShelterRepos
   }
 
   async replaceAll(shelters: EvacuationShelter[]): Promise<void> {
-    await this.db.delete(evacuationShelters);
+    this.db.transaction((tx) => {
+      tx.delete(evacuationShelters).run();
 
-    if (shelters.length === 0) {
-      return;
-    }
+      if (shelters.length === 0) {
+        return;
+      }
 
-    await this.db.insert(evacuationShelters).values(shelters.map(toEvacuationShelterRecord));
+      tx.insert(evacuationShelters).values(shelters.map(toEvacuationShelterRecord)).run();
+    });
   }
 }
 
