@@ -6,20 +6,18 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import {
+  sortSheltersByDistance,
+  type ShelterWithDistance,
+} from '../../application/sort-shelters-by-distance';
 import { useEvacuationShelters } from '../../application/use-evacuation-shelters';
-
-import type { EvacuationShelter } from '../../domain/evacuation-shelter';
 
 import { ACCESSIBLE_COLOR, styles } from '../styles/evacuation-list.styles';
 
 import { Spacing } from '@/shared/config';
-import { formatDistanceKm, getDistanceKm, useCurrentLocation } from '@/shared/lib/geo';
+import { formatDistanceKm, useCurrentLocation } from '@/shared/lib/geo';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
-
-type ShelterWithDistance = EvacuationShelter & {
-  distanceKm: number | null;
-};
 
 function ShelterListItem({
   shelter,
@@ -164,21 +162,7 @@ export function EvacuationList({ showHeader = true }: { showHeader?: boolean } =
   const sheltersWithDistance = useMemo((): ShelterWithDistance[] | undefined => {
     if (!shelters) return undefined;
 
-    const withDistance = shelters.map((shelter) => ({
-      ...shelter,
-      distanceKm: coords
-        ? getDistanceKm(
-            { latitude: coords.latitude, longitude: coords.longitude },
-            shelter.coordinates,
-          )
-        : null,
-    }));
-
-    const sorted = coords
-      ? [...withDistance].sort((a, b) => (a.distanceKm ?? 0) - (b.distanceKm ?? 0))
-      : withDistance;
-
-    return sorted;
+    return sortSheltersByDistance(shelters, coords);
   }, [coords, shelters]);
 
   if (isPending) {
