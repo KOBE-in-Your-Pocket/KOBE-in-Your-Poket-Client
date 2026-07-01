@@ -90,6 +90,11 @@
         "designated": "Designated",
         "both": "Both"
       }
+    },
+    "shelterCard": {
+      "detail": "Shelter Detail",
+      "navigate": "Directions",
+      "close": "Close"
     }
   },
   "map": {
