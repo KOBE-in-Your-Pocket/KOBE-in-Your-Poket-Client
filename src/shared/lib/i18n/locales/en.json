@@ -76,6 +76,7 @@
       "empty": "No shelters found.",
       "capacity": "Capacity: {{count}}",
       "nearest": "Nearest",
+      "locationServicesDisabled": "Distance unavailable because location services are off.",
       "category": {
         "government": "Government Building",
         "school": "School",

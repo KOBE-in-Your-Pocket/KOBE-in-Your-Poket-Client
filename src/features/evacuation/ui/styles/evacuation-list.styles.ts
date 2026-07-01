@@ -23,9 +23,18 @@ export const styles = StyleSheet.create({
     gap: Spacing.one,
     marginBottom: Spacing.one,
   },
+  headerless: {
+    marginBottom: Spacing.one,
+  },
   title: {
     fontSize: 28,
     lineHeight: 34,
+  },
+  locationBanner: {
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.two,
+    borderRadius: Spacing.two,
+    backgroundColor: '#FDECEA',
   },
   card: {
     borderRadius: Spacing.three,

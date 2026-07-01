@@ -76,6 +76,7 @@
       "empty": "未找到避难所。",
       "capacity": "容纳 {{count}}人",
       "nearest": "最近",
+      "locationServicesDisabled": "定位服务已关闭，无法显示距离。",
       "category": {
         "government": "公共建筑",
         "school": "学校",

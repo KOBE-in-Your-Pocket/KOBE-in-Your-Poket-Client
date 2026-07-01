@@ -76,6 +76,7 @@
       "empty": "避難所が見つかりませんでした。",
       "capacity": "収容 {{count}}人",
       "nearest": "最寄り",
+      "locationServicesDisabled": "位置情報サービスがオフのため、距離は表示されません。",
       "category": {
         "government": "公共施設",
         "school": "学校",
