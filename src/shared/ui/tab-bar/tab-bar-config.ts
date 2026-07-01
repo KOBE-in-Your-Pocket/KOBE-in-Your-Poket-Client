@@ -51,3 +51,11 @@ export const TAB_DEFS = [
     symbol: { ios: 'gearshape', android: 'settings', web: 'settings' },
   },
 ] as const satisfies readonly TabDefinition[];
+
+/** タブバーにボタンを出さず、プログラム遷移だけ許可するルート。 */
+export const HIDDEN_TAB_DEFS = [
+  {
+    name: 'evacuation',
+    href: '/(tabs)/evacuation',
+  },
+] as const satisfies readonly { name: string; href: `/(tabs)/${string}` }[];
