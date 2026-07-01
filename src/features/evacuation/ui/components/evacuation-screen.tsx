@@ -1,15 +1,13 @@
 import { StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { BottomTabInset, Spacing } from '@/shared/config';
-import { ThemedText, ThemedView } from '@/shared/ui';
+import { EvacuationList } from './evacuation-list';
+
+import { ThemedView } from '@/shared/ui';
 
 export function EvacuationScreen() {
   return (
     <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedText type="title">避難</ThemedText>
-      </SafeAreaView>
+      <EvacuationList />
     </ThemedView>
   );
 }
@@ -17,12 +15,5 @@ export function EvacuationScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: Spacing.four,
-    paddingBottom: BottomTabInset + Spacing.three,
   },
 });
