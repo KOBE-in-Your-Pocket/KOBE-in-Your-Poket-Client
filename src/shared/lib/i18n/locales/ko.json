@@ -94,5 +94,18 @@
       "appleMaps": "Apple 지도",
       "googleMaps": "Google 지도"
     }
+  },
+  "evacuation": {
+    "list": {
+      "title": "대피소",
+      "loadError": "대피소를 불러올 수 없습니다.",
+      "empty": "대피소 정보가 없습니다.",
+      "type": {
+        "emergency": "긴급대피장소",
+        "designated": "지정대피소",
+        "both": "긴급·지정"
+      },
+      "capacity": "수용 {{count}}명"
+    }
   }
 }

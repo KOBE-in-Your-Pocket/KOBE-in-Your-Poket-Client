@@ -95,6 +95,19 @@
       "googleMaps": "Google Maps"
     }
   },
+  "evacuation": {
+    "list": {
+      "title": "Shelters",
+      "loadError": "Could not load shelters.",
+      "empty": "No shelter information available.",
+      "type": {
+        "emergency": "Emergency",
+        "designated": "Shelter",
+        "both": "Emergency + Shelter"
+      },
+      "capacity": "Cap. {{count}}"
+    }
+  },
   "location": {
     "permissionDeniedNotice": "Location access is off, so your current location can't be shown.",
     "servicesDisabledTitle": "Location Services Turned Off",

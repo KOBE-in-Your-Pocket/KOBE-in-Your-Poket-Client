@@ -95,6 +95,19 @@
       "googleMaps": "Google マップ"
     }
   },
+  "evacuation": {
+    "list": {
+      "title": "避難所",
+      "loadError": "避難所を読み込めませんでした。",
+      "empty": "避難所情報がありません。",
+      "type": {
+        "emergency": "緊急避難場所",
+        "designated": "指定避難所",
+        "both": "緊急・指定"
+      },
+      "capacity": "収容 {{count}}人"
+    }
+  },
   "location": {
     "permissionDeniedNotice": "位置情報が許可されていないため、現在地を表示できません。",
     "servicesDisabledTitle": "位置情報がオフになりました",

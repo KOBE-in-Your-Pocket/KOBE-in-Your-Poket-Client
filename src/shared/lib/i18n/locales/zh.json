@@ -95,6 +95,19 @@
       "googleMaps": "Google 地图"
     }
   },
+  "evacuation": {
+    "list": {
+      "title": "避难所",
+      "loadError": "无法加载避难所。",
+      "empty": "没有避难所信息。",
+      "type": {
+        "emergency": "紧急避难所",
+        "designated": "指定避难所",
+        "both": "紧急+指定"
+      },
+      "capacity": "容纳 {{count}}人"
+    }
+  },
   "location": {
     "permissionDeniedNotice": "未允许使用位置信息，无法显示当前位置。",
     "servicesDisabledTitle": "位置信息已关闭",
