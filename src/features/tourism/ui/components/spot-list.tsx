@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -109,7 +109,7 @@ function SpotListItem({ spot }: { spot: SpotWithDistance }) {
   );
 }
 
-function ListHeader() {
+function ListHeader({ showGenreFilter }: { showGenreFilter: boolean }) {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
 
@@ -121,7 +121,7 @@ function ListHeader() {
       <ThemedText type="smallBold" themeColor="textSecondary">
         {t('tourism.spotList.subtitle')}
       </ThemedText>
-      <GenreFilter />
+      {showGenreFilter ? <GenreFilter /> : null}
     </View>
   );
 }
@@ -132,10 +132,15 @@ function ListHeader() {
  * application 層の `useFilteredSpots()` 経由でデータを取得し、各スポットの
  * 画像・距離・評価・営業時間を含むカード一覧を表示する。
  */
-export function SpotList() {
+export function SpotList({ showGenreFilter = true }: { showGenreFilter?: boolean }) {
   const { t } = useTranslation();
   const { data: spots, isPending, isError } = useFilteredSpots();
   const { coords } = useCurrentLocation();
+
+  const renderListHeader = useCallback(
+    () => <ListHeader showGenreFilter={showGenreFilter} />,
+    [showGenreFilter],
+  );
 
   const spotsWithDistance = useMemo((): SpotWithDistance[] | undefined => {
     if (!spots) return undefined;
@@ -176,7 +181,7 @@ export function SpotList() {
       data={spotsWithDistance}
       keyExtractor={(spot) => spot.id}
       renderItem={({ item }) => <SpotListItem spot={item} />}
-      ListHeaderComponent={ListHeader}
+      ListHeaderComponent={renderListHeader}
       contentContainerStyle={styles.listContent}
     />
   );
