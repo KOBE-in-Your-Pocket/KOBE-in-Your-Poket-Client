@@ -31,9 +31,34 @@ jest.mock('@/shared/lib/theme', () => ({
   }),
 }));
 
-jest.mock('@/shared/ui', () => ({
-  ThemedText: MockThemedText,
-}));
+jest.mock('@/shared/ui', () => {
+  const { Pressable, Text, View } = require('react-native');
+  return {
+    ThemedText: MockThemedText,
+    SegmentedControl: ({
+      segments,
+      value,
+      onChange,
+    }: {
+      segments: { value: string; label: string }[];
+      value: string;
+      onChange: (v: string) => void;
+    }) => (
+      <View accessibilityRole="tablist">
+        {segments.map((seg) => (
+          <Pressable
+            key={seg.value}
+            onPress={() => onChange(seg.value)}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: value === seg.value }}
+          >
+            <Text>{seg.label}</Text>
+          </Pressable>
+        ))}
+      </View>
+    ),
+  };
+});
 
 const mockedUseTranslation = jest.mocked(useTranslation);
 
