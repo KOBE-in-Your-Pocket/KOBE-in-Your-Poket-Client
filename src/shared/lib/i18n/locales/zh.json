@@ -68,6 +68,19 @@
       "onsen": "温泉"
     }
   },
+  "evacuation": {
+    "list": {
+      "title": "避难所",
+      "subtitle": "附近的避难所",
+      "loadError": "无法加载避难所。",
+      "empty": "未找到避难所。",
+      "type": {
+        "emergency": "紧急",
+        "designated": "指定",
+        "both": "兼用"
+      }
+    }
+  },
   "map": {
     "modeToggle": {
       "tourism": "观光",

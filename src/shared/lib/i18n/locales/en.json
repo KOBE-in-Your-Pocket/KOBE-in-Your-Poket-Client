@@ -68,6 +68,19 @@
       "onsen": "Hot Spring"
     }
   },
+  "evacuation": {
+    "list": {
+      "title": "Evacuation Shelters",
+      "subtitle": "Nearby shelters",
+      "loadError": "Could not load shelters.",
+      "empty": "No shelters found.",
+      "type": {
+        "emergency": "Emergency",
+        "designated": "Designated",
+        "both": "Both"
+      }
+    }
+  },
   "map": {
     "modeToggle": {
       "tourism": "Tourism",
