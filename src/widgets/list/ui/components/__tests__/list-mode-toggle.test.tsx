@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { useTranslation } from 'react-i18next';
-import { Text as MockThemedText } from 'react-native';
+import { Pressable as MockPressable, Text as MockThemedText, View as MockView } from 'react-native';
 
 import { useListModeStore } from '../../../store/use-list-mode-store';
 
@@ -33,6 +33,28 @@ jest.mock('@/shared/lib/theme', () => ({
 
 jest.mock('@/shared/ui', () => ({
   ThemedText: MockThemedText,
+  SegmentedControl: ({
+    segments,
+    value,
+    onChange,
+  }: {
+    segments: { value: string; label: string }[];
+    value: string;
+    onChange: (v: string) => void;
+  }) => (
+    <MockView accessibilityRole="tablist">
+      {segments.map((seg) => (
+        <MockPressable
+          key={seg.value}
+          onPress={() => onChange(seg.value)}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: value === seg.value }}
+        >
+          <MockThemedText>{seg.label}</MockThemedText>
+        </MockPressable>
+      ))}
+    </MockView>
+  ),
 }));
 
 const mockedUseTranslation = jest.mocked(useTranslation);
