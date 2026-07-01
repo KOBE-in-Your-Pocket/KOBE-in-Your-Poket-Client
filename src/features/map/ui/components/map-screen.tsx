@@ -78,6 +78,13 @@ export function MapScreen() {
     }
   }
 
+  // 避難モードへ切り替えたら観光スポットの選択を解除する。
+  // 保持したままだと観光モードへ戻った際に、ユーザーが開いていない SpotCard が再表示されてしまう。
+  // deep-link 反映と同じく、effect ではなく render 中に調整する公式パターンで揃える。
+  if (mapMode !== 'tourism' && selectedSpot !== null) {
+    setSelectedSpot(null);
+  }
+
   // スポット選択（カード・経路）は観光モード専用。避難モードでは目的地を渡さず経路取得もしない。
   const routeDestination = mapMode === 'tourism' ? selectedSpot?.coordinates : undefined;
   const { data: route } = useRoute(coords, routeDestination);
