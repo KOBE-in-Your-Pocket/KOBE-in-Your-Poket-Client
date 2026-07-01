@@ -97,6 +97,12 @@
       "close": "关闭"
     }
   },
+  "list": {
+    "modeToggle": {
+      "tourism": "景点",
+      "evacuation": "避难所"
+    }
+  },
   "map": {
     "modeToggle": {
       "tourism": "观光",

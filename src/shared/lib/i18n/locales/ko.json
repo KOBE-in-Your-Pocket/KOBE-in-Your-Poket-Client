@@ -97,6 +97,12 @@
       "close": "닫기"
     }
   },
+  "list": {
+    "modeToggle": {
+      "tourism": "관광지",
+      "evacuation": "대피소"
+    }
+  },
   "map": {
     "modeToggle": {
       "tourism": "관광",

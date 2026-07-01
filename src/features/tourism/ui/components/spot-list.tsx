@@ -132,7 +132,13 @@ function ListHeader({ showGenreFilter }: { showGenreFilter: boolean }) {
  * application 層の `useFilteredSpots()` 経由でデータを取得し、各スポットの
  * 画像・距離・評価・営業時間を含むカード一覧を表示する。
  */
-export function SpotList({ showGenreFilter = true }: { showGenreFilter?: boolean }) {
+export function SpotList({
+  showGenreFilter = true,
+  showHeader = true,
+}: {
+  showGenreFilter?: boolean;
+  showHeader?: boolean;
+}) {
   const { t } = useTranslation();
   const { data: spots, isPending, isError } = useFilteredSpots();
   const { coords } = useCurrentLocation();
@@ -181,7 +187,7 @@ export function SpotList({ showGenreFilter = true }: { showGenreFilter?: boolean
       data={spotsWithDistance}
       keyExtractor={(spot) => spot.id}
       renderItem={({ item }) => <SpotListItem spot={item} />}
-      ListHeaderComponent={renderListHeader}
+      ListHeaderComponent={showHeader ? renderListHeader : undefined}
       contentContainerStyle={styles.listContent}
     />
   );

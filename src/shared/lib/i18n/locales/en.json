@@ -97,6 +97,12 @@
       "close": "Close"
     }
   },
+  "list": {
+    "modeToggle": {
+      "tourism": "Spots",
+      "evacuation": "Shelters"
+    }
+  },
   "map": {
     "modeToggle": {
       "tourism": "Tourism",
