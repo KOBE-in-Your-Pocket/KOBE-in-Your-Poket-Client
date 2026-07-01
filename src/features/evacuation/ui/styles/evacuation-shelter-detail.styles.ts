@@ -54,4 +54,14 @@ export const styles = StyleSheet.create({
   infoText: {
     flex: 1,
   },
+  linkRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+  },
+  linkText: {
+    flex: 1,
+    color: DETAIL_ACCENT_COLOR,
+    fontWeight: '600',
+  },
 });

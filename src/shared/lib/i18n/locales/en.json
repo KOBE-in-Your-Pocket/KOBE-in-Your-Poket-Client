@@ -99,7 +99,8 @@
     },
     "shelterDetail": {
       "back": "Back",
-      "loadError": "Could not load shelter details."
+      "loadError": "Could not load shelter details.",
+      "externalLink": "Check status (city page)"
     }
   },
   "list": {
