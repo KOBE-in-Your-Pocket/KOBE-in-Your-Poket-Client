@@ -80,9 +80,7 @@ export function MapScreen() {
     }
   }
 
-  // モード切替時は前モードの選択（カード・経路）を解除し、切替を即時反映する。
-  // 保持したままだと戻ったときにユーザーが開いていないカードが再表示されてしまう。
-  // deep-link 反映と同じく、effect ではなく render 中に調整する公式パターンで揃える。
+  // モード切替時は前モードの選択を解除する（保持すると戻ったとき未操作のカードが再表示されるため）。
   if (mapMode !== 'tourism' && selectedSpot !== null) {
     setSelectedSpot(null);
   }
@@ -90,8 +88,7 @@ export function MapScreen() {
     setSelectedShelter(null);
   }
 
-  // 経路の目的地は現在モードの選択地点。観光=スポット / 避難=避難所。
-  // 選択が無ければ undefined になり useRoute は無効化される（経路取得なし）。
+  // 経路の目的地は現在モードの選択地点（観光=スポット / 避難=避難所）。
   const routeDestination =
     mapMode === 'tourism' ? selectedSpot?.coordinates : selectedShelter?.coordinates;
   const { data: route } = useRoute(coords, routeDestination);
@@ -130,7 +127,7 @@ export function MapScreen() {
     router.push({ pathname: '/tourism/[id]', params: { id: selectedSpot.id } });
   }, [selectedSpot]);
 
-  // 避難所詳細ページは未実装（別 Issue）。実装までは詳細ボタンを未配線にしておく。
+  // 避難所詳細ページは未実装のため未配線（別 Issue）。
   const handleOpenShelterDetail = useCallback(() => {}, []);
 
   const handleStartNavigation = useCallback(() => {
