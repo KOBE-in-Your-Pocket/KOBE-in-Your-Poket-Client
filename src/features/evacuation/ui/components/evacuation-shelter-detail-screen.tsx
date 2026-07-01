@@ -4,7 +4,7 @@ import { SymbolView } from 'expo-symbols';
 import { openBrowserAsync } from 'expo-web-browser';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useEvacuationShelterDetail } from '../../application/use-evacuation-shelter-detail';
@@ -14,6 +14,8 @@ import { DETAIL_ACCENT_COLOR, styles } from '../styles/evacuation-shelter-detail
 import type { EvacuationShelter } from '../../domain/evacuation-shelter';
 
 import { Spacing } from '@/shared/config';
+import { confirmOpenDirections } from '@/shared/lib/directions';
+import { useCurrentLocation } from '@/shared/lib/geo';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
@@ -49,11 +51,22 @@ function BackButton({ label }: { label: string }) {
 function ShelterDetailContent({ shelter }: { shelter: EvacuationShelter }) {
   const theme = useTheme();
   const { t } = useTranslation();
+  const { coords } = useCurrentLocation();
 
   const { externalUrl } = shelter;
   const handleOpenExternalLink = useCallback(() => {
-    if (externalUrl) void openBrowserAsync(externalUrl);
-  }, [externalUrl]);
+    if (!externalUrl) return;
+    openBrowserAsync(externalUrl).catch(() => {
+      Alert.alert(
+        t('evacuation.shelterDetail.linkErrorTitle'),
+        t('evacuation.shelterDetail.linkErrorMessage'),
+      );
+    });
+  }, [externalUrl, t]);
+
+  const handleOpenDirections = useCallback(() => {
+    confirmOpenDirections(t, shelter.coordinates, { origin: coords });
+  }, [t, shelter.coordinates, coords]);
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -63,7 +76,6 @@ function ShelterDetailContent({ shelter }: { shelter: EvacuationShelter }) {
           style={styles.heroImage}
           contentFit="cover"
         />
-        <BackButton label={t('evacuation.shelterDetail.back')} />
       </View>
 
       <View style={styles.body}>
@@ -121,6 +133,26 @@ function ShelterDetailContent({ shelter }: { shelter: EvacuationShelter }) {
           </ThemedText>
         </View>
 
+        <Pressable
+          style={styles.routeButton}
+          onPress={handleOpenDirections}
+          accessibilityRole="button"
+          accessibilityLabel={t('evacuation.shelterDetail.openDirectionsButton')}
+        >
+          <SymbolView
+            tintColor="#FFFFFF"
+            name={{
+              ios: 'arrow.triangle.turn.up.right.diamond.fill',
+              android: 'directions',
+              web: 'directions',
+            }}
+            size={16}
+          />
+          <ThemedText style={styles.routeButtonText}>
+            {t('evacuation.shelterDetail.openDirectionsButton')}
+          </ThemedText>
+        </Pressable>
+
         {externalUrl ? (
           <Pressable
             style={styles.linkRow}
@@ -172,6 +204,8 @@ export function EvacuationShelterDetailScreen({ shelterId }: { shelterId: string
       ) : (
         <ShelterDetailContent shelter={shelter} />
       )}
+      {/* 戻る操作は正常系・異常系を問わず提供する（AC: 戻る操作で一覧へ戻れる）。 */}
+      <BackButton label={t('evacuation.shelterDetail.back')} />
     </ThemedView>
   );
 }

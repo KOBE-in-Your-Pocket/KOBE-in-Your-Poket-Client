@@ -101,7 +101,10 @@
     "shelterDetail": {
       "back": "返回",
       "loadError": "无法加载避难所详情。",
-      "externalLink": "查看开放状态（政府页面）"
+      "externalLink": "查看开放状态（政府页面）",
+      "openDirectionsButton": "打开路线",
+      "linkErrorTitle": "错误",
+      "linkErrorMessage": "无法打开页面。"
     }
   },
   "list": {
