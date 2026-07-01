@@ -6,6 +6,8 @@ export const CATEGORY_COLOR = '#3A6EA5';
 export const ACCESSIBLE_COLOR = '#2E8B57';
 /** 最寄りバッジ専用のアクセントカラー。ACCESSIBLE_COLOR（バリアフリー表示）との意味の重複を避けるため分離。 */
 export const NEAREST_BADGE_COLOR = '#E8A317';
+/** 位置情報フォールバックバナーの警告テキスト色。背景が固定色のため、ダークモードでも読めるよう文字色も固定する。 */
+export const LOCATION_BANNER_TEXT_COLOR = '#B71C1C';
 
 export const styles = StyleSheet.create({
   centered: {
@@ -23,9 +25,21 @@ export const styles = StyleSheet.create({
     gap: Spacing.one,
     marginBottom: Spacing.one,
   },
+  headerless: {
+    marginBottom: Spacing.one,
+  },
   title: {
     fontSize: 28,
     lineHeight: 34,
+  },
+  locationBanner: {
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.two,
+    borderRadius: Spacing.two,
+    backgroundColor: '#FDECEA',
+  },
+  locationBannerText: {
+    color: LOCATION_BANNER_TEXT_COLOR,
   },
   card: {
     borderRadius: Spacing.three,

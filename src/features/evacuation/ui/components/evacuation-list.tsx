@@ -106,18 +106,46 @@ function ShelterListItem({
   );
 }
 
-function ListHeader() {
+function ListHeader({
+  showHeader,
+  permissionDenied,
+  servicesDisabled,
+}: {
+  showHeader: boolean;
+  permissionDenied: boolean;
+  servicesDisabled: boolean;
+}) {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
 
+  if (!showHeader && !permissionDenied && !servicesDisabled) return null;
+
   return (
-    <View style={[styles.header, { paddingTop: insets.top + Spacing.three }]}>
-      <ThemedText type="subtitle" style={styles.title}>
-        {t('evacuation.list.title')}
-      </ThemedText>
-      <ThemedText type="smallBold" themeColor="textSecondary">
-        {t('evacuation.list.subtitle')}
-      </ThemedText>
+    <View
+      style={
+        showHeader ? [styles.header, { paddingTop: insets.top + Spacing.three }] : styles.headerless
+      }
+    >
+      {showHeader ? (
+        <>
+          <ThemedText type="subtitle" style={styles.title}>
+            {t('evacuation.list.title')}
+          </ThemedText>
+          <ThemedText type="smallBold" themeColor="textSecondary">
+            {t('evacuation.list.subtitle')}
+          </ThemedText>
+        </>
+      ) : null}
+
+      {permissionDenied || servicesDisabled ? (
+        <View style={styles.locationBanner}>
+          <ThemedText type="smallBold" style={styles.locationBannerText}>
+            {permissionDenied
+              ? t('location.permissionDeniedNotice')
+              : t('evacuation.list.locationServicesDisabled')}
+          </ThemedText>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -131,7 +159,7 @@ function ListHeader() {
 export function EvacuationList({ showHeader = true }: { showHeader?: boolean } = {}) {
   const { t } = useTranslation();
   const { data: shelters, isPending, isError } = useEvacuationShelters();
-  const { coords } = useCurrentLocation();
+  const { coords, permissionDenied, servicesDisabled } = useCurrentLocation();
 
   const sheltersWithDistance = useMemo((): ShelterWithDistance[] | undefined => {
     if (!shelters) return undefined;
@@ -184,7 +212,13 @@ export function EvacuationList({ showHeader = true }: { showHeader?: boolean } =
       renderItem={({ item, index }) => (
         <ShelterListItem shelter={item} isNearest={coords !== null && index === 0} />
       )}
-      ListHeaderComponent={showHeader ? ListHeader : undefined}
+      ListHeaderComponent={
+        <ListHeader
+          showHeader={showHeader}
+          permissionDenied={permissionDenied}
+          servicesDisabled={servicesDisabled}
+        />
+      }
       contentContainerStyle={styles.listContent}
     />
   );
