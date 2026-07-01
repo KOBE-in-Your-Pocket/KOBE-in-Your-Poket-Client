@@ -139,7 +139,7 @@ function ListHeader({
 
       {permissionDenied || servicesDisabled ? (
         <View style={styles.locationBanner}>
-          <ThemedText type="smallBold">
+          <ThemedText type="smallBold" style={styles.locationBannerText}>
             {permissionDenied
               ? t('location.permissionDeniedNotice')
               : t('evacuation.list.locationServicesDisabled')}
