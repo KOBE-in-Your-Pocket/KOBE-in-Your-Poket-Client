@@ -14,21 +14,13 @@ import type { EvacuationShelter } from '../../domain/evacuation-shelter';
 
 type EvacuationShelterCardProps = {
   shelter: EvacuationShelter;
-  /** 現在地。距離計算・経路案内の起点に使う。取得前は `null`。 */
+  /** 現在地。距離計算・経路の起点に使う。取得前は `null`。 */
   currentLocation: GeoCoordinates | null;
-  /** 閉じるボタン押下時のコールバック。 */
   onClose: () => void;
-  /** 「詳細を見る」押下時のコールバック（詳細ページ実装までは呼び出し側で配線）。 */
   onDetail: () => void;
 };
 
-/**
- * 地図で避難所ピンを選択したときに表示する避難所情報カード（SpotCard 相当）。
- *
- * 画像の上にカテゴリ・名称を重ね、下段に住所・距離・収容人数と詳細/経路ボタンを並べる。
- * 距離は shared/lib/geo で算出し、経路ボタンは shared/lib/directions 経由で
- * 外部地図アプリの経路案内を起動する。
- */
+/** 地図で避難所ピンを選択したときに表示する避難所情報カード（SpotCard 相当）。 */
 export function EvacuationShelterCard({
   shelter,
   currentLocation,
