@@ -95,6 +95,10 @@
       "detail": "상세 보기",
       "navigate": "길 안내",
       "close": "닫기"
+    },
+    "shelterDetail": {
+      "back": "뒤로",
+      "loadError": "대피소 상세 정보를 불러올 수 없습니다."
     }
   },
   "list": {

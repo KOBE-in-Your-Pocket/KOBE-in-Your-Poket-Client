@@ -95,6 +95,10 @@
       "detail": "Shelter Detail",
       "navigate": "Directions",
       "close": "Close"
+    },
+    "shelterDetail": {
+      "back": "Back",
+      "loadError": "Could not load shelter details."
     }
   },
   "list": {

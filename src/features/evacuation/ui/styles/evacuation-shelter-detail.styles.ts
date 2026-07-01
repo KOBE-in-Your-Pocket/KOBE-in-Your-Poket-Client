@@ -1,0 +1,57 @@
+import { StyleSheet } from 'react-native';
+
+import { Spacing } from '@/shared/config';
+
+/** カテゴリ表示のアクセントカラー（避難所ピン・カードの緑と統一）。 */
+export const DETAIL_ACCENT_COLOR = '#0F8A4F';
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  centered: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: Spacing.four,
+  },
+  scrollContent: {
+    paddingBottom: Spacing.six,
+  },
+  hero: {
+    position: 'relative',
+    height: 220,
+  },
+  heroImage: {
+    width: '100%',
+    height: '100%',
+  },
+  backButton: {
+    position: 'absolute',
+    left: Spacing.three,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  body: {
+    padding: Spacing.four,
+    gap: Spacing.three,
+  },
+  category: {
+    color: DETAIL_ACCENT_COLOR,
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 1,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+  },
+  infoText: {
+    flex: 1,
+  },
+});

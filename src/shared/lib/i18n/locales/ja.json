@@ -95,6 +95,10 @@
       "detail": "詳細を見る",
       "navigate": "経路案内",
       "close": "閉じる"
+    },
+    "shelterDetail": {
+      "back": "戻る",
+      "loadError": "避難所の詳細を読み込めませんでした。"
     }
   },
   "list": {
