@@ -19,6 +19,7 @@ const sampleShelters: EvacuationShelter[] = [
     media: { imageUrl: 'https://example.com/a.jpg' },
     capacity: 100,
     accessible: true,
+    externalUrl: 'https://www.city.kobe.lg.jp/bosai/',
   },
   {
     id: 'shelter-2',

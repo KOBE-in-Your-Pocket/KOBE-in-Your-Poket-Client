@@ -14,6 +14,7 @@ export const evacuationShelters = sqliteTable('evacuation_shelters', {
   imageUrl: text('image_url').notNull(),
   capacity: integer('capacity'),
   accessible: integer('accessible', { mode: 'boolean' }).notNull(),
+  externalUrl: text('external_url'),
 });
 
 export type EvacuationShelterRecord = typeof evacuationShelters.$inferSelect;
