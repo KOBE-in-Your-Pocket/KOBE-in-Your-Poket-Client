@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react-native';
+import { render } from '@testing-library/react-native';
 
 import { useListModeStore } from '../../../store/use-list-mode-store';
 
