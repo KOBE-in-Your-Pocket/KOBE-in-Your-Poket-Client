@@ -25,7 +25,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,
     borderRadius: Spacing.five,
-    minWidth: 72,
     alignItems: 'center',
   },
   segmentText: {
