@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 
-export type ListMode = 'tourism' | 'evacuation';
+import type { AppMode } from '@/shared/config';
+
+export type ListMode = AppMode;
 
 type ListModeState = {
   listMode: ListMode;
