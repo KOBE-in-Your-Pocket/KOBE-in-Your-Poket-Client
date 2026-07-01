@@ -1,8 +1,9 @@
 import { Image } from 'expo-image';
+import { router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, FlatList, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useEvacuationShelters } from '../../application/use-evacuation-shelters';
@@ -31,71 +32,77 @@ function ShelterListItem({
   const { t } = useTranslation();
 
   return (
-    <ThemedView style={styles.card}>
-      <View style={styles.imageWrapper}>
-        <Image source={{ uri: shelter.media.imageUrl }} style={styles.image} contentFit="cover" />
-        {shelter.distanceKm !== null ? (
-          <View style={styles.distanceBadge}>
-            <ThemedText style={styles.distanceText}>
-              {formatDistanceKm(shelter.distanceKm)}
-            </ThemedText>
-          </View>
-        ) : null}
-      </View>
-
-      <View style={styles.content}>
-        <View style={styles.categoryRow}>
-          <ThemedText style={styles.category}>
-            {t(`evacuation.list.category.${shelter.facilityCategory}`)}
-          </ThemedText>
-          {isNearest ? (
-            <View style={styles.nearestBadge}>
-              <ThemedText style={styles.nearestBadgeText}>
-                {t('evacuation.list.nearest')}
+    <Pressable
+      onPress={() => router.push({ pathname: '/evacuation/[id]', params: { id: shelter.id } })}
+      accessibilityRole="button"
+      accessibilityLabel={shelter.name}
+    >
+      <ThemedView style={styles.card}>
+        <View style={styles.imageWrapper}>
+          <Image source={{ uri: shelter.media.imageUrl }} style={styles.image} contentFit="cover" />
+          {shelter.distanceKm !== null ? (
+            <View style={styles.distanceBadge}>
+              <ThemedText style={styles.distanceText}>
+                {formatDistanceKm(shelter.distanceKm)}
               </ThemedText>
             </View>
           ) : null}
         </View>
 
-        <ThemedText style={styles.name}>{shelter.name}</ThemedText>
+        <View style={styles.content}>
+          <View style={styles.categoryRow}>
+            <ThemedText style={styles.category}>
+              {t(`evacuation.list.category.${shelter.facilityCategory}`)}
+            </ThemedText>
+            {isNearest ? (
+              <View style={styles.nearestBadge}>
+                <ThemedText style={styles.nearestBadgeText}>
+                  {t('evacuation.list.nearest')}
+                </ThemedText>
+              </View>
+            ) : null}
+          </View>
 
-        <ThemedText type="small" themeColor="textSecondary" style={styles.address}>
-          {shelter.address}
-        </ThemedText>
+          <ThemedText style={styles.name}>{shelter.name}</ThemedText>
 
-        <View style={styles.infoRow}>
-          {shelter.capacity !== undefined ? (
+          <ThemedText type="small" themeColor="textSecondary" style={styles.address}>
+            {shelter.address}
+          </ThemedText>
+
+          <View style={styles.infoRow}>
+            {shelter.capacity !== undefined ? (
+              <View style={styles.infoItem}>
+                <SymbolView
+                  tintColor={theme.textSecondary}
+                  name={{ ios: 'person.2.fill', android: 'groups', web: 'groups' }}
+                  size={14}
+                />
+                <ThemedText type="small" themeColor="textSecondary">
+                  {t('evacuation.list.capacity', { count: shelter.capacity })}
+                </ThemedText>
+              </View>
+            ) : null}
+
             <View style={styles.infoItem}>
               <SymbolView
-                tintColor={theme.textSecondary}
-                name={{ ios: 'person.2.fill', android: 'groups', web: 'groups' }}
+                tintColor={ACCESSIBLE_COLOR}
+                name={{
+                  ios: 'figure.roll',
+                  android: 'accessible',
+                  web: 'accessible',
+                }}
                 size={14}
               />
-              <ThemedText type="small" themeColor="textSecondary">
-                {t('evacuation.list.capacity', { count: shelter.capacity })}
+              <ThemedText type="small" style={styles.accessibilityText}>
+                {shelter.accessible
+                  ? t('evacuation.list.accessible.yes')
+                  : t('evacuation.list.accessible.no')}
               </ThemedText>
             </View>
-          ) : null}
-
-          <View style={styles.infoItem}>
-            <SymbolView
-              tintColor={ACCESSIBLE_COLOR}
-              name={{
-                ios: 'figure.roll',
-                android: 'accessible',
-                web: 'accessible',
-              }}
-              size={14}
-            />
-            <ThemedText type="small" style={styles.accessibilityText}>
-              {shelter.accessible
-                ? t('evacuation.list.accessible.yes')
-                : t('evacuation.list.accessible.no')}
-            </ThemedText>
           </View>
         </View>
-      </View>
-    </ThemedView>
+      </ThemedView>
+    </Pressable>
   );
 }
 
