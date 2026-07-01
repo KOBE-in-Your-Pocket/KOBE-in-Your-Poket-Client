@@ -29,13 +29,13 @@ export function ListScreen() {
           { paddingTop: insets.top + Spacing.three, backgroundColor: theme.background },
         ]}
       >
-        <View style={styles.titleRow}>
-          <View style={styles.titleGroup}>
-            <ThemedText type="subtitle">{t(titleKey)}</ThemedText>
-            <ThemedText type="smallBold" themeColor="textSecondary">
-              {t(subtitleKey)}
-            </ThemedText>
-          </View>
+        <ThemedText type="subtitle" style={styles.title}>
+          {t(titleKey)}
+        </ThemedText>
+        <ThemedText type="smallBold" themeColor="textSecondary">
+          {t(subtitleKey)}
+        </ThemedText>
+        <View style={styles.toggleRow}>
           <ListModeToggle />
         </View>
         <ListGenreFilter />
@@ -54,12 +54,11 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.two,
     gap: Spacing.two,
   },
-  titleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  toggleRow: {
+    alignItems: 'flex-end',
   },
-  titleGroup: {
-    gap: Spacing.one,
+  title: {
+    fontSize: 28,
+    lineHeight: 34,
   },
 });
