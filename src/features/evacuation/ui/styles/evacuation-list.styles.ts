@@ -67,12 +67,28 @@ export const styles = StyleSheet.create({
     padding: Spacing.three,
     gap: Spacing.two,
   },
+  categoryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   category: {
     color: CATEGORY_COLOR,
     fontSize: 12,
     fontWeight: '700',
     letterSpacing: 0.5,
     textTransform: 'uppercase',
+  },
+  nearestBadge: {
+    backgroundColor: ACCESSIBLE_COLOR,
+    borderRadius: Spacing.three,
+    paddingHorizontal: Spacing.two,
+    paddingVertical: 2,
+  },
+  nearestBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '700',
   },
   name: {
     fontSize: 22,

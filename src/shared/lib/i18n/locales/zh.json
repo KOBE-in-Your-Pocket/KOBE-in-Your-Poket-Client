@@ -75,6 +75,7 @@
       "loadError": "无法加载避难所。",
       "empty": "未找到避难所。",
       "capacity": "容纳 {{count}}人",
+      "nearest": "最近",
       "category": {
         "government": "公共建筑",
         "school": "学校",
