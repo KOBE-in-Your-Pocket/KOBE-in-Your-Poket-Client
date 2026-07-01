@@ -54,6 +54,20 @@ export const styles = StyleSheet.create({
   infoText: {
     flex: 1,
   },
+  routeButton: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.one,
+    backgroundColor: DETAIL_ACCENT_COLOR,
+    paddingVertical: Spacing.two,
+    paddingHorizontal: Spacing.three,
+    borderRadius: Spacing.five,
+  },
+  routeButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+  },
   linkRow: {
     flexDirection: 'row',
     alignItems: 'center',

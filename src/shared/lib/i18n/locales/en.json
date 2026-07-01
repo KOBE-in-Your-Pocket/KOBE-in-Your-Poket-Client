@@ -101,7 +101,8 @@
     "shelterDetail": {
       "back": "Back",
       "loadError": "Could not load shelter details.",
-      "externalLink": "Check status (city page)"
+      "externalLink": "Check status (city page)",
+      "openDirectionsButton": "Open directions"
     }
   },
   "list": {

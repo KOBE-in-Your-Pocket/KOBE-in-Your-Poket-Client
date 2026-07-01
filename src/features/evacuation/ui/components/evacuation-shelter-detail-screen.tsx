@@ -14,6 +14,8 @@ import { DETAIL_ACCENT_COLOR, styles } from '../styles/evacuation-shelter-detail
 import type { EvacuationShelter } from '../../domain/evacuation-shelter';
 
 import { Spacing } from '@/shared/config';
+import { confirmOpenDirections } from '@/shared/lib/directions';
+import { useCurrentLocation } from '@/shared/lib/geo';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
@@ -49,11 +51,16 @@ function BackButton({ label }: { label: string }) {
 function ShelterDetailContent({ shelter }: { shelter: EvacuationShelter }) {
   const theme = useTheme();
   const { t } = useTranslation();
+  const { coords } = useCurrentLocation();
 
   const { externalUrl } = shelter;
   const handleOpenExternalLink = useCallback(() => {
     if (externalUrl) void openBrowserAsync(externalUrl);
   }, [externalUrl]);
+
+  const handleOpenDirections = useCallback(() => {
+    confirmOpenDirections(t, shelter.coordinates, { origin: coords });
+  }, [t, shelter.coordinates, coords]);
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -120,6 +127,26 @@ function ShelterDetailContent({ shelter }: { shelter: EvacuationShelter }) {
               : t('evacuation.list.accessible.no')}
           </ThemedText>
         </View>
+
+        <Pressable
+          style={styles.routeButton}
+          onPress={handleOpenDirections}
+          accessibilityRole="button"
+          accessibilityLabel={t('evacuation.shelterDetail.openDirectionsButton')}
+        >
+          <SymbolView
+            tintColor="#FFFFFF"
+            name={{
+              ios: 'arrow.triangle.turn.up.right.diamond.fill',
+              android: 'directions',
+              web: 'directions',
+            }}
+            size={16}
+          />
+          <ThemedText style={styles.routeButtonText}>
+            {t('evacuation.shelterDetail.openDirectionsButton')}
+          </ThemedText>
+        </Pressable>
 
         {externalUrl ? (
           <Pressable
