@@ -99,7 +99,8 @@
     },
     "shelterDetail": {
       "back": "返回",
-      "loadError": "无法加载避难所详情。"
+      "loadError": "无法加载避难所详情。",
+      "externalLink": "查看开放状态（政府页面）"
     }
   },
   "list": {

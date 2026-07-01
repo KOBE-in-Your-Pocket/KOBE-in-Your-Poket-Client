@@ -1,13 +1,15 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
+import { openBrowserAsync } from 'expo-web-browser';
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useEvacuationShelterDetail } from '../../application/use-evacuation-shelter-detail';
 
-import { styles } from '../styles/evacuation-shelter-detail.styles';
+import { DETAIL_ACCENT_COLOR, styles } from '../styles/evacuation-shelter-detail.styles';
 
 import type { EvacuationShelter } from '../../domain/evacuation-shelter';
 
@@ -38,6 +40,11 @@ function BackButton({ label }: { label: string }) {
 function ShelterDetailContent({ shelter }: { shelter: EvacuationShelter }) {
   const theme = useTheme();
   const { t } = useTranslation();
+
+  const { externalUrl } = shelter;
+  const handleOpenExternalLink = useCallback(() => {
+    if (externalUrl) void openBrowserAsync(externalUrl);
+  }, [externalUrl]);
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -104,6 +111,29 @@ function ShelterDetailContent({ shelter }: { shelter: EvacuationShelter }) {
               : t('evacuation.list.accessible.no')}
           </ThemedText>
         </View>
+
+        {externalUrl ? (
+          <Pressable
+            style={styles.linkRow}
+            onPress={handleOpenExternalLink}
+            accessibilityRole="link"
+            accessibilityLabel={t('evacuation.shelterDetail.externalLink')}
+          >
+            <SymbolView
+              tintColor={DETAIL_ACCENT_COLOR}
+              name={{ ios: 'link', android: 'link', web: 'link' }}
+              size={16}
+            />
+            <ThemedText type="small" style={styles.linkText}>
+              {t('evacuation.shelterDetail.externalLink')}
+            </ThemedText>
+            <SymbolView
+              tintColor={DETAIL_ACCENT_COLOR}
+              name={{ ios: 'arrow.up.right', android: 'open_in_new', web: 'open_in_new' }}
+              size={14}
+            />
+          </Pressable>
+        ) : null}
       </View>
     </ScrollView>
   );
