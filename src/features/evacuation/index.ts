@@ -5,6 +5,8 @@ export {
 export type {
   EvacuationShelter,
   ShelterCoordinates,
+  ShelterFacilityCategory,
+  ShelterMedia,
   ShelterType,
 } from './domain/evacuation-shelter';
 export { EvacuationList } from './ui/components/evacuation-list';

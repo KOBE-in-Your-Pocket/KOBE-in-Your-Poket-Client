@@ -17,7 +17,9 @@ describe('fetchEvacuationShelters', () => {
       expect(shelter.coordinates.latitude).toBeDefined();
       expect(shelter.coordinates.longitude).toBeDefined();
       expect(shelter.type).toBeTruthy();
-      // capacity は任意。データがあれば正の数（無ければ UI 非表示）。
+      expect(shelter.facilityCategory).toBeTruthy();
+      expect(shelter.media.imageUrl).toMatch(/^https?:\/\//);
+      expect(typeof shelter.accessible).toBe('boolean');
       if (shelter.capacity !== undefined) {
         expect(shelter.capacity).toBeGreaterThan(0);
       }
