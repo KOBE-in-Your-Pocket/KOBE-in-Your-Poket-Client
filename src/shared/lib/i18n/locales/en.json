@@ -68,6 +68,12 @@
       "onsen": "Hot Spring"
     }
   },
+  "list": {
+    "modeToggle": {
+      "tourism": "Spots",
+      "evacuation": "Shelters"
+    }
+  },
   "map": {
     "spotCard": {
       "detail": "Spot Detail",
