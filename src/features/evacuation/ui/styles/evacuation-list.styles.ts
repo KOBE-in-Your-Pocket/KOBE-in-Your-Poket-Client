@@ -2,7 +2,8 @@ import { Platform, StyleSheet } from 'react-native';
 
 import { Spacing } from '@/shared/config';
 
-export const TYPE_BADGE_COLOR = '#2E7D5B';
+export const CATEGORY_COLOR = '#3A6EA5';
+export const ACCESSIBLE_COLOR = '#2E8B57';
 
 export const styles = StyleSheet.create({
   centered: {
@@ -26,8 +27,7 @@ export const styles = StyleSheet.create({
   },
   card: {
     borderRadius: Spacing.three,
-    padding: Spacing.three,
-    gap: Spacing.two,
+    overflow: 'hidden',
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -41,29 +41,60 @@ export const styles = StyleSheet.create({
       default: {},
     }),
   },
-  typeBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: TYPE_BADGE_COLOR,
-    borderRadius: Spacing.five,
+  imageWrapper: {
+    position: 'relative',
+    height: 180,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+  distanceBadge: {
+    position: 'absolute',
+    top: Spacing.two,
+    right: Spacing.two,
+    backgroundColor: CATEGORY_COLOR,
+    borderRadius: Spacing.three,
     paddingHorizontal: Spacing.two,
     paddingVertical: Spacing.one,
   },
-  typeText: {
+  distanceText: {
     color: '#FFFFFF',
     fontSize: 12,
+    fontWeight: '600',
+  },
+  content: {
+    padding: Spacing.three,
+    gap: Spacing.two,
+  },
+  category: {
+    color: CATEGORY_COLOR,
+    fontSize: 12,
     fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
   },
   name: {
-    fontSize: 18,
-    lineHeight: 24,
-  },
-  addressRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: Spacing.one,
+    fontSize: 22,
+    lineHeight: 28,
+    fontWeight: '700',
   },
   address: {
-    flex: 1,
     lineHeight: 20,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.three,
+    marginTop: Spacing.one,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.one,
+  },
+  accessibilityText: {
+    color: ACCESSIBLE_COLOR,
+    fontWeight: '600',
   },
 });

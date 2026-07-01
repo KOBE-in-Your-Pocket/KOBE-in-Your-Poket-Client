@@ -74,6 +74,17 @@
       "subtitle": "Nearby shelters",
       "loadError": "Could not load shelters.",
       "empty": "No shelters found.",
+      "capacity": "Capacity: {{count}}",
+      "category": {
+        "government": "Government Building",
+        "school": "School",
+        "park": "Park",
+        "gymnasium": "Gymnasium"
+      },
+      "accessible": {
+        "yes": "Accessible",
+        "no": "Not accessible"
+      },
       "type": {
         "emergency": "Emergency",
         "designated": "Designated",

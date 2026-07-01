@@ -7,7 +7,7 @@ import { CustomTabList } from './custom-tab-list';
 import { TabButton } from './tab-button';
 
 import { styles } from '../styles/custom-tabs-layout.styles';
-import { TAB_BAR_CONTENT_HEIGHT, TAB_DEFS } from '../tab-bar-config';
+import { TAB_BAR_CONTENT_HEIGHT, HIDDEN_TAB_DEFS, TAB_DEFS } from '../tab-bar-config';
 
 import { Spacing } from '@/shared/config';
 
@@ -21,6 +21,11 @@ export function CustomTabsLayout() {
       <View style={[styles.content, { paddingBottom: tabBarInset }]}>
         <TabSlot style={styles.tabSlot} />
       </View>
+      <TabList style={{ display: 'none' }}>
+        {HIDDEN_TAB_DEFS.map((tab) => (
+          <TabTrigger key={tab.name} name={tab.name} href={tab.href} />
+        ))}
+      </TabList>
       <TabList asChild>
         <CustomTabList>
           {TAB_DEFS.map((tab) => (
