@@ -75,7 +75,7 @@
       "loadError": "避難所を読み込めませんでした。",
       "empty": "避難所が見つかりませんでした。",
       "capacity": "収容 {{count}}人",
-      "nearest": "最寄り",
+      "nearest": "一番近い避難所",
       "locationServicesDisabled": "位置情報サービスがオフのため、距離は表示されません。",
       "category": {
         "government": "公共施設",
