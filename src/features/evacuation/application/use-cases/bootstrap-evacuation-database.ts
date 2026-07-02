@@ -19,7 +19,10 @@ async function doBootstrapEvacuationDatabase(): Promise<void> {
 }
 
 export function bootstrapEvacuationDatabase(): Promise<void> {
-  bootstrapPromise ??= doBootstrapEvacuationDatabase();
+  bootstrapPromise ??= doBootstrapEvacuationDatabase().catch((error: unknown) => {
+    bootstrapPromise = null;
+    throw error;
+  });
   return bootstrapPromise;
 }
 
