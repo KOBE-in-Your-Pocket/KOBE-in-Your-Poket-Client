@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
+import { router } from 'expo-router';
 import { Text as MockText, View as MockView } from 'react-native';
 
 import { useMapModeStore } from '../../../store/use-map-mode-store';
@@ -65,8 +66,16 @@ jest.mock('@/features/tourism', () => ({
 
 jest.mock('@/features/evacuation', () => ({
   useEvacuationShelters: () => ({ data: mockShelters }),
-  EvacuationShelterCard: ({ shelter }: { shelter: { id: string } }) => (
-    <MockText testID="shelter-card">{shelter.id}</MockText>
+  EvacuationShelterCard: ({
+    shelter,
+    onDetail,
+  }: {
+    shelter: { id: string };
+    onDetail: () => void;
+  }) => (
+    <MockText testID="shelter-card" onPress={onDetail}>
+      {shelter.id}
+    </MockText>
   ),
 }));
 
@@ -181,6 +190,22 @@ describe('MapScreen のマーカー出し分け', () => {
     fireEvent.press(screen.getByTestId('marker-shelter-1'));
 
     expect(screen.getByTestId('shelter-card').props.children).toBe('shelter-1');
+  });
+
+  it('避難所カードの詳細ボタンで避難所詳細画面へ遷移する', () => {
+    (router.push as jest.Mock).mockClear();
+    useMapModeStore.setState({ mapMode: 'evacuation' });
+
+    render(<MapScreen />);
+    fireEvent.press(screen.getByTestId('marker-shelter-1'));
+
+    // カード（スタブ）の onDetail を発火させる。
+    fireEvent.press(screen.getByTestId('shelter-card'));
+
+    expect(router.push).toHaveBeenCalledWith({
+      pathname: '/evacuation/[id]',
+      params: { id: 'shelter-1' },
+    });
   });
 
   it('避難所選択中に観光モードへ切り替えるとカードがリセットされる', () => {
