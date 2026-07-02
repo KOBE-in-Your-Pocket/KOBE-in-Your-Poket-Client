@@ -1,6 +1,6 @@
 import { getDistanceKm, type GeoCoordinates } from '@/shared/lib/geo';
 
-import type { EvacuationShelter } from '../domain/evacuation-shelter';
+import type { EvacuationShelter } from '../../domain/evacuation-shelter';
 
 export type ShelterWithDistance = EvacuationShelter & {
   distanceKm: number | null;

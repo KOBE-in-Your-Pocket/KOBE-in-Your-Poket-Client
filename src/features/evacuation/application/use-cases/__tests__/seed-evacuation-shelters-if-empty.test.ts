@@ -1,5 +1,5 @@
-import type { EvacuationShelter } from '../../domain/evacuation-shelter';
-import type { EvacuationShelterRepository } from '../../domain/evacuation-shelter-repository';
+import type { EvacuationShelter } from '../../../domain/evacuation-shelter';
+import type { EvacuationShelterRepository } from '../../../domain/evacuation-shelter-repository';
 import { seedEvacuationSheltersIfEmpty } from '../seed-evacuation-shelters-if-empty';
 
 const mockShelters: EvacuationShelter[] = [

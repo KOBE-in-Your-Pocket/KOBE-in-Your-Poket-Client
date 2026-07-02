@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { fetchEvacuationShelters } from '../infrastructure/api/mock-shelters';
+import { fetchEvacuationShelters } from '../../infrastructure/api/mock-shelters';
 
 import { EVACUATION_SHELTERS_QUERY_KEY } from './use-evacuation-shelters';
 
-import type { EvacuationShelter } from '../domain/evacuation-shelter';
+import type { EvacuationShelter } from '../../domain/evacuation-shelter';
 
 /**
  * ID 指定で避難所詳細（名称・住所・収容人数・種類など）を取得する application 層フック。

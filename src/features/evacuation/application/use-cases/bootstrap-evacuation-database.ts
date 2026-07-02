@@ -1,7 +1,7 @@
-import { fetchEvacuationShelters } from '../infrastructure/api/mock-shelters';
-import { getEvacuationDatabase } from '../infrastructure/db/client';
-import { runEvacuationMigrations } from '../infrastructure/db/run-migrations';
-import { createSqliteEvacuationShelterRepository } from '../infrastructure/db/sqlite-evacuation-shelter-repository';
+import { fetchEvacuationShelters } from '../../infrastructure/api/mock-shelters';
+import { getEvacuationDatabase } from '../../infrastructure/db/client';
+import { runEvacuationMigrations } from '../../infrastructure/db/run-migrations';
+import { createSqliteEvacuationShelterRepository } from '../../infrastructure/db/sqlite-evacuation-shelter-repository';
 
 import { seedEvacuationSheltersIfEmpty } from './seed-evacuation-shelters-if-empty';
 

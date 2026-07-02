@@ -9,8 +9,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   sortSheltersByDistance,
   type ShelterWithDistance,
-} from '../../application/sort-shelters-by-distance';
-import { useEvacuationShelters } from '../../application/use-evacuation-shelters';
+} from '../../application/use-cases/sort-shelters-by-distance';
+import { useEvacuationShelters } from '../../application/hooks/use-evacuation-shelters';
 
 import { ACCESSIBLE_COLOR, styles } from '../styles/evacuation-list.styles';
 

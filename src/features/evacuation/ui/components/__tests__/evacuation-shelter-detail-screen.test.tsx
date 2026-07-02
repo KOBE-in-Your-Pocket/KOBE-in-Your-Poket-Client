@@ -44,7 +44,7 @@ const mockUseCurrentLocation = jest.fn();
 const mockUseEvacuationShelterDetail = jest.fn();
 
 // application 層は隔離し、UI から open-directions を呼ぶ経路の検証に集中する。
-jest.mock('../../../application/use-evacuation-shelter-detail', () => ({
+jest.mock('../../../application/hooks/use-evacuation-shelter-detail', () => ({
   useEvacuationShelterDetail: () => mockUseEvacuationShelterDetail(),
 }));
 

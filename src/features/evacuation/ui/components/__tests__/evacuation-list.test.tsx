@@ -28,7 +28,7 @@ const mockShelters: EvacuationShelter[] = [
 // jest.mock ファクトリから参照するため mock プレフィックスを付ける（out-of-scope 変数制約）。
 const mockUseCurrentLocation = jest.fn();
 
-jest.mock('../../../application/use-evacuation-shelters', () => ({
+jest.mock('../../../application/hooks/use-evacuation-shelters', () => ({
   useEvacuationShelters: () => ({ data: mockShelters, isPending: false, isError: false }),
 }));
 

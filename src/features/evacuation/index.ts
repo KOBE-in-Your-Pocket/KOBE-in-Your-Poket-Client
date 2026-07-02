@@ -1,11 +1,15 @@
-export { bootstrapEvacuationDatabase } from './application/bootstrap-evacuation-database';
-export { seedEvacuationSheltersIfEmpty } from './application/seed-evacuation-shelters-if-empty';
-export { useEvacuationDbBootstrap } from './application/use-evacuation-db-bootstrap';
-export { useEvacuationShelterDetail } from './application/use-evacuation-shelter-detail';
+export { bootstrapEvacuationDatabase } from './application/use-cases/bootstrap-evacuation-database';
+export { seedEvacuationSheltersIfEmpty } from './application/use-cases/seed-evacuation-shelters-if-empty';
+export {
+  sortSheltersByDistance,
+  type ShelterWithDistance,
+} from './application/use-cases/sort-shelters-by-distance';
+export { useEvacuationDbBootstrap } from './application/hooks/use-evacuation-db-bootstrap';
+export { useEvacuationShelterDetail } from './application/hooks/use-evacuation-shelter-detail';
 export {
   EVACUATION_SHELTERS_QUERY_KEY,
   useEvacuationShelters,
-} from './application/use-evacuation-shelters';
+} from './application/hooks/use-evacuation-shelters';
 export type {
   EvacuationShelter,
   ShelterCoordinates,

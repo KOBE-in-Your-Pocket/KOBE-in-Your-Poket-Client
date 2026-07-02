@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { fetchEvacuationShelters } from '../infrastructure/api/mock-shelters';
+import { fetchEvacuationShelters } from '../../infrastructure/api/mock-shelters';
 
-import type { EvacuationShelter } from '../domain/evacuation-shelter';
+import type { EvacuationShelter } from '../../domain/evacuation-shelter';
 
 /** 避難所系クエリのキー名前空間。 */
 export const EVACUATION_SHELTERS_QUERY_KEY = ['evacuation', 'shelters'] as const;

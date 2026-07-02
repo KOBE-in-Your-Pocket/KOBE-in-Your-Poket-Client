@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { bootstrapEvacuationDatabase } from './bootstrap-evacuation-database';
+import { bootstrapEvacuationDatabase } from '../use-cases/bootstrap-evacuation-database';
 
 export function useEvacuationDbBootstrap(): void {
   useEffect(() => {
