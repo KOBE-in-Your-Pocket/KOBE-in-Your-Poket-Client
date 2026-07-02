@@ -127,8 +127,10 @@ export function MapScreen() {
     router.push({ pathname: '/tourism/[id]', params: { id: selectedSpot.id } });
   }, [selectedSpot]);
 
-  // 避難所詳細ページは未実装のため未配線（別 Issue）。
-  const handleOpenShelterDetail = useCallback(() => {}, []);
+  const handleOpenShelterDetail = useCallback(() => {
+    if (!selectedShelter) return;
+    router.push({ pathname: '/evacuation/[id]', params: { id: selectedShelter.id } });
+  }, [selectedShelter]);
 
   const handleStartNavigation = useCallback(() => {
     if (!selectedSpot) return;
