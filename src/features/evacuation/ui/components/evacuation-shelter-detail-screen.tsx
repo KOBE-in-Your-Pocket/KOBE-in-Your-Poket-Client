@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useEvacuationShelterDetail } from '../../application/use-evacuation-shelter-detail';
+import { useEvacuationShelterDetail } from '../../application/hooks/use-evacuation-shelter-detail';
 
 import { DETAIL_ACCENT_COLOR, styles } from '../styles/evacuation-shelter-detail.styles';
 

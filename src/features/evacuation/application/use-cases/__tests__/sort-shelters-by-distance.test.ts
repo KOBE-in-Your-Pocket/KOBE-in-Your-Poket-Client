@@ -1,6 +1,6 @@
 import { sortSheltersByDistance } from '../sort-shelters-by-distance';
 
-import type { EvacuationShelter } from '../../domain/evacuation-shelter';
+import type { EvacuationShelter } from '../../../domain/evacuation-shelter';
 
 const makeShelter = (id: string, latitude: number, longitude: number): EvacuationShelter => ({
   id,
