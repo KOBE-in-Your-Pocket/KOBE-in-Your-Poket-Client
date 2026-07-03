@@ -1,8 +1,8 @@
 /** マナー項目の分類（守るべきマナー / 法令・条例上のルール）。一覧のフィルタキー兼用。 */
 export type MannerKind = 'manner' | 'rule';
 
-/** マナー項目の適用地域（神戸ローカル / 日本全国共通）。一覧のフィルタキー兼用。 */
-export type MannerScope = 'kobe' | 'japan';
+/** マナー項目の適用地域（各所 / 日本全般）。一覧のフィルタキー兼用。 */
+export type MannerScope = 'local' | 'japan';
 
 /**
  * マナー項目のドメインモデル。
