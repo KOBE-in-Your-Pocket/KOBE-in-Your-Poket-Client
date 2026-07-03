@@ -62,7 +62,7 @@ chat:
 knowledge_base:
   code_guidelines:
     enabled: true
-    file_patterns:
+    filePatterns:
       - REVIEW.md
       - AGENTS.md
       - docs/directory-structure.md
