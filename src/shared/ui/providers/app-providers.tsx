@@ -8,7 +8,7 @@ import { AnimatedSplashOverlay } from '../branding/animated-icon';
 
 import { useLanguageBootstrap } from './use-language-bootstrap';
 
-import { useEvacuationDbBootstrap } from '@/features/evacuation';
+import { useEvacuationDbBootstrap } from '@/features/evacuation/application/hooks/use-evacuation-db-bootstrap';
 import { initI18n } from '@/shared/lib/i18n';
 import { createQueryClient } from '@/shared/lib/query';
 
