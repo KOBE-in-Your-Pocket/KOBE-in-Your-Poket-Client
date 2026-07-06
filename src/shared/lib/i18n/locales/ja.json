@@ -107,6 +107,12 @@
       "linkErrorMessage": "ページを開けませんでした。"
     }
   },
+  "manner": {
+    "kind": {
+      "manner": "マナー",
+      "rule": "ルール"
+    }
+  },
   "list": {
     "modeToggle": {
       "tourism": "スポット",

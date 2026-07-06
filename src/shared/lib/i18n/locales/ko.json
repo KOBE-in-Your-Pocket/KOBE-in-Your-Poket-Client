@@ -107,6 +107,12 @@
       "linkErrorMessage": "페이지를 열 수 없습니다."
     }
   },
+  "manner": {
+    "kind": {
+      "manner": "매너",
+      "rule": "규칙"
+    }
+  },
   "list": {
     "modeToggle": {
       "tourism": "관광지",

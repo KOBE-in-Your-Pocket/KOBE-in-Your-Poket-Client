@@ -107,6 +107,12 @@
       "linkErrorMessage": "Could not open the page."
     }
   },
+  "manner": {
+    "kind": {
+      "manner": "Manner",
+      "rule": "Rule"
+    }
+  },
   "list": {
     "modeToggle": {
       "tourism": "Spots",
