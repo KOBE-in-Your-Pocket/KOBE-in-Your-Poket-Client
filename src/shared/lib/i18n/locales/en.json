@@ -108,6 +108,11 @@
     }
   },
   "manner": {
+    "list": {
+      "title": "Manners",
+      "loadError": "Could not load manner information.",
+      "empty": "No manner information found."
+    },
     "kind": {
       "manner": "Manner",
       "rule": "Rule"
