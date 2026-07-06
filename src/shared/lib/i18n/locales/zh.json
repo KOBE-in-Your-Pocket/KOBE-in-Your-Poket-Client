@@ -107,6 +107,12 @@
       "linkErrorMessage": "无法打开页面。"
     }
   },
+  "manner": {
+    "kind": {
+      "manner": "礼仪",
+      "rule": "规则"
+    }
+  },
   "list": {
     "modeToggle": {
       "tourism": "景点",
