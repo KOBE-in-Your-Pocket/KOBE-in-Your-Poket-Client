@@ -16,6 +16,15 @@ const mockManners: MannerItem[] = [
     scope: 'local',
     relatedSpotIds: ['nankinmachi'],
   },
+  {
+    id: 'show-consideration',
+    title: '周囲への配慮',
+    description: '周囲の人への配慮を心がけましょう。',
+    icon: 'show-consideration',
+    kind: 'manner',
+    scope: 'local',
+    relatedSpotIds: [],
+  },
 ];
 
 // jest.mock ファクトリから参照するため mock プレフィックスを付ける（out-of-scope 変数制約）。
@@ -31,6 +40,11 @@ jest.mock('react-i18next', () => ({
 
 jest.mock('../manner-icon', () => ({
   MannerIcon: () => null,
+}));
+
+// バッジは種別が渡っていることだけ確認できれば十分なので、kind を text として露出する軽量モックにする。
+jest.mock('../kind-badge', () => ({
+  KindBadge: ({ kind }: { kind: string }) => <MockText>{`kind:${kind}`}</MockText>,
 }));
 
 jest.mock('@/shared/lib/theme', () => ({
@@ -84,5 +98,16 @@ describe('MannerList', () => {
     expect(screen.getByText('manner.list.title')).toBeTruthy();
     expect(screen.getByText(mockManners[0].title)).toBeTruthy();
     expect(screen.getByText(mockManners[0].description)).toBeTruthy();
+    expect(screen.getByText(mockManners[1].title)).toBeTruthy();
+    expect(screen.getByText(mockManners[1].description)).toBeTruthy();
+  });
+
+  it('各カードに項目の種別に応じた KindBadge を表示する', () => {
+    mockUseManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
+
+    render(<MannerList />);
+
+    expect(screen.getByText('kind:rule')).toBeTruthy();
+    expect(screen.getByText('kind:manner')).toBeTruthy();
   });
 });

@@ -10,19 +10,24 @@ import type { MannerItem } from '../../domain/manner-item';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
+import { KindBadge } from './kind-badge';
 import { MannerIcon } from './manner-icon';
 
 function MannerListItem({ manner }: { manner: MannerItem }) {
   const theme = useTheme();
+  const isRule = manner.kind === 'rule';
 
   return (
-    <ThemedView style={styles.card}>
+    <ThemedView style={[styles.card, isRule && styles.ruleCard]}>
       <View style={[styles.iconWrapper, { backgroundColor: theme.backgroundElement }]}>
         <MannerIcon icon={manner.icon} />
       </View>
 
       <View style={styles.content}>
-        <ThemedText style={styles.itemTitle}>{manner.title}</ThemedText>
+        <KindBadge kind={manner.kind} />
+        <ThemedText style={[styles.itemTitle, isRule && styles.ruleItemTitle]}>
+          {manner.title}
+        </ThemedText>
         <ThemedText type="small" themeColor="textSecondary" style={styles.itemDescription}>
           {manner.description}
         </ThemedText>
