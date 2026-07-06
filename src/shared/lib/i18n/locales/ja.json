@@ -107,6 +107,13 @@
       "linkErrorMessage": "ページを開けませんでした。"
     }
   },
+  "manner": {
+    "list": {
+      "title": "マナー",
+      "loadError": "マナー情報を読み込めませんでした。",
+      "empty": "マナー情報が見つかりませんでした。"
+    }
+  },
   "list": {
     "modeToggle": {
       "tourism": "スポット",

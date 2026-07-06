@@ -107,6 +107,13 @@
       "linkErrorMessage": "Could not open the page."
     }
   },
+  "manner": {
+    "list": {
+      "title": "Manners",
+      "loadError": "Could not load manner information.",
+      "empty": "No manner information found."
+    }
+  },
   "list": {
     "modeToggle": {
       "tourism": "Spots",
