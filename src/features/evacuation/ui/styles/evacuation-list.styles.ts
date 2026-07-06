@@ -5,7 +5,7 @@ import { Spacing } from '@/shared/config';
 export const CATEGORY_COLOR = '#3A6EA5';
 export const ACCESSIBLE_COLOR = '#2E8B57';
 /** 最寄りバッジ専用のアクセントカラー。ACCESSIBLE_COLOR（バリアフリー表示）との意味の重複を避けるため分離。 */
-export const NEAREST_BADGE_COLOR = '#E8A317';
+export const NEAREST_BADGE_COLOR = '#D32F2F';
 /** 位置情報フォールバックバナーの警告テキスト色。背景が固定色のため、ダークモードでも読めるよう文字色も固定する。 */
 export const LOCATION_BANNER_TEXT_COLOR = '#B71C1C';
 
@@ -85,8 +85,10 @@ export const styles = StyleSheet.create({
   },
   categoryRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'space-between',
+    rowGap: Spacing.one,
   },
   category: {
     color: CATEGORY_COLOR,
@@ -99,11 +101,11 @@ export const styles = StyleSheet.create({
     backgroundColor: NEAREST_BADGE_COLOR,
     borderRadius: Spacing.three,
     paddingHorizontal: Spacing.two,
-    paddingVertical: 2,
+    paddingVertical: Spacing.half,
   },
   nearestBadgeText: {
     color: '#FFFFFF',
-    fontSize: 11,
+    fontSize: 14,
     fontWeight: '700',
   },
   name: {

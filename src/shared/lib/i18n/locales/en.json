@@ -75,7 +75,7 @@
       "loadError": "Could not load shelters.",
       "empty": "No shelters found.",
       "capacity": "Capacity: {{count}}",
-      "nearest": "Nearest",
+      "nearest": "Nearest Shelter",
       "locationServicesDisabled": "Distance unavailable because location services are off.",
       "category": {
         "government": "Government Building",
