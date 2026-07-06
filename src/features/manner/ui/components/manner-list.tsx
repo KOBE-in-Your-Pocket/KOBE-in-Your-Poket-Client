@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useManners } from '../hooks/use-manners';
 
@@ -7,6 +8,7 @@ import { styles } from '../styles/manner-list.styles';
 
 import type { MannerItem } from '../../domain/manner-item';
 
+import { Spacing } from '@/shared/config';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
@@ -38,9 +40,10 @@ function MannerListItem({ manner }: { manner: MannerItem }) {
 
 function ListHeader() {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
 
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, { paddingTop: insets.top + Spacing.three }]}>
       <ThemedText type="subtitle" style={styles.title}>
         {t('manner.list.title')}
       </ThemedText>
