@@ -4,8 +4,9 @@ import type { PropsWithChildren } from 'react';
 
 import type { MannerItem } from '../../../domain/manner-item';
 import type { MannerRepository } from '../../../domain/manner-repository';
-import { MannerRepositoryProvider } from '../manner-repository-context';
-import { MANNERS_QUERY_KEY, useManners } from '../use-manners';
+import { MANNERS_QUERY_KEY } from '../../../application/manner-query-keys';
+import { MannerRepositoryProvider } from '../../../application/manner-repository-context';
+import { useManners } from '../use-manners';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ i18n: { language: 'en' } }),

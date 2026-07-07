@@ -3,14 +3,13 @@ import { useTranslation } from 'react-i18next';
 
 import { resolveLanguage } from '@/shared/lib/i18n';
 
+import { MANNERS_QUERY_KEY } from '../../application/manner-query-keys';
+import { useMannerRepository } from '../../application/manner-repository-context';
 import { getManners } from '../../application/use-cases/get-manners';
-
-import { useMannerRepository } from './manner-repository-context';
 
 import type { MannerItem } from '../../domain/manner-item';
 
-/** マナー項目系クエリのキー名前空間。 */
-export const MANNERS_QUERY_KEY = ['manner', 'manners'] as const;
+export { MANNERS_QUERY_KEY };
 
 /**
  * マナー項目一覧を取得する UI hook。
