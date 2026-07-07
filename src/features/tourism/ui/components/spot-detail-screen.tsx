@@ -36,6 +36,7 @@ import { useCurrentLocation } from '@/shared/lib/geo';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
 import { useCurrentUser } from '@/features/user/application/use-current-user';
+import { SpotMannerSection } from '@/features/manner';
 
 function BackButton({ label }: { label: string }) {
   const insets = useSafeAreaInsets();
@@ -361,6 +362,8 @@ function SpotDetailContent({ spot }: { spot: Spot }) {
           </ThemedText>
         </Pressable>
 
+        <SpotMannerSection spotId={spot.id} />
+
         <View style={styles.section}>
           <ThemedText type="smallBold" style={styles.sectionTitle}>
             {t('tourism.spotDetail.reviews')}
@@ -394,7 +397,7 @@ function SpotDetailContent({ spot }: { spot: Spot }) {
  * 観光スポット詳細を表示する画面コンポーネント。
  *
  * `spotId` を受け取り application 層の `useSpotDetail()` / `useSpotReviews()` 経由で
- * スポット詳細とレビューを取得する。ルート（app 層）からは ID を渡すだけで描画でき、
+ * スポット詳細とレビューを取得する。マナーセクションは {@link SpotMannerSection} に委譲する。
  * データ取得・状態管理はこの feature 内に閉じる。
  */
 export function SpotDetailScreen({ spotId }: { spotId: string }) {

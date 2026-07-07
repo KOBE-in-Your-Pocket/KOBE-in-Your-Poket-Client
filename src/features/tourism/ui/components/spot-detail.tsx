@@ -11,6 +11,7 @@ import type { Spot } from '../../domain/spot';
 
 import { ReviewList } from './review-list';
 
+import { SpotMannerSection } from '@/features/manner';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
@@ -82,6 +83,8 @@ function SpotDetailContent({ spot }: { spot: Spot }) {
           </ThemedText>
         </View>
 
+        <SpotMannerSection spotId={spot.id} />
+
         <ReviewList spotId={spot.id} />
       </View>
     </ScrollView>
@@ -92,7 +95,7 @@ function SpotDetailContent({ spot }: { spot: Spot }) {
  * 観光スポットの詳細を表示するコンポーネント。
  *
  * application 層の `useSpotDetail()` でデータを取得し、写真・名称・説明・住所・
- * 位置情報を表示する。
+ * 位置情報・マナーセクション・レビュー一覧を表示する。
  */
 export function SpotDetail({ spotId }: { spotId: string }) {
   const { t } = useTranslation();
