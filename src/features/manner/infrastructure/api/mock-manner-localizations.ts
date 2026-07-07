@@ -17,7 +17,9 @@ export type MockMannerId =
   | 'backpack-on-front'
   | 'show-consideration'
   | 'no-loud-conversation'
-  | 'no-phone-calls';
+  | 'no-phone-calls'
+  | 'no-white-clothes-in-kinsen'
+  | 'no-feeding-wild-boars';
 
 export const MOCK_MANNER_LOCALIZATIONS: Record<
   SupportedLanguage,
@@ -68,6 +70,16 @@ export const MOCK_MANNER_LOCALIZATIONS: Record<
       title: '通話はご遠慮ください',
       description: '車内での通話はご遠慮ください。携帯電話はマナーモードにご協力ください。',
     },
+    'no-white-clothes-in-kinsen': {
+      title: '金泉入浴時は色移りに注意',
+      description:
+        '有馬温泉の金泉は鉄分を多く含み、白い衣類やタオルに色が移ることがあります。入浴時は濃い色の衣類やタオルがおすすめです。',
+    },
+    'no-feeding-wild-boars': {
+      title: 'イノシシへの餌やり禁止',
+      description:
+        '六甲山周辺は野生のイノシシの生息域です。神戸市条例により餌やりは禁止されています。人への危害を防ぐため近づいたり餌を与えたりしないでください。',
+    },
   },
   en: {
     'no-eating-while-walking': {
@@ -115,6 +127,16 @@ export const MOCK_MANNER_LOCALIZATIONS: Record<
       title: 'No Phone Calls',
       description: 'Please refrain from phone calls on board and set your phone to silent.',
     },
+    'no-white-clothes-in-kinsen': {
+      title: 'Kinsen Water May Stain Clothing',
+      description:
+        'Arima Onsen\'s iron-rich kinsen ("gold spring") water can stain white clothing and towels. Bring darker-colored items when bathing.',
+    },
+    'no-feeding-wild-boars': {
+      title: 'No Feeding Wild Boars',
+      description:
+        'Wild boars live around Mt. Rokko. A Kobe city ordinance prohibits feeding them — do not approach or feed them for your safety.',
+    },
   },
   zh: {
     'no-eating-while-walking': {
@@ -161,6 +183,16 @@ export const MOCK_MANNER_LOCALIZATIONS: Record<
       title: '请勿通话',
       description: '车内请勿通话，并将手机调至静音。',
     },
+    'no-white-clothes-in-kinsen': {
+      title: '金泉泡汤请注意染色',
+      description:
+        '有马温泉的金泉含铁量高，容易使白色衣物或毛巾染色。泡汤时建议携带深色衣物或毛巾。',
+    },
+    'no-feeding-wild-boars': {
+      title: '禁止投喂野猪',
+      description:
+        '六甲山一带栖息着野生的日本野猪。根据神户市条例，禁止投喂野猪，请勿靠近或投喂，以确保人身安全。',
+    },
   },
   ko: {
     'no-eating-while-walking': {
@@ -206,6 +238,16 @@ export const MOCK_MANNER_LOCALIZATIONS: Record<
     'no-phone-calls': {
       title: '통화 삼가기',
       description: '차내에서는 통화를 삼가고 휴대전화를 매너모드로 설정해 주세요.',
+    },
+    'no-white-clothes-in-kinsen': {
+      title: '킨센 온천 이용 시 옷 색상 주의',
+      description:
+        '아리마 온천의 킨센(金泉)은 철분 함량이 높아 흰색 옷이나 수건에 색이 밸 수 있습니다. 입욕 시 짙은 색 옷이나 수건을 준비하는 것이 좋습니다.',
+    },
+    'no-feeding-wild-boars': {
+      title: '멧돼지 먹이 주기 금지',
+      description:
+        '롯코산 일대에는 야생 멧돼지가 서식합니다. 고베시 조례에 따라 먹이 주기가 금지되어 있으니, 안전을 위해 가까이 가거나 먹이를 주지 마세요.',
     },
   },
 };

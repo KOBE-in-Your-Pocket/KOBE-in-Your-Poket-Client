@@ -116,6 +116,11 @@
     "kind": {
       "manner": "Manner",
       "rule": "Rule"
+    },
+    "scopeFilter": {
+      "all": "All",
+      "local": "Local",
+      "japan": "Nationwide"
     }
   },
   "list": {

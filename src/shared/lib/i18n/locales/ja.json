@@ -116,6 +116,11 @@
     "kind": {
       "manner": "マナー",
       "rule": "ルール"
+    },
+    "scopeFilter": {
+      "all": "すべて",
+      "local": "各所特有",
+      "japan": "日本全般"
     }
   },
   "list": {
