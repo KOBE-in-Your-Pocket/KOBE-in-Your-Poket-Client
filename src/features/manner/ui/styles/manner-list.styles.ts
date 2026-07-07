@@ -2,16 +2,7 @@ import { StyleSheet } from 'react-native';
 
 import { BottomTabInset, Spacing } from '@/shared/config';
 
-import { KIND_BADGE_COLORS } from './kind-badge.styles';
-
-/** ルール強調のアクセント色（枠線・タイトル）。KindBadge のルール色と統一する。 */
-const RULE_ACCENT_COLOR = KIND_BADGE_COLORS.rule.background;
-
-/**
- * ルールカードの背景。アクセント色（rgb(217, 45, 32)）を薄く敷く。
- * 不透明色ではなく半透明にすることで、ライト/ダーク両テーマで自然に馴染ませる。
- */
-const RULE_CARD_BACKGROUND = 'rgba(217, 45, 32, 0.08)';
+import { RULE_ACCENT_COLOR, RULE_CARD_BACKGROUND } from './kind-badge.styles';
 
 export const styles = StyleSheet.create({
   centered: {

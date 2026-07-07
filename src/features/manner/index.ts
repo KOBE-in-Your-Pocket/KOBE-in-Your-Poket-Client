@@ -8,6 +8,7 @@ export { useFilteredManners } from './ui/hooks/use-filtered-manners';
 export { createMockMannerRepository } from './infrastructure/api/mock-manner-repository';
 export { MannerScreen } from './ui/components/manner-screen';
 export { MannerList } from './ui/components/manner-list';
+export { SpotMannerSection } from './ui/components/spot-manner-section';
 export { useScopeFilterStore } from './store/use-scope-filter-store';
 export type { SelectedScope } from './store/use-scope-filter-store';
 export { useKindFilterStore } from './store/use-kind-filter-store';

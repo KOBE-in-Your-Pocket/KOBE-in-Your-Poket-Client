@@ -113,6 +113,9 @@
       "loadError": "Could not load manner information.",
       "empty": "No manner information found."
     },
+    "spotSection": {
+      "title": "Manners for This Place"
+    },
     "kind": {
       "manner": "Manner",
       "rule": "Rule"
