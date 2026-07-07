@@ -25,6 +25,12 @@ export const styles = StyleSheet.create({
     paddingBottom: BottomTabInset + Spacing.three,
     gap: Spacing.two,
   },
+  /** 絞り込み結果が 0 件のときにヘッダー下へ表示する空メッセージ。 */
+  empty: {
+    alignItems: 'center',
+    paddingVertical: Spacing.five,
+    paddingHorizontal: Spacing.four,
+  },
   header: {
     paddingBottom: Spacing.two,
   },

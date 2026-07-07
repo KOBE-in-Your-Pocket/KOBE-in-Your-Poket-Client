@@ -28,10 +28,10 @@ const mockManners: MannerItem[] = [
 ];
 
 // jest.mock ファクトリから参照するため mock プレフィックスを付ける（out-of-scope 変数制約）。
-const mockUseManners = jest.fn();
+const mockUseFilteredManners = jest.fn();
 
-jest.mock('../../hooks/use-manners', () => ({
-  useManners: () => mockUseManners(),
+jest.mock('../../hooks/use-filtered-manners', () => ({
+  useFilteredManners: () => mockUseFilteredManners(),
 }));
 
 jest.mock('react-i18next', () => ({
@@ -45,6 +45,11 @@ jest.mock('../manner-icon', () => ({
 // バッジは種別が渡っていることだけ確認できれば十分なので、kind を text として露出する軽量モックにする。
 jest.mock('../kind-badge', () => ({
   KindBadge: ({ kind }: { kind: string }) => <MockText>{`kind:${kind}`}</MockText>,
+}));
+
+// フィルタ本体の挙動は use-kind-filter-store 側で検証済み。ここでは配置確認用のマーカーだけ出す。
+jest.mock('../kind-filter', () => ({
+  KindFilter: () => <MockText>kind-filter</MockText>,
 }));
 
 jest.mock('@/shared/lib/theme', () => ({
@@ -67,11 +72,11 @@ jest.mock('@/shared/ui', () => ({
 
 describe('MannerList', () => {
   afterEach(() => {
-    mockUseManners.mockReset();
+    mockUseFilteredManners.mockReset();
   });
 
   it('取得中は ActivityIndicator を表示する', () => {
-    mockUseManners.mockReturnValue({ data: undefined, isPending: true, isError: false });
+    mockUseFilteredManners.mockReturnValue({ data: undefined, isPending: true, isError: false });
 
     render(<MannerList />);
 
@@ -79,23 +84,15 @@ describe('MannerList', () => {
   });
 
   it('取得失敗時はエラーメッセージを表示する', () => {
-    mockUseManners.mockReturnValue({ data: undefined, isPending: false, isError: true });
+    mockUseFilteredManners.mockReturnValue({ data: undefined, isPending: false, isError: true });
 
     render(<MannerList />);
 
     expect(screen.getByText('manner.list.loadError')).toBeTruthy();
   });
 
-  it('0件のときは空メッセージを表示する', () => {
-    mockUseManners.mockReturnValue({ data: [], isPending: false, isError: false });
-
-    render(<MannerList />);
-
-    expect(screen.getByText('manner.list.empty')).toBeTruthy();
-  });
-
   it('取得成功時はヘッダーと各項目のタイトル・説明を表示する', () => {
-    mockUseManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
+    mockUseFilteredManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
 
     render(<MannerList />);
 
@@ -107,11 +104,28 @@ describe('MannerList', () => {
   });
 
   it('各カードに項目の種別に応じた KindBadge を表示する', () => {
-    mockUseManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
+    mockUseFilteredManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
 
     render(<MannerList />);
 
     expect(screen.getByText('kind:rule')).toBeTruthy();
     expect(screen.getByText('kind:manner')).toBeTruthy();
+  });
+
+  it('一覧上部に KindFilter を配置する', () => {
+    mockUseFilteredManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
+
+    render(<MannerList />);
+
+    expect(screen.getByText('kind-filter')).toBeTruthy();
+  });
+
+  it('絞り込み結果が 0 件でも KindFilter を表示し続ける', () => {
+    mockUseFilteredManners.mockReturnValue({ data: [], isPending: false, isError: false });
+
+    render(<MannerList />);
+
+    expect(screen.getByText('manner.list.empty')).toBeTruthy();
+    expect(screen.getByText('kind-filter')).toBeTruthy();
   });
 });
