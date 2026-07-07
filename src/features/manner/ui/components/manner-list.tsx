@@ -15,6 +15,7 @@ import { ThemedText, ThemedView } from '@/shared/ui';
 import { KindBadge } from './kind-badge';
 import { KindFilter } from './kind-filter';
 import { MannerIcon } from './manner-icon';
+import { ScopeFilter } from './scope-filter';
 
 function MannerListItem({ manner }: { manner: MannerItem }) {
   const theme = useTheme();
@@ -49,6 +50,7 @@ function ListHeader() {
         {t('manner.list.title')}
       </ThemedText>
       <KindFilter />
+      <ScopeFilter />
     </View>
   );
 }
@@ -56,9 +58,10 @@ function ListHeader() {
 /**
  * マナー項目一覧を表示するコンポーネント。
  *
- * application 層の `useFilteredManners()` 経由で選択中の種別に絞り込んだデータを取得し、
- * 各項目のアイコン・タイトル・短い説明を含むカード一覧を表示する。上部の {@link KindFilter}
- * でチップを選ぶと一覧が即座に更新される。詳細画面は持たず一覧のみで完結する。
+ * application 層の `useFilteredManners()` 経由で選択中の種別・地域スコープに絞り込んだデータを
+ * 取得し、各項目のアイコン・タイトル・短い説明を含むカード一覧を表示する。上部の
+ * {@link KindFilter} と {@link ScopeFilter} でチップを選ぶと一覧が即座に更新される。
+ * 詳細画面は持たず一覧のみで完結する。
  */
 export function MannerList() {
   const { t } = useTranslation();
@@ -80,7 +83,7 @@ export function MannerList() {
     );
   }
 
-  // 絞り込み結果が空でもヘッダーの KindFilter は表示し続け、他の種別へ切り替えられるようにする。
+  // 絞り込み結果が空でもヘッダーの KindFilter / ScopeFilter は表示し続け、他の条件へ切り替えられるようにする。
   return (
     <FlatList
       data={manners}
