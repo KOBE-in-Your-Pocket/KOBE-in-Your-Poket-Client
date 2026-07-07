@@ -3,6 +3,7 @@ import { renderHook, waitFor } from '@testing-library/react-native';
 import type { PropsWithChildren } from 'react';
 
 import { useKindFilterStore } from '../../../store/use-kind-filter-store';
+import { useScopeFilterStore } from '../../../store/use-scope-filter-store';
 import type { MannerItem } from '../../../domain/manner-item';
 import type { MannerRepository } from '../../../domain/manner-repository';
 import { MannerRepositoryProvider } from '../manner-repository-context';
@@ -32,7 +33,17 @@ const MANNER_ITEM: MannerItem = {
   relatedSpotIds: [],
 };
 
-const ITEMS: MannerItem[] = [RULE_ITEM, MANNER_ITEM];
+const JAPAN_RULE_ITEM: MannerItem = {
+  id: 'no-smoking-while-walking',
+  title: 'No smoking while walking',
+  description: '',
+  icon: 'no-smoking-while-walking',
+  kind: 'rule',
+  scope: 'japan',
+  relatedSpotIds: [],
+};
+
+const ITEMS: MannerItem[] = [RULE_ITEM, MANNER_ITEM, JAPAN_RULE_ITEM];
 
 function createStubRepository(): MannerRepository {
   return {
@@ -66,9 +77,10 @@ function renderFilteredManners() {
 describe('useFilteredManners', () => {
   beforeEach(() => {
     useKindFilterStore.setState({ selectedKind: 'all' });
+    useScopeFilterStore.setState({ selectedScope: 'all' });
   });
 
-  it("selectedKind が 'all' のとき全件を返す", async () => {
+  it("selectedKind・selectedScope が 'all' のとき全件を返す", async () => {
     const { result } = renderFilteredManners();
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -83,7 +95,7 @@ describe('useFilteredManners', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.current.data).toEqual([RULE_ITEM]);
+    expect(result.current.data).toEqual([RULE_ITEM, JAPAN_RULE_ITEM]);
   });
 
   it("selectedKind が 'manner' のときマナー項目のみ返す", async () => {
@@ -94,6 +106,37 @@ describe('useFilteredManners', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(result.current.data).toEqual([MANNER_ITEM]);
+  });
+
+  it("selectedScope が 'local' のとき各所特有項目のみ返す", async () => {
+    useScopeFilterStore.setState({ selectedScope: 'local' });
+
+    const { result } = renderFilteredManners();
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(result.current.data).toEqual([RULE_ITEM, MANNER_ITEM]);
+  });
+
+  it("selectedScope が 'japan' のとき日本全般項目のみ返す", async () => {
+    useScopeFilterStore.setState({ selectedScope: 'japan' });
+
+    const { result } = renderFilteredManners();
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(result.current.data).toEqual([JAPAN_RULE_ITEM]);
+  });
+
+  it('selectedKind と selectedScope を組み合わせて絞り込める', async () => {
+    useKindFilterStore.setState({ selectedKind: 'rule' });
+    useScopeFilterStore.setState({ selectedScope: 'local' });
+
+    const { result } = renderFilteredManners();
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(result.current.data).toEqual([RULE_ITEM]);
   });
 
   it('取得完了までは data が undefined である', () => {

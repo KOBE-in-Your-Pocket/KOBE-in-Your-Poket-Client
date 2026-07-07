@@ -1,14 +1,18 @@
-import { filterMannersByKind } from '../filter-manners';
+import { filterMannersByKind, filterMannersByScope } from '../filter-manners';
 
 import type { MannerItem } from '../../../domain/manner-item';
 
-const makeManner = (id: string, kind: MannerItem['kind']): MannerItem => ({
+const makeManner = (
+  id: string,
+  kind: MannerItem['kind'],
+  scope: MannerItem['scope'] = 'local',
+): MannerItem => ({
   id,
   kind,
   title: id,
   description: '',
   icon: id,
-  scope: 'local',
+  scope,
   relatedSpotIds: [],
 });
 
@@ -45,5 +49,41 @@ describe('filterMannersByKind', () => {
 
   it('空配列を渡すと空配列を返す', () => {
     expect(filterMannersByKind([], 'manner')).toHaveLength(0);
+  });
+});
+
+const SCOPED_MANNERS: MannerItem[] = [
+  makeManner('no-trespassing', 'rule', 'local'),
+  makeManner('handle-products-with-care', 'manner', 'local'),
+  makeManner('put-trash-in-bin', 'manner', 'japan'),
+  makeManner('no-smoking-while-walking', 'rule', 'japan'),
+];
+
+describe('filterMannersByScope', () => {
+  it("'all' を指定すると全件を返す", () => {
+    expect(filterMannersByScope(SCOPED_MANNERS, 'all')).toHaveLength(SCOPED_MANNERS.length);
+  });
+
+  it("'all' を指定すると同じ配列参照を返す", () => {
+    expect(filterMannersByScope(SCOPED_MANNERS, 'all')).toBe(SCOPED_MANNERS);
+  });
+
+  it.each([
+    ['local', ['no-trespassing', 'handle-products-with-care']],
+    ['japan', ['put-trash-in-bin', 'no-smoking-while-walking']],
+  ] as const)("'%s' を指定すると該当項目のみ返す", (scope, expectedIds) => {
+    const result = filterMannersByScope(SCOPED_MANNERS, scope);
+
+    expect(result.map((manner) => manner.id)).toEqual(expectedIds);
+  });
+
+  it('該当項目がない場合は空配列を返す', () => {
+    const localOnly = SCOPED_MANNERS.filter((manner) => manner.scope !== 'japan');
+
+    expect(filterMannersByScope(localOnly, 'japan')).toHaveLength(0);
+  });
+
+  it('空配列を渡すと空配列を返す', () => {
+    expect(filterMannersByScope([], 'local')).toHaveLength(0);
   });
 });
