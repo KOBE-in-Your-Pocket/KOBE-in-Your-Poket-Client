@@ -24,21 +24,22 @@ const MANNERS: MannerItem[] = [
 ];
 
 describe('filterMannersByKind', () => {
-  it("'all' を指定すると全件を返す", () => {
-    expect(filterMannersByKind(MANNERS, 'all')).toHaveLength(MANNERS.length);
+  it.each([
+    [
+      'all',
+      ['no-trespassing', 'no-smoking-while-walking', 'show-consideration', 'no-loud-conversation'],
+    ],
+    ['rule', ['no-trespassing', 'no-smoking-while-walking']],
+    ['manner', ['show-consideration', 'no-loud-conversation']],
+  ] as const)("'%s' を指定すると期待件数・内容を返す", (kind, expectedIds) => {
+    const result = filterMannersByKind(MANNERS, kind);
+
+    expect(result).toHaveLength(expectedIds.length);
+    expect(result.map((manner) => manner.id)).toEqual(expectedIds);
   });
 
   it("'all' を指定すると同じ配列参照を返す", () => {
     expect(filterMannersByKind(MANNERS, 'all')).toBe(MANNERS);
-  });
-
-  it.each([
-    ['rule', ['no-trespassing', 'no-smoking-while-walking']],
-    ['manner', ['show-consideration', 'no-loud-conversation']],
-  ] as const)("'%s' を指定すると該当項目のみ返す", (kind, expectedIds) => {
-    const result = filterMannersByKind(MANNERS, kind);
-
-    expect(result.map((manner) => manner.id)).toEqual(expectedIds);
   });
 
   it('該当項目がない場合は空配列を返す', () => {
@@ -49,6 +50,14 @@ describe('filterMannersByKind', () => {
 
   it('空配列を渡すと空配列を返す', () => {
     expect(filterMannersByKind([], 'manner')).toHaveLength(0);
+  });
+
+  it('入力配列を変更しない（非破壊）', () => {
+    const input = [...MANNERS];
+
+    filterMannersByKind(input, 'rule');
+
+    expect(input).toEqual(MANNERS);
   });
 });
 
