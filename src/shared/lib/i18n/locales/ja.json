@@ -121,6 +121,11 @@
       "all": "すべて",
       "local": "各所特有",
       "japan": "日本全般"
+    },
+    "kindFilter": {
+      "all": "すべて",
+      "manner": "マナー",
+      "rule": "ルール"
     }
   },
   "list": {
