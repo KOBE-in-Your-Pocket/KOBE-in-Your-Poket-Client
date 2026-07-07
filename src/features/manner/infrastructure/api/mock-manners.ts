@@ -96,6 +96,20 @@ const MOCK_MANNER_BASES: MockMannerBase[] = [
     scope: 'japan',
     relatedSpotIds: [],
   },
+  {
+    id: 'no-white-clothes-in-kinsen',
+    icon: 'no-white-clothes-in-kinsen',
+    kind: 'manner',
+    scope: 'local',
+    relatedSpotIds: ['arima-onsen'],
+  },
+  {
+    id: 'no-feeding-wild-boars',
+    icon: 'no-feeding-wild-boars',
+    kind: 'rule',
+    scope: 'local',
+    relatedSpotIds: ['mount-rokko'],
+  },
 ];
 
 /** mock fetcher が模すネットワーク遅延（ミリ秒）。 */
