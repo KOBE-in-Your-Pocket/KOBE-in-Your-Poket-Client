@@ -5,7 +5,7 @@ import type { PropsWithChildren } from 'react';
 import { useKindFilterStore } from '../../../store/use-kind-filter-store';
 import type { MannerItem } from '../../../domain/manner-item';
 import type { MannerRepository } from '../../../domain/manner-repository';
-import { MannerRepositoryProvider } from '../manner-repository-context';
+import { MannerRepositoryProvider } from '../../../application/manner-repository-context';
 import { useFilteredManners } from '../use-filtered-manners';
 
 jest.mock('react-i18next', () => ({
