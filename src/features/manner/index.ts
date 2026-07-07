@@ -11,3 +11,4 @@ export type { SelectedScope } from './store/use-scope-filter-store';
 export { useKindFilterStore } from './store/use-kind-filter-store';
 export type { SelectedKind } from './store/use-kind-filter-store';
 export { ScopeFilter } from './ui/components/scope-filter';
+export { KindFilter } from './ui/components/kind-filter';

@@ -121,6 +121,11 @@
       "all": "All",
       "local": "Local",
       "japan": "Nationwide"
+    },
+    "kindFilter": {
+      "all": "All",
+      "manner": "Manner",
+      "rule": "Rule"
     }
   },
   "list": {
