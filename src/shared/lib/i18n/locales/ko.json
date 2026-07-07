@@ -121,6 +121,11 @@
       "all": "전체",
       "local": "지역 특유",
       "japan": "일본 전역"
+    },
+    "kindFilter": {
+      "all": "전체",
+      "manner": "매너",
+      "rule": "규칙"
     }
   },
   "list": {
