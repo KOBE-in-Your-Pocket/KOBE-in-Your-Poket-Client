@@ -2,13 +2,7 @@ import { StyleSheet } from 'react-native';
 
 import { Spacing } from '@/shared/config';
 
-import { KIND_BADGE_COLORS } from './kind-badge.styles';
-
-/** ルール強調のアクセント色（枠線・タイトル）。KindBadge のルール色と統一する。 */
-const RULE_ACCENT_COLOR = KIND_BADGE_COLORS.rule.background;
-
-/** ルールカードの背景。一覧より控えめな透明度で観光詳細内に馴染ませる。 */
-const RULE_CARD_BACKGROUND = 'rgba(217, 45, 32, 0.06)';
+import { RULE_ACCENT_COLOR, RULE_CARD_BACKGROUND_SUBTLE } from './kind-badge.styles';
 
 export const styles = StyleSheet.create({
   section: {
@@ -29,7 +23,7 @@ export const styles = StyleSheet.create({
     borderRadius: Spacing.two,
   },
   ruleCard: {
-    backgroundColor: RULE_CARD_BACKGROUND,
+    backgroundColor: RULE_CARD_BACKGROUND_SUBTLE,
     borderWidth: 1,
     borderColor: RULE_ACCENT_COLOR,
   },
