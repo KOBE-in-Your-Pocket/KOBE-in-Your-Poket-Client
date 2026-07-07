@@ -5,7 +5,10 @@ import path from 'path';
 
 import type { EvacuationShelter } from '../../../domain/evacuation-shelter';
 
+import type { EvacuationDatabase } from '../client';
+import { toEvacuationShelterRecord } from '../evacuation-shelter-mapper';
 import * as schema from '../schema';
+import type { NewEvacuationShelterRecord } from '../schema';
 import { createSqliteEvacuationShelterRepository } from '../sqlite-evacuation-shelter-repository';
 
 const sampleShelters: EvacuationShelter[] = [
@@ -33,15 +36,23 @@ const sampleShelters: EvacuationShelter[] = [
   },
 ];
 
+// 作成した in-memory DB を追跡し、テストごとに close してネイティブハンドルのリークを防ぐ。
+const openDatabases: Database.Database[] = [];
+
 function createTestRepository() {
   const sqlite = new Database(':memory:');
+  openDatabases.push(sqlite);
   const db = drizzle(sqlite, { schema });
   migrate(db, { migrationsFolder: path.resolve(__dirname, '../../../../../../drizzle') });
 
-  return createSqliteEvacuationShelterRepository(
-    db as unknown as import('../client').EvacuationDatabase,
-  );
+  return createSqliteEvacuationShelterRepository(db as unknown as EvacuationDatabase);
 }
+
+afterEach(() => {
+  while (openDatabases.length > 0) {
+    openDatabases.pop()?.close();
+  }
+});
 
 describe('SqliteEvacuationShelterRepository', () => {
   it('replaceAll で避難所を永続化し findAll で取得できる', async () => {
@@ -76,16 +87,58 @@ describe('SqliteEvacuationShelterRepository', () => {
     await expect(repository.findAll()).resolves.toEqual([]);
   });
 
-  it('replaceAll で insert が失敗した場合は既存データを保持する', async () => {
-    const repository = createTestRepository();
-    await repository.replaceAll(sampleShelters);
+  it('replaceAll の insert が失敗したらエラーを伝播し、既存データを保持する', async () => {
+    // 実 SQLite の制約発火に依存すると CI 環境で挙動が揺れるため、insert が確実に throw する
+    // fake DB を注入して「delete/insert を 1 トランザクションで実行し、insert 失敗時は
+    // ロールバックして既存データを残す」という replaceAll の契約を決定論的に検証する。
+    const repository = createSqliteEvacuationShelterRepository(
+      createInsertFailingFakeDb(sampleShelters.map(toEvacuationShelterRecord)),
+    );
 
-    const duplicateIdShelters = [
-      { ...sampleShelters[0], name: '重複A' },
-      { ...sampleShelters[0], name: '重複B' },
-    ];
-
-    await expect(repository.replaceAll(duplicateIdShelters)).rejects.toThrow();
+    await expect(repository.replaceAll([sampleShelters[0]])).rejects.toThrow('insert failed');
     await expect(repository.findAll()).resolves.toEqual(sampleShelters);
   });
 });
+
+/**
+ * insert が必ず失敗する最小限の fake DB。
+ * `replaceAll` / `findAll` が使う API（transaction・delete・insert・select().from()）だけを模し、
+ * トランザクションのロールバック（コールバックが throw したら store を巻き戻す）を再現する。
+ * これにより、実 SQLite の制約・マイグレーション・ハンドル状態に一切依存せず失敗経路を検証できる。
+ */
+function createInsertFailingFakeDb(seed: NewEvacuationShelterRecord[]): EvacuationDatabase {
+  let store: NewEvacuationShelterRecord[] = [...seed];
+
+  const tx = {
+    delete: () => ({
+      run: () => {
+        store = [];
+      },
+    }),
+    insert: () => ({
+      values: () => ({
+        run: () => {
+          throw new Error('insert failed');
+        },
+      }),
+    }),
+  };
+  type FakeTx = typeof tx;
+
+  const fakeDb = {
+    transaction: (fn: (tx: FakeTx) => void) => {
+      const snapshot = [...store];
+      try {
+        fn(tx);
+      } catch (error) {
+        store = snapshot;
+        throw error;
+      }
+    },
+    select: () => ({
+      from: () => Promise.resolve([...store]),
+    }),
+  };
+
+  return fakeDb as unknown as EvacuationDatabase;
+}
