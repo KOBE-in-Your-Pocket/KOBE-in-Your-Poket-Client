@@ -47,9 +47,14 @@ jest.mock('../kind-badge', () => ({
   KindBadge: ({ kind }: { kind: string }) => <MockText>{`kind:${kind}`}</MockText>,
 }));
 
-// フィルタ本体の挙動は use-kind-filter-store 側で検証済み。ここでは配置確認用のマーカーだけ出す。
+// フィルタ本体の挙動は use-kind-filter-store / use-scope-filter-store 側で検証済み。
+// ここでは配置確認用のマーカーだけ出す。
 jest.mock('../kind-filter', () => ({
   KindFilter: () => <MockText>kind-filter</MockText>,
+}));
+
+jest.mock('../scope-filter', () => ({
+  ScopeFilter: () => <MockText>scope-filter</MockText>,
 }));
 
 jest.mock('@/shared/lib/theme', () => ({
@@ -112,20 +117,22 @@ describe('MannerList', () => {
     expect(screen.getByText('kind:manner')).toBeTruthy();
   });
 
-  it('一覧上部に KindFilter を配置する', () => {
+  it('一覧上部に KindFilter と ScopeFilter を配置する', () => {
     mockUseFilteredManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
 
     render(<MannerList />);
 
     expect(screen.getByText('kind-filter')).toBeTruthy();
+    expect(screen.getByText('scope-filter')).toBeTruthy();
   });
 
-  it('絞り込み結果が 0 件でも KindFilter を表示し続ける', () => {
+  it('絞り込み結果が 0 件でも KindFilter と ScopeFilter を表示し続ける', () => {
     mockUseFilteredManners.mockReturnValue({ data: [], isPending: false, isError: false });
 
     render(<MannerList />);
 
     expect(screen.getByText('manner.list.empty')).toBeTruthy();
     expect(screen.getByText('kind-filter')).toBeTruthy();
+    expect(screen.getByText('scope-filter')).toBeTruthy();
   });
 });
