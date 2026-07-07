@@ -1,13 +1,13 @@
 import { createContext, useContext, type PropsWithChildren } from 'react';
 
-import type { MannerRepository } from '../../domain/manner-repository';
+import type { MannerRepository } from '../domain/manner-repository';
 
 const MannerRepositoryContext = createContext<MannerRepository | null>(null);
 
 /**
  * {@link MannerRepository} の具体実装を注入する Provider。
  *
- * composition root（`src/app` 側）で実装を渡すことで、ui 層は infrastructure を
+ * composition root（`src/app` 側）で実装を渡すことで、application / ui 層は infrastructure を
  * 直接 import せずに済み、`ui → application → domain ◄─ infrastructure` の依存方向を保てる。
  */
 export function MannerRepositoryProvider({
