@@ -7,4 +7,6 @@ export { MannerScreen } from './ui/components/manner-screen';
 export { MannerList } from './ui/components/manner-list';
 export { useScopeFilterStore } from './store/use-scope-filter-store';
 export type { SelectedScope } from './store/use-scope-filter-store';
+export { useKindFilterStore } from './store/use-kind-filter-store';
+export type { SelectedKind } from './store/use-kind-filter-store';
 export { ScopeFilter } from './ui/components/scope-filter';
