@@ -9,8 +9,6 @@ import { getManners } from '../../application/use-cases/get-manners';
 
 import type { MannerItem } from '../../domain/manner-item';
 
-export { MANNERS_QUERY_KEY };
-
 /**
  * マナー項目一覧を取得する UI hook。
  *

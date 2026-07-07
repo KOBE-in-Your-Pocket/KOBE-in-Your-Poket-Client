@@ -28,6 +28,6 @@ export function useSpotManners(spotId: string | null | undefined) {
     queryKey: [...MANNERS_QUERY_KEY, language],
     enabled: Boolean(spotId),
     queryFn: () => getManners(language, repository),
-    select: (manners) => getSpotManners(spotId as string, manners),
+    select: (manners) => (spotId ? getSpotManners(spotId, manners) : []),
   });
 }
