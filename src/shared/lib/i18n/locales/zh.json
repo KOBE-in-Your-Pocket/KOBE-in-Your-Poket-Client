@@ -116,6 +116,11 @@
     "kind": {
       "manner": "礼仪",
       "rule": "规则"
+    },
+    "scopeFilter": {
+      "all": "全部",
+      "local": "当地特有",
+      "japan": "日本全国"
     }
   },
   "list": {
