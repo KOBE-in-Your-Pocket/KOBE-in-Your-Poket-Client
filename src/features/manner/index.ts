@@ -5,3 +5,6 @@ export { MannerRepositoryProvider } from './ui/hooks/manner-repository-context';
 export { createMockMannerRepository } from './infrastructure/api/mock-manner-repository';
 export { MannerScreen } from './ui/components/manner-screen';
 export { MannerList } from './ui/components/manner-list';
+export { useScopeFilterStore } from './store/use-scope-filter-store';
+export type { SelectedScope } from './store/use-scope-filter-store';
+export { ScopeFilter } from './ui/components/scope-filter';

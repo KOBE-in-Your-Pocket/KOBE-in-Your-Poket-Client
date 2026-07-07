@@ -116,6 +116,11 @@
     "kind": {
       "manner": "매너",
       "rule": "규칙"
+    },
+    "scopeFilter": {
+      "all": "전체",
+      "local": "지역 특유",
+      "japan": "일본 전역"
     }
   },
   "list": {
