@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useManners } from '../hooks/use-manners';
+import { useFilteredManners } from '../hooks/use-filtered-manners';
 
 import { styles } from '../styles/manner-list.styles';
 
@@ -13,6 +13,7 @@ import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
 import { KindBadge } from './kind-badge';
+import { KindFilter } from './kind-filter';
 import { MannerIcon } from './manner-icon';
 
 function MannerListItem({ manner }: { manner: MannerItem }) {
@@ -47,6 +48,7 @@ function ListHeader() {
       <ThemedText type="subtitle" style={styles.title}>
         {t('manner.list.title')}
       </ThemedText>
+      <KindFilter />
     </View>
   );
 }
@@ -54,12 +56,13 @@ function ListHeader() {
 /**
  * マナー項目一覧を表示するコンポーネント。
  *
- * application 層の `useManners()` 経由でデータを取得し、各項目のアイコン・タイトル・
- * 短い説明を含むカード一覧を表示する。詳細画面は持たず一覧のみで完結する。
+ * application 層の `useFilteredManners()` 経由で選択中の種別に絞り込んだデータを取得し、
+ * 各項目のアイコン・タイトル・短い説明を含むカード一覧を表示する。上部の {@link KindFilter}
+ * でチップを選ぶと一覧が即座に更新される。詳細画面は持たず一覧のみで完結する。
  */
 export function MannerList() {
   const { t } = useTranslation();
-  const { data: manners, isPending, isError } = useManners();
+  const { data: manners, isPending, isError } = useFilteredManners();
 
   if (isPending) {
     return (
@@ -77,20 +80,18 @@ export function MannerList() {
     );
   }
 
-  if (manners.length === 0) {
-    return (
-      <ThemedView style={styles.centered}>
-        <ThemedText themeColor="textSecondary">{t('manner.list.empty')}</ThemedText>
-      </ThemedView>
-    );
-  }
-
+  // 絞り込み結果が空でもヘッダーの KindFilter は表示し続け、他の種別へ切り替えられるようにする。
   return (
     <FlatList
       data={manners}
       keyExtractor={(manner) => manner.id}
       renderItem={({ item }) => <MannerListItem manner={item} />}
       ListHeaderComponent={<ListHeader />}
+      ListEmptyComponent={
+        <View style={styles.empty}>
+          <ThemedText themeColor="textSecondary">{t('manner.list.empty')}</ThemedText>
+        </View>
+      }
       contentContainerStyle={styles.listContent}
     />
   );
