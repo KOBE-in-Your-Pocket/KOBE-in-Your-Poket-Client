@@ -2,12 +2,12 @@ import { StyleSheet } from 'react-native';
 
 import { ThemedView } from '@/shared/ui';
 
-import { MannerList } from './manner-list';
+import { MannerList, type RelatedSpot } from './manner-list';
 
-export function MannerScreen() {
+export function MannerScreen({ spots }: { spots?: RelatedSpot[] }) {
   return (
     <ThemedView style={styles.container}>
-      <MannerList />
+      <MannerList spots={spots} />
     </ThemedView>
   );
 }

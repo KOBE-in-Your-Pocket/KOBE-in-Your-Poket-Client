@@ -112,7 +112,8 @@
     "list": {
       "title": "Manners",
       "loadError": "Could not load manner information.",
-      "empty": "No manner information found."
+      "empty": "No manner information found.",
+      "relatedSpots": "Related Spots"
     },
     "spotSection": {
       "title": "Manners for This Place"
