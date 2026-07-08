@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react-native';
-import { ActivityIndicator, Text as MockText, View as MockView } from 'react-native';
+import { Text as MockText, View as MockView } from 'react-native';
 
-import { SpotDetail } from '../spot-detail';
+import { SpotDetailContent } from '../spot-detail';
 
 import type { Spot } from '../../../domain/spot';
 import type { ReactNode } from 'react';
@@ -19,19 +19,49 @@ const mockSpot: Spot = {
   rating: { value: 4.2 },
 };
 
-const mockUseSpotDetail = jest.fn();
 const mockSpotMannerSection = jest.fn((_props: { spotId: string }) => null);
+const mockUseSpotReviews = jest.fn();
+const mockUseCurrentUser = jest.fn();
+const mockUseCurrentLocation = jest.fn();
 
-jest.mock('../../../application/use-spot-detail', () => ({
-  useSpotDetail: (spotId: string) => mockUseSpotDetail(spotId),
+jest.mock('../../../application/use-spot-reviews', () => ({
+  useSpotReviews: (spotId: string) => mockUseSpotReviews(spotId),
+}));
+
+jest.mock('../../../application/use-update-review', () => ({
+  useUpdateReview: () => jest.fn(),
+}));
+
+jest.mock('../../../application/use-delete-review', () => ({
+  useDeleteReview: () => jest.fn(),
 }));
 
 jest.mock('@/features/manner', () => ({
   SpotMannerSection: (props: { spotId: string }) => mockSpotMannerSection(props),
 }));
 
-jest.mock('../review-list', () => ({
-  ReviewList: ({ spotId }: { spotId: string }) => <MockText>{`review-list:${spotId}`}</MockText>,
+jest.mock('@/features/user/application/use-current-user', () => ({
+  useCurrentUser: () => mockUseCurrentUser(),
+}));
+
+jest.mock('@/shared/lib/geo', () => ({
+  useCurrentLocation: () => mockUseCurrentLocation(),
+}));
+
+jest.mock('@/shared/lib/directions', () => ({
+  confirmOpenDirections: jest.fn(),
+}));
+
+jest.mock('expo-router', () => ({
+  router: { back: jest.fn() },
+}));
+
+jest.mock('../review-form', () => ({
+  ReviewForm: ({ spotId }: { spotId: string }) => <MockText>{`review-form:${spotId}`}</MockText>,
+}));
+
+jest.mock('../review-language-filter', () => ({
+  ReviewLanguageFilter: () => null,
 }));
 
 jest.mock('react-i18next', () => ({
@@ -46,8 +76,17 @@ jest.mock('expo-symbols', () => ({
   SymbolView: () => null,
 }));
 
+jest.mock('react-native-safe-area-context', () => ({
+  useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
+}));
+
 jest.mock('@/shared/lib/theme', () => ({
-  useTheme: () => ({ text: '#000000', textSecondary: '#60646C' }),
+  useTheme: () => ({
+    text: '#000000',
+    textSecondary: '#60646C',
+    background: '#FFFFFF',
+    backgroundSelected: '#F0F0F0',
+  }),
 }));
 
 jest.mock('@/shared/config', () => ({
@@ -59,47 +98,23 @@ jest.mock('@/shared/ui', () => ({
   ThemedView: ({ children }: { children: ReactNode }) => <MockView>{children}</MockView>,
 }));
 
-describe('SpotDetail', () => {
+describe('SpotDetailContent', () => {
+  beforeEach(() => {
+    mockUseSpotReviews.mockReturnValue({ data: [], isPending: false });
+    mockUseCurrentUser.mockReturnValue({ name: 'test-user' });
+    mockUseCurrentLocation.mockReturnValue({ coords: null });
+  });
+
   afterEach(() => {
-    mockUseSpotDetail.mockReset();
     mockSpotMannerSection.mockClear();
+    mockUseSpotReviews.mockReset();
   });
 
-  it('取得中は ActivityIndicator を表示する', () => {
-    mockUseSpotDetail.mockReturnValue({ data: undefined, isPending: true, isError: false });
+  it('SpotMannerSection に spotId を渡して表示する', () => {
+    render(<SpotDetailContent spot={mockSpot} />);
 
-    render(<SpotDetail spotId="nankinmachi" />);
-
-    expect(screen.UNSAFE_getByType(ActivityIndicator)).toBeTruthy();
-    expect(mockSpotMannerSection).not.toHaveBeenCalled();
-  });
-
-  it('取得失敗時はエラーメッセージを表示する', () => {
-    mockUseSpotDetail.mockReturnValue({ data: undefined, isPending: false, isError: true });
-
-    render(<SpotDetail spotId="nankinmachi" />);
-
-    expect(screen.getByText('tourism.spotDetail.loadError')).toBeTruthy();
-    expect(mockSpotMannerSection).not.toHaveBeenCalled();
-  });
-
-  it('スポット未取得時は notFound メッセージを表示する', () => {
-    mockUseSpotDetail.mockReturnValue({ data: undefined, isPending: false, isError: false });
-
-    render(<SpotDetail spotId="unknown-spot" />);
-
-    expect(screen.getByText('tourism.spotDetail.notFound')).toBeTruthy();
-    expect(mockSpotMannerSection).not.toHaveBeenCalled();
-  });
-
-  it('取得成功時は SpotMannerSection に spotId を渡して表示する', () => {
-    mockUseSpotDetail.mockReturnValue({ data: mockSpot, isPending: false, isError: false });
-
-    render(<SpotDetail spotId="nankinmachi" />);
-
-    expect(mockUseSpotDetail).toHaveBeenCalledWith('nankinmachi');
     expect(mockSpotMannerSection).toHaveBeenCalledWith({ spotId: 'nankinmachi' });
     expect(screen.getByText(mockSpot.name)).toBeTruthy();
-    expect(screen.getByText('review-list:nankinmachi')).toBeTruthy();
+    expect(screen.getByText('review-form:nankinmachi')).toBeTruthy();
   });
 });
