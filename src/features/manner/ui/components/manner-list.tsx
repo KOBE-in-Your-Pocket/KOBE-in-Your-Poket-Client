@@ -15,14 +15,19 @@ import type { MannerItem } from '../../domain/manner-item';
 import { Spacing } from '@/shared/config';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
-import { useSpots, type Spot } from '@/features/tourism';
 
 import { KindBadge } from './kind-badge';
 import { KindFilter } from './kind-filter';
 import { MannerIcon } from './manner-icon';
 import { ScopeFilter } from './scope-filter';
 
-function RelatedSpots({ manner, spots }: { manner: MannerItem; spots: Spot[] | undefined }) {
+/** manner 機能が tourism 機能に依存しないよう、Spot の形を直接importせずこの最小形で受け取る。 */
+export type RelatedSpot = {
+  id: string;
+  name: string;
+};
+
+function RelatedSpots({ manner, spots }: { manner: MannerItem; spots: RelatedSpot[] | undefined }) {
   const { t } = useTranslation();
   const relatedSpots = spots?.filter((spot) => manner.relatedSpotIds.includes(spot.id)) ?? [];
 
@@ -59,7 +64,13 @@ function RelatedSpots({ manner, spots }: { manner: MannerItem; spots: Spot[] | u
   );
 }
 
-function MannerListItem({ manner, spots }: { manner: MannerItem; spots: Spot[] | undefined }) {
+function MannerListItem({
+  manner,
+  spots,
+}: {
+  manner: MannerItem;
+  spots: RelatedSpot[] | undefined;
+}) {
   const theme = useTheme();
   const isRule = manner.kind === 'rule';
 
@@ -106,10 +117,9 @@ function ListHeader() {
  * {@link KindFilter} と {@link ScopeFilter} でチップを選ぶと一覧が即座に更新される。
  * 詳細画面は持たず一覧のみで完結する。
  */
-export function MannerList() {
+export function MannerList({ spots }: { spots?: RelatedSpot[] }) {
   const { t } = useTranslation();
   const { data: manners, isPending, isError } = useFilteredManners();
-  const { data: spots } = useSpots();
 
   if (isPending) {
     return (
