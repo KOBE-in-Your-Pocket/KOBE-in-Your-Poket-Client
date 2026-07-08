@@ -47,7 +47,8 @@
     "reviewCard": {
       "edit": "편집",
       "save": "저장",
-      "delete": "삭제"
+      "delete": "삭제",
+      "openMenu": "메뉴 열기"
     },
     "reviewFilter": {
       "all": "전체"
