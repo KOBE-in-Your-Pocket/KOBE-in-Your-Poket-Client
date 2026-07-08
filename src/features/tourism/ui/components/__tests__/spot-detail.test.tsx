@@ -40,7 +40,7 @@ jest.mock('@/features/manner', () => ({
   SpotMannerSection: (props: { spotId: string }) => mockSpotMannerSection(props),
 }));
 
-jest.mock('@/features/user/application/use-current-user', () => ({
+jest.mock('@/features/user', () => ({
   useCurrentUser: () => mockUseCurrentUser(),
 }));
 

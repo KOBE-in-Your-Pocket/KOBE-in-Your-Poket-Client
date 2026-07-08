@@ -8,7 +8,6 @@ export { useGenreFilterStore } from './store/use-genre-filter-store';
 export type { SelectedGenre } from './store/use-genre-filter-store';
 export { GenreFilter } from './ui/components/genre-filter';
 export { SpotDetailScreen } from './ui/components/spot-detail-screen';
-export { SpotDetailContent } from './ui/components/spot-detail';
 export { ReviewList } from './ui/components/review-list';
 export { SpotList } from './ui/components/spot-list';
 export { TourismScreen } from './ui/components/tourism-screen';

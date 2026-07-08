@@ -26,9 +26,13 @@ export function SpotDetailScreen({ spotId }: { spotId: string }) {
         <View style={styles.centered}>
           <ActivityIndicator />
         </View>
-      ) : isError || !spot ? (
+      ) : isError ? (
         <View style={styles.centered}>
           <ThemedText themeColor="textSecondary">{t('tourism.spotDetail.loadError')}</ThemedText>
+        </View>
+      ) : !spot ? (
+        <View style={styles.centered}>
+          <ThemedText themeColor="textSecondary">{t('tourism.spotDetail.notFound')}</ThemedText>
         </View>
       ) : (
         <SpotDetailContent spot={spot} />

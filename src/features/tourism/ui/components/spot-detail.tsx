@@ -30,7 +30,7 @@ import { ReviewForm } from './review-form';
 import { ReviewLanguageFilter, type ReviewLangFilter } from './review-language-filter';
 
 import { SpotMannerSection } from '@/features/manner';
-import { useCurrentUser } from '@/features/user/application/use-current-user';
+import { useCurrentUser } from '@/features/user';
 import { Spacing } from '@/shared/config';
 import { confirmOpenDirections } from '@/shared/lib/directions';
 import { useCurrentLocation } from '@/shared/lib/geo';
@@ -199,7 +199,7 @@ function ReviewCard({
               <Pressable
                 onPress={openMenu}
                 accessibilityRole="button"
-                accessibilityLabel="メニューを開く"
+                accessibilityLabel={t('tourism.reviewCard.openMenu')}
                 hitSlop={Spacing.two}
               >
                 <SymbolView
@@ -375,9 +375,9 @@ export function SpotDetailContent({ spot }: { spot: Spot }) {
           {isReviewsPending ? (
             <ActivityIndicator />
           ) : filteredReviews.length > 0 ? (
-            filteredReviews.map((review, index) => (
+            filteredReviews.map((review) => (
               <ReviewCard
-                key={`${review.author.name}-${review.postedAt}-${index}`}
+                key={review.id}
                 review={review}
                 isOwn={review.author.name === currentUser.name}
                 onUpdate={(changes) => updateReview(review.id, changes)}
