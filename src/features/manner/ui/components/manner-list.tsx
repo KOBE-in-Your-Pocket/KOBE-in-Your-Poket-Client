@@ -1,23 +1,65 @@
+import { router } from 'expo-router';
+import { SymbolView } from 'expo-symbols';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, FlatList, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useFilteredManners } from '../hooks/use-filtered-manners';
 
 import { styles } from '../styles/manner-list.styles';
 
+import { KIND_BADGE_COLORS } from '../styles/kind-badge.styles';
+
 import type { MannerItem } from '../../domain/manner-item';
 
 import { Spacing } from '@/shared/config';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
+import { useSpots, type Spot } from '@/features/tourism';
 
 import { KindBadge } from './kind-badge';
 import { KindFilter } from './kind-filter';
 import { MannerIcon } from './manner-icon';
 import { ScopeFilter } from './scope-filter';
 
-function MannerListItem({ manner }: { manner: MannerItem }) {
+function RelatedSpots({ manner, spots }: { manner: MannerItem; spots: Spot[] | undefined }) {
+  const { t } = useTranslation();
+  const relatedSpots = spots?.filter((spot) => manner.relatedSpotIds.includes(spot.id)) ?? [];
+
+  if (relatedSpots.length === 0) {
+    return null;
+  }
+
+  return (
+    <View style={styles.relatedSpots}>
+      <ThemedText type="small" themeColor="textSecondary">
+        {t('manner.list.relatedSpots')}
+      </ThemedText>
+      <View style={styles.relatedSpotChips}>
+        {relatedSpots.map((spot) => (
+          <Pressable
+            key={spot.id}
+            style={styles.relatedSpotChip}
+            onPress={() => router.push({ pathname: '/tourism/[id]', params: { id: spot.id } })}
+            accessibilityRole="link"
+            accessibilityLabel={spot.name}
+          >
+            <SymbolView
+              tintColor={KIND_BADGE_COLORS.manner.foreground}
+              name={{ ios: 'mappin', android: 'location_on', web: 'location_on' }}
+              size={12}
+            />
+            <ThemedText type="small" style={styles.relatedSpotText}>
+              {spot.name}
+            </ThemedText>
+          </Pressable>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+function MannerListItem({ manner, spots }: { manner: MannerItem; spots: Spot[] | undefined }) {
   const theme = useTheme();
   const isRule = manner.kind === 'rule';
 
@@ -35,6 +77,7 @@ function MannerListItem({ manner }: { manner: MannerItem }) {
         <ThemedText type="small" themeColor="textSecondary" style={styles.itemDescription}>
           {manner.description}
         </ThemedText>
+        <RelatedSpots manner={manner} spots={spots} />
       </View>
     </ThemedView>
   );
@@ -66,6 +109,7 @@ function ListHeader() {
 export function MannerList() {
   const { t } = useTranslation();
   const { data: manners, isPending, isError } = useFilteredManners();
+  const { data: spots } = useSpots();
 
   if (isPending) {
     return (
@@ -88,7 +132,7 @@ export function MannerList() {
     <FlatList
       data={manners}
       keyExtractor={(manner) => manner.id}
-      renderItem={({ item }) => <MannerListItem manner={item} />}
+      renderItem={({ item }) => <MannerListItem manner={item} spots={spots} />}
       ListHeaderComponent={<ListHeader />}
       ListEmptyComponent={
         <View style={styles.empty}>

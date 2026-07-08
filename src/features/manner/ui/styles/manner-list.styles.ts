@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 import { BottomTabInset, Spacing } from '@/shared/config';
 
-import { RULE_ACCENT_COLOR, RULE_CARD_BACKGROUND } from './kind-badge.styles';
+import { KIND_BADGE_COLORS, RULE_ACCENT_COLOR, RULE_CARD_BACKGROUND } from './kind-badge.styles';
 
 export const styles = StyleSheet.create({
   centered: {
@@ -63,5 +63,27 @@ export const styles = StyleSheet.create({
   },
   itemDescription: {
     lineHeight: 20,
+  },
+  relatedSpots: {
+    gap: Spacing.half,
+    marginTop: Spacing.half,
+  },
+  relatedSpotChips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.one,
+  },
+  relatedSpotChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.half,
+    paddingHorizontal: Spacing.two,
+    paddingVertical: Spacing.half,
+    borderRadius: Spacing.four,
+    backgroundColor: KIND_BADGE_COLORS.manner.background,
+  },
+  relatedSpotText: {
+    color: KIND_BADGE_COLORS.manner.foreground,
+    fontWeight: '600',
   },
 });

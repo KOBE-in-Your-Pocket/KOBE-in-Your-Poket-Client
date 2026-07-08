@@ -1,8 +1,10 @@
-import { render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen } from '@testing-library/react-native';
+import { router } from 'expo-router';
 import { ActivityIndicator, Text as MockText, View as MockView } from 'react-native';
 
 import { MannerList } from '../manner-list';
 
+import type { Spot } from '@/features/tourism';
 import type { MannerItem } from '../../../domain/manner-item';
 import type { ReactNode } from 'react';
 
@@ -27,11 +29,36 @@ const mockManners: MannerItem[] = [
   },
 ];
 
+function spot(id: string, name: string): Spot {
+  return {
+    id,
+    name,
+    genre: 'landmark',
+    description: name,
+    address: name,
+    coordinates: { latitude: 0, longitude: 0 },
+    businessHours: '',
+    category: { label: '' },
+    media: { imageUrl: '' },
+  };
+}
+
+const mockSpots: Spot[] = [spot('nankinmachi', '南京町')];
+
 // jest.mock ファクトリから参照するため mock プレフィックスを付ける（out-of-scope 変数制約）。
 const mockUseFilteredManners = jest.fn();
+const mockUseSpots = jest.fn();
 
 jest.mock('../../hooks/use-filtered-manners', () => ({
   useFilteredManners: () => mockUseFilteredManners(),
+}));
+
+jest.mock('@/features/tourism', () => ({
+  useSpots: () => mockUseSpots(),
+}));
+
+jest.mock('expo-router', () => ({
+  router: { push: jest.fn() },
 }));
 
 jest.mock('react-i18next', () => ({
@@ -76,8 +103,14 @@ jest.mock('@/shared/ui', () => ({
 }));
 
 describe('MannerList', () => {
+  beforeEach(() => {
+    mockUseSpots.mockReturnValue({ data: mockSpots, isPending: false, isError: false });
+  });
+
   afterEach(() => {
     mockUseFilteredManners.mockReset();
+    mockUseSpots.mockReset();
+    (router.push as jest.Mock).mockReset();
   });
 
   it('取得中は ActivityIndicator を表示する', () => {
@@ -134,5 +167,39 @@ describe('MannerList', () => {
     expect(screen.getByText('manner.list.empty')).toBeTruthy();
     expect(screen.getByText('kind-filter')).toBeTruthy();
     expect(screen.getByText('scope-filter')).toBeTruthy();
+  });
+
+  it('relatedSpotIds に対応するスポット名リンクを表示する', () => {
+    mockUseFilteredManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
+
+    render(<MannerList />);
+
+    expect(screen.getByText('manner.list.relatedSpots')).toBeTruthy();
+    expect(screen.getByText('南京町')).toBeTruthy();
+  });
+
+  it('relatedSpotIds が空の項目にはスポットリンクを表示しない', () => {
+    mockUseFilteredManners.mockReturnValue({
+      data: [mockManners[1]],
+      isPending: false,
+      isError: false,
+    });
+
+    render(<MannerList />);
+
+    expect(screen.queryByText('manner.list.relatedSpots')).toBeNull();
+  });
+
+  it('スポット名リンクをタップすると観光詳細へ遷移する', () => {
+    mockUseFilteredManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
+
+    render(<MannerList />);
+
+    fireEvent.press(screen.getByText('南京町'));
+
+    expect(router.push).toHaveBeenCalledWith({
+      pathname: '/tourism/[id]',
+      params: { id: 'nankinmachi' },
+    });
   });
 });
