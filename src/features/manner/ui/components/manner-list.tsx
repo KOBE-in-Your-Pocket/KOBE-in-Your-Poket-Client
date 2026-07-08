@@ -6,9 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useFilteredManners } from '../hooks/use-filtered-manners';
 
-import { styles } from '../styles/manner-list.styles';
-
-import { KIND_BADGE_COLORS } from '../styles/kind-badge.styles';
+import { RELATED_SPOT_LINK_COLOR, styles } from '../styles/manner-list.styles';
 
 import type { MannerItem } from '../../domain/manner-item';
 
@@ -50,7 +48,7 @@ function RelatedSpots({ manner, spots }: { manner: MannerItem; spots: RelatedSpo
             accessibilityLabel={spot.name}
           >
             <SymbolView
-              tintColor={KIND_BADGE_COLORS.manner.foreground}
+              tintColor={RELATED_SPOT_LINK_COLOR.foreground}
               name={{ ios: 'mappin', android: 'location_on', web: 'location_on' }}
               size={12}
             />
