@@ -36,6 +36,7 @@ export function SegmentedControl<T extends string>({
   return (
     <View accessibilityRole="tablist">
       <View
+        testID="segmented-control-track"
         style={[
           styles.track,
           elevated ? styles.trackElevated : undefined,
