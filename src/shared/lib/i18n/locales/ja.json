@@ -20,7 +20,14 @@
     }
   },
   "settings": {
-    "language": "言語"
+    "language": "言語",
+    "account": {
+      "title": "アカウント編集",
+      "iconLabel": "アイコン",
+      "nameLabel": "表示名",
+      "namePlaceholder": "表示名を入力してください",
+      "save": "保存"
+    }
   },
   "tourism": {
     "spotList": {

@@ -20,7 +20,14 @@
     }
   },
   "settings": {
-    "language": "언어"
+    "language": "언어",
+    "account": {
+      "title": "계정 편집",
+      "iconLabel": "아이콘",
+      "nameLabel": "표시 이름",
+      "namePlaceholder": "표시 이름을 입력하세요",
+      "save": "저장"
+    }
   },
   "tourism": {
     "spotList": {

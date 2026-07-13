@@ -20,7 +20,14 @@
     }
   },
   "settings": {
-    "language": "Language"
+    "language": "Language",
+    "account": {
+      "title": "Edit Account",
+      "iconLabel": "Icon",
+      "nameLabel": "Display Name",
+      "namePlaceholder": "Enter your display name",
+      "save": "Save"
+    }
   },
   "tourism": {
     "spotList": {
