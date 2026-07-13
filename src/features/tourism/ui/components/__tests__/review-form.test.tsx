@@ -31,8 +31,12 @@ jest.mock('@/shared/ui', () => ({
 jest.mock('expo-image', () => ({ Image: () => null }));
 jest.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
-const USER = { name: '荒川蓮', iconUrl: 'https://i.pravatar.cc/150?img=68' };
-const OTHER_USER = { name: '山田花子', iconUrl: 'https://example.com/hanako.png' };
+const USER = { id: 'user-arakawa', name: '荒川蓮', iconUrl: 'https://i.pravatar.cc/150?img=68' };
+const OTHER_USER = {
+  id: 'user-yamada',
+  name: '山田花子',
+  iconUrl: 'https://example.com/hanako.png',
+};
 const PLACEHOLDER_LABEL = 'tourism.reviewForm.placeholder';
 const COMMENT_PLACEHOLDER = 'tourism.reviewForm.commentPlaceholder';
 

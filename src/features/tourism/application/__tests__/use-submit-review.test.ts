@@ -25,7 +25,9 @@ describe('useSubmitReview', () => {
   });
 
   it('入力に投稿者・id・投稿日時・言語を付与してストアに追加する', () => {
-    useAuthStore.getState().login({ name: '荒川蓮', iconUrl: 'https://i.pravatar.cc/150?img=68' });
+    useAuthStore
+      .getState()
+      .login({ id: 'user-arakawa', name: '荒川蓮', iconUrl: 'https://i.pravatar.cc/150?img=68' });
     const { result } = renderHook(() => useSubmitReview('spot-a'));
 
     act(() => {

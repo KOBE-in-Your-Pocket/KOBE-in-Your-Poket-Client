@@ -7,7 +7,7 @@ function review(id: string, postedAt: string): Review {
     id,
     rating: { value: 5 },
     comment: id,
-    author: { name: 'n', iconUrl: 'https://example.com/a.png' },
+    author: { id: 'author-n', name: 'n', iconUrl: 'https://example.com/a.png' },
     postedAt,
     language: 'ja',
   };

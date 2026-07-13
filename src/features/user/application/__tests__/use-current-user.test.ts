@@ -17,7 +17,7 @@ describe('useCurrentUser', () => {
   });
 
   it('login 後は認証ストアの現在ユーザー（name / iconUrl）を返す', () => {
-    const user = { name: '山田花子', iconUrl: 'https://example.com/hanako.png' };
+    const user = { id: 'user-yamada', name: '山田花子', iconUrl: 'https://example.com/hanako.png' };
     useAuthStore.getState().login(user);
 
     const { result } = renderHook(() => useCurrentUser());
@@ -27,7 +27,9 @@ describe('useCurrentUser', () => {
   });
 
   it('logout 後は null を返す', () => {
-    useAuthStore.getState().login({ name: '山田花子', iconUrl: 'https://example.com/hanako.png' });
+    useAuthStore
+      .getState()
+      .login({ id: 'user-yamada', name: '山田花子', iconUrl: 'https://example.com/hanako.png' });
     useAuthStore.getState().logout();
 
     const { result } = renderHook(() => useCurrentUser());

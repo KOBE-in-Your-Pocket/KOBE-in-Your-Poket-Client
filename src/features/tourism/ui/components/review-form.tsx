@@ -48,9 +48,9 @@ export function ReviewForm({ spotId }: { spotId: string }) {
   const [comment, setComment] = useState('');
 
   // 現在ユーザーが変わったら（ログアウト／別ユーザーへの切替）書きかけの下書きを破棄する。
-  // 前のユーザーの入力を次のユーザーへ持ち越さないため。
+  // 前のユーザーの入力を次のユーザーへ持ち越さないため（同名ユーザーも id で区別する）。
   // 副作用ではなくレンダー中の「変化に伴う state 調整」で行う（React 推奨）。
-  const currentUserId = currentUser?.name ?? null;
+  const currentUserId = currentUser?.id ?? null;
   const [draftOwnerId, setDraftOwnerId] = useState(currentUserId);
   if (draftOwnerId !== currentUserId) {
     setDraftOwnerId(currentUserId);
