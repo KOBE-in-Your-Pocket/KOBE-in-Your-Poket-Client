@@ -100,6 +100,16 @@ export const styles = StyleSheet.create({
     lineHeight: 24,
     textAlign: 'center',
   },
+  // サブタイトルの左右に薄い区切り線を入れる行（ホームのタイトル区切り線と同じ 1dp・textSecondary）。
+  sectionTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+  },
+  sectionTitleDivider: {
+    flex: 1,
+    height: 1,
+  },
   sectionLabel: {
     flexDirection: 'row',
     alignItems: 'center',
