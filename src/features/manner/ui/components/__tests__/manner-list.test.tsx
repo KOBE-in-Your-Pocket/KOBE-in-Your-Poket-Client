@@ -45,8 +45,8 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-jest.mock('../manner-icon', () => ({
-  MannerIcon: () => null,
+jest.mock('../manner-pictogram', () => ({
+  MannerPictogram: () => null,
 }));
 
 // バッジは種別が渡っていることだけ確認できれば十分なので、kind を text として露出する軽量モックにする。

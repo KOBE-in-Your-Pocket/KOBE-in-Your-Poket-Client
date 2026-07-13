@@ -37,8 +37,8 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-jest.mock('../manner-icon', () => ({
-  MannerIcon: () => null,
+jest.mock('../manner-pictogram', () => ({
+  MannerPictogram: () => null,
 }));
 
 jest.mock('../kind-badge', () => ({

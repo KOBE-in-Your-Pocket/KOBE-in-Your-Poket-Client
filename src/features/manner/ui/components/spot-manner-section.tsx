@@ -11,7 +11,7 @@ import { ThemedText, ThemedView } from '@/shared/ui';
 import { styles } from '../styles/spot-manner-section.styles';
 
 import { KindBadge } from './kind-badge';
-import { MannerIcon } from './manner-icon';
+import { MannerPictogram } from './manner-pictogram';
 
 function SpotMannerItem({ manner }: { manner: MannerItem }) {
   const theme = useTheme();
@@ -20,7 +20,7 @@ function SpotMannerItem({ manner }: { manner: MannerItem }) {
   return (
     <ThemedView style={[styles.card, isRule && styles.ruleCard]}>
       <View style={[styles.iconWrapper, { backgroundColor: theme.backgroundElement }]}>
-        <MannerIcon icon={manner.icon} size={18} />
+        <MannerPictogram icon={manner.icon} size={32} />
       </View>
 
       <View style={styles.content}>
