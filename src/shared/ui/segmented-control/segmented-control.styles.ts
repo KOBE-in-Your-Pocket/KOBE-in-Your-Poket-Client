@@ -8,6 +8,9 @@ export const styles = StyleSheet.create({
     borderRadius: Spacing.five,
     padding: Spacing.half,
     gap: Spacing.half,
+  },
+  /** 浮遊表示用のドロップシャドウ（`elevated` 指定時のみ付与）。 */
+  trackElevated: {
     ...Platform.select({
       ios: {
         shadowColor: '#000000',
