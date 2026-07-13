@@ -98,6 +98,7 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     lineHeight: 24,
+    textAlign: 'center',
   },
   sectionLabel: {
     flexDirection: 'row',
