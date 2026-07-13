@@ -2,9 +2,9 @@
 export const TAB_BAR_CONTENT_HEIGHT = 68;
 
 export const TAB_BAR_COLORS = {
-  active: '#D85C4A',
+  active: '#208AEF',
   inactive: '#6B635B',
-  activeBorder: '#F5CACA',
+  activeBorder: '#C4E0FA',
   background: '#FFFFFF',
 } as const;
 
