@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
 
+import { MODE_SELECTED_COLOR, Spacing } from '@/shared/config';
 import { SegmentedControl } from '@/shared/ui';
 
 import { useListModeStore, type ListMode } from '../../store/use-list-mode-store';
@@ -14,14 +16,28 @@ export function ListModeToggle() {
   const segments = LIST_MODES.map((mode) => ({
     value: mode,
     label: t(`list.modeToggle.${mode}`),
+    selectedColor: MODE_SELECTED_COLOR[mode],
   }));
 
   return (
-    <SegmentedControl
-      segments={segments}
-      value={listMode}
-      onChange={setListMode}
-      segmentMinWidth={72}
-    />
+    <View style={styles.container}>
+      <SegmentedControl
+        segments={segments}
+        value={listMode}
+        onChange={setListMode}
+        segmentMinWidth={72}
+        elevated={false}
+      />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    right: Spacing.three,
+    // 右下・下部タブのすぐ上に固定。画面スクロールに追従せず常に同じ位置に表示する。
+    bottom: Spacing.four,
+    zIndex: 1,
+  },
+});
