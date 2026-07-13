@@ -61,6 +61,12 @@ export function ReviewForm({ spotId }: { spotId: string }) {
     setExpanded(false);
   }
 
+  // 未ログイン時はレビュー投稿できないためフォームを表示しない。
+  // ログイン導線の表示は別要件で対応する。
+  if (!currentUser) {
+    return null;
+  }
+
   if (!expanded) {
     return (
       <Pressable
