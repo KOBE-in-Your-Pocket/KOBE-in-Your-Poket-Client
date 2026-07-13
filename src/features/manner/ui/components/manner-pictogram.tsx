@@ -24,7 +24,7 @@ const PICTOGRAM_MAP: Record<string, number> = {
  * `icon` に対応する画像が無い場合は既存の {@link MannerIcon} にフォールバックする。
  */
 export function MannerPictogram({ icon, size = 40 }: { icon: MannerItem['icon']; size?: number }) {
-  const source = PICTOGRAM_MAP[icon];
+  const source = Object.hasOwn(PICTOGRAM_MAP, icon) ? PICTOGRAM_MAP[icon] : undefined;
 
   if (!source) {
     return <MannerIcon icon={icon} size={Math.round(size * 0.55)} />;

@@ -33,4 +33,14 @@ describe('MannerPictogram', () => {
 
     expect(screen.getByText('icon:unknown-key:18')).toBeTruthy();
   });
+
+  it.each(['constructor', 'toString', '__proto__'])(
+    'Object.prototype 由来のプロパティと衝突する icon キー（%s）にもフォールバックする',
+    (icon) => {
+      render(<MannerPictogram icon={icon} size={40} />);
+
+      expect(screen.getByText(`icon:${icon}:22`)).toBeTruthy();
+      expect(screen.queryByText(/^image:/)).toBeNull();
+    },
+  );
 });
