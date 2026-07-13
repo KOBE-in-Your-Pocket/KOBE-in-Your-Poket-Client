@@ -6,6 +6,7 @@ import { useColorScheme } from 'react-native';
 
 import { AnimatedSplashOverlay } from '../branding/animated-icon';
 
+import { useFontsBootstrap } from './use-fonts-bootstrap';
 import { useLanguageBootstrap } from './use-language-bootstrap';
 
 import { useEvacuationDbBootstrap } from '@/features/evacuation/application/hooks/use-evacuation-db-bootstrap';
@@ -19,6 +20,7 @@ export function AppProviders({ children }: PropsWithChildren) {
   const colorScheme = useColorScheme();
   useLanguageBootstrap();
   useEvacuationDbBootstrap();
+  useFontsBootstrap();
   return (
     <QueryClientProvider client={queryClient}>
       <I18nextProvider i18n={i18n}>

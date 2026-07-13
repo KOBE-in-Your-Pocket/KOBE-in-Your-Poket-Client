@@ -17,7 +17,7 @@ export function HomeScreen() {
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={['top']}>
         <ScrollView contentContainerStyle={styles.content}>
-          <ThemedText type="title" numberOfLines={1} adjustsFontSizeToFit>
+          <ThemedText type="title" style={styles.title} numberOfLines={1} adjustsFontSizeToFit>
             {t('common.appName')}
           </ThemedText>
 
