@@ -2,8 +2,6 @@ import { StyleSheet } from 'react-native';
 
 import { Spacing } from '@/shared/config';
 
-import { RULE_ACCENT_COLOR, RULE_CARD_BACKGROUND_SUBTLE } from './kind-badge.styles';
-
 export const styles = StyleSheet.create({
   section: {
     gap: Spacing.two,
@@ -16,17 +14,14 @@ export const styles = StyleSheet.create({
   itemList: {
     gap: Spacing.two,
   },
+  // カードは分類アクセント色の枠線＋控えめな背景で強調する（色はコンポーネントで分類ごとに指定）。
   card: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: Spacing.two,
     padding: Spacing.two,
     borderRadius: Spacing.two,
-  },
-  ruleCard: {
-    backgroundColor: RULE_CARD_BACKGROUND_SUBTLE,
     borderWidth: 1,
-    borderColor: RULE_ACCENT_COLOR,
   },
   iconWrapper: {
     width: 32,
@@ -39,12 +34,10 @@ export const styles = StyleSheet.create({
     flex: 1,
     gap: Spacing.half,
   },
+  // タイトルは分類アクセント色で強調する（色はコンポーネントで指定）。
   itemTitle: {
     fontSize: 15,
     fontWeight: '700',
-  },
-  ruleItemTitle: {
-    color: RULE_ACCENT_COLOR,
   },
   itemDescription: {
     lineHeight: 18,
