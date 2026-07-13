@@ -24,6 +24,7 @@
     "account": {
       "title": "编辑账户",
       "iconLabel": "头像",
+      "avatarOption": "头像{{number}}",
       "nameLabel": "显示名称",
       "namePlaceholder": "请输入显示名称",
       "save": "保存"

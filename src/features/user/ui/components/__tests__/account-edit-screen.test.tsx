@@ -7,7 +7,9 @@ import {
   type ViewStyle,
 } from 'react-native';
 
+import { useCurrentUser } from '../../../application/use-current-user';
 import { AccountEditScreen } from '../account-edit-screen';
+import { PRESET_AVATAR_URLS } from '../avatar-picker';
 
 import type { ReactNode } from 'react';
 
@@ -49,20 +51,23 @@ jest.mock('react-native-safe-area-context', () => ({
 }));
 
 jest.mock('../../../application/use-current-user', () => ({
-  useCurrentUser: () => ({
-    name: '荒川蓮',
-    iconUrl: 'https://i.pravatar.cc/150?img=68',
-  }),
+  useCurrentUser: jest.fn(),
 }));
 
+const mockUseCurrentUser = useCurrentUser as jest.Mock;
+
 describe('AccountEditScreen', () => {
+  beforeEach(() => {
+    mockUseCurrentUser.mockReturnValue({ name: '荒川蓮', iconUrl: PRESET_AVATAR_URLS[0] });
+  });
+
   it('現在ユーザーの表示名とアイコンを初期表示する', () => {
     render(<AccountEditScreen />);
 
     expect(screen.getByDisplayValue('荒川蓮')).toBeTruthy();
 
     const selected = screen.getByRole('radio', { selected: true });
-    expect(within(selected).getByTestId('image-https://i.pravatar.cc/150?img=68')).toBeTruthy();
+    expect(within(selected).getByTestId(`image-${PRESET_AVATAR_URLS[0]}`)).toBeTruthy();
   });
 
   it('別のアイコンを選ぶと選択とプレビューが切り替わる', () => {
@@ -72,9 +77,9 @@ describe('AccountEditScreen', () => {
     fireEvent.press(options[1]);
 
     const selected = screen.getByRole('radio', { selected: true });
-    expect(within(selected).getByTestId('image-https://i.pravatar.cc/150?img=5')).toBeTruthy();
+    expect(within(selected).getByTestId(`image-${PRESET_AVATAR_URLS[1]}`)).toBeTruthy();
     // プレビューと選択中オプションの2箇所に同じ URI が表示される。
-    expect(screen.getAllByTestId('image-https://i.pravatar.cc/150?img=5')).toHaveLength(2);
+    expect(screen.getAllByTestId(`image-${PRESET_AVATAR_URLS[1]}`)).toHaveLength(2);
   });
 
   it('表示名が空白のみのとき保存ボタンが無効になる', () => {

@@ -36,7 +36,7 @@ export function AccountEditScreen() {
         <View style={styles.preview}>
           <Image
             source={{ uri: iconUrl }}
-            style={styles.previewAvatar}
+            style={[styles.previewAvatar, { backgroundColor: theme.backgroundElement }]}
             contentFit="cover"
             accessibilityLabel={t('settings.account.iconLabel')}
           />

@@ -24,6 +24,7 @@
     "account": {
       "title": "Edit Account",
       "iconLabel": "Icon",
+      "avatarOption": "Icon {{number}}",
       "nameLabel": "Display Name",
       "namePlaceholder": "Enter your display name",
       "save": "Save"

@@ -24,6 +24,7 @@
     "account": {
       "title": "アカウント編集",
       "iconLabel": "アイコン",
+      "avatarOption": "アイコン{{number}}",
       "nameLabel": "表示名",
       "namePlaceholder": "表示名を入力してください",
       "save": "保存"

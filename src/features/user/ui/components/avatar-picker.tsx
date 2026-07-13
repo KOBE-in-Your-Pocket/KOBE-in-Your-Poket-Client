@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Spacing } from '@/shared/config';
@@ -24,21 +25,27 @@ type AvatarPickerProps = {
 };
 
 export function AvatarPicker({ selectedUrl, onSelect }: AvatarPickerProps) {
+  const { t } = useTranslation();
   const theme = useTheme();
 
   return (
-    <View style={styles.grid}>
-      {PRESET_AVATAR_URLS.map((url) => {
+    <View style={styles.grid} accessibilityRole="radiogroup">
+      {PRESET_AVATAR_URLS.map((url, index) => {
         const selected = url === selectedUrl;
         return (
           <Pressable
             key={url}
             accessibilityRole="radio"
+            accessibilityLabel={t('settings.account.avatarOption', { number: index + 1 })}
             accessibilityState={{ selected }}
             onPress={() => onSelect(url)}
             style={[styles.option, { borderColor: selected ? theme.text : 'transparent' }]}
           >
-            <Image source={{ uri: url }} style={styles.avatar} contentFit="cover" />
+            <Image
+              source={{ uri: url }}
+              style={[styles.avatar, { backgroundColor: theme.backgroundElement }]}
+              contentFit="cover"
+            />
           </Pressable>
         );
       })}
