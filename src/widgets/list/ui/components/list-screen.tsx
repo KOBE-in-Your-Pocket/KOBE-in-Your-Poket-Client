@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Spacing } from '@/shared/config';
+import { Fonts, Spacing } from '@/shared/config';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
@@ -27,7 +27,7 @@ export function ListScreen() {
           { paddingTop: insets.top + Spacing.three, backgroundColor: theme.background },
         ]}
       >
-        <ThemedText type="subtitle" style={styles.title}>
+        <ThemedText type="title" style={styles.title} numberOfLines={1} adjustsFontSizeToFit>
           {t(titleKey)}
         </ThemedText>
         <View style={styles.toggleRow}>
@@ -52,8 +52,12 @@ const styles = StyleSheet.create({
   toggleRow: {
     alignItems: 'flex-end',
   },
+  // ホーム画面タイトルに合わせる（筆記体・中央揃え・fontSize 30 / lineHeight 40）。
   title: {
-    fontSize: 28,
-    lineHeight: 34,
+    fontFamily: Fonts.cursive,
+    fontWeight: 'normal',
+    fontSize: 30,
+    lineHeight: 40,
+    textAlign: 'center',
   },
 });
