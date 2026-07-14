@@ -22,9 +22,9 @@ describe('MannerPictogram', () => {
   });
 
   it('画像が未登録の icon キーには既存の MannerIcon にフォールバックする', () => {
-    render(<MannerPictogram icon="no-white-clothes-in-kinsen" size={40} />);
+    render(<MannerPictogram icon="no-image-registered" size={40} />);
 
-    expect(screen.getByText('icon:no-white-clothes-in-kinsen:22')).toBeTruthy();
+    expect(screen.getByText('icon:no-image-registered:22')).toBeTruthy();
     expect(screen.queryByText(/^image:/)).toBeNull();
   });
 

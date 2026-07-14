@@ -35,8 +35,6 @@ const ICON_MAP: Record<string, SymbolName> = {
     web: 'volume_off',
   },
   'no-phone-calls': { ios: 'phone.down', android: 'phone_disabled', web: 'phone_disabled' },
-  'no-white-clothes-in-kinsen': { ios: 'tshirt', android: 'checkroom', web: 'checkroom' },
-  'no-feeding-wild-boars': { ios: 'pawprint', android: 'pets', web: 'pets' },
 };
 
 const DEFAULT_ICON: SymbolName = { ios: 'info.circle', android: 'info', web: 'info' };
