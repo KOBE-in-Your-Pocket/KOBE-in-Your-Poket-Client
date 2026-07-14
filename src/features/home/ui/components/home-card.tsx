@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useTranslation } from 'react-i18next';
-import { Pressable } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import type { HomeCard as HomeCardDef } from '../home-cards';
 import { CARD_FOREGROUND, styles } from '../styles/home-card.styles';
@@ -25,10 +25,14 @@ export function HomeCard({ card }: { card: HomeCardDef }) {
         pressed && styles.pressed,
       ]}
     >
-      <SymbolView name={card.symbol} tintColor={CARD_FOREGROUND} size={28} style={styles.icon} />
-      <ThemedText type="smallBold" style={[styles.label, { color: CARD_FOREGROUND }]}>
-        {label}
-      </ThemedText>
+      <View style={styles.iconHalf}>
+        <SymbolView name={card.symbol} tintColor={CARD_FOREGROUND} size={32} style={styles.icon} />
+      </View>
+      <View style={styles.labelHalf}>
+        <ThemedText type="smallBold" style={[styles.label, { color: CARD_FOREGROUND }]}>
+          {label}
+        </ThemedText>
+      </View>
     </Pressable>
   );
 }
