@@ -17,6 +17,12 @@
       "map": "지도",
       "manners": "매너",
       "evacuation": "대피소"
+    },
+    "catchphrase": {
+      "line1": "언어의 장벽도",
+      "line2": "매너의 차이도",
+      "line3": "이제 헤매지 않아요",
+      "tagline": "픽토그램으로 이어지는 고베 여행"
     }
   },
   "settings": {
