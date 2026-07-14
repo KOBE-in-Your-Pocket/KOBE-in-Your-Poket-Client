@@ -2,6 +2,14 @@ import { render, screen } from '@testing-library/react-native';
 import { Text as MockText } from 'react-native';
 
 import { MannerPictogram } from '../manner-pictogram';
+import { MANNER_PICTOGRAM_MAP } from '../manner-pictogram-map';
+
+// jest の assetFileTransformer は png の require() を { testUri: string } に変換する
+// （本番の number とは異なる）。testUri を露出し、キーごとに異なるアセットが
+// 選択されていることまで検証できるようにする。
+function testUriOf(imageKey: string): string {
+  return (MANNER_PICTOGRAM_MAP[imageKey] as unknown as { testUri: string }).testUri;
+}
 
 jest.mock('expo-image', () => ({
   Image: ({
@@ -9,11 +17,11 @@ jest.mock('expo-image', () => ({
     style,
     contentFit,
   }: {
-    source: number;
+    source: { testUri?: string };
     style?: { width?: number; height?: number; borderRadius?: number };
     contentFit?: string;
   }) => (
-    <MockText>{`image:${source}:${style?.width}:${style?.height}:${style?.borderRadius}:${contentFit}`}</MockText>
+    <MockText>{`image:${source?.testUri}:${style?.width}:${style?.height}:${style?.borderRadius}:${contentFit}`}</MockText>
   ),
 }));
 
@@ -32,7 +40,9 @@ describe('MannerPictogram', () => {
       />,
     );
 
-    expect(screen.getByText(/^image:.*:40:40:20:cover$/)).toBeTruthy();
+    expect(
+      screen.getByText(`image:${testUriOf('no-eating-while-walking')}:40:40:20:cover`),
+    ).toBeTruthy();
     expect(screen.queryByText(/^icon:/)).toBeNull();
   });
 
@@ -44,7 +54,7 @@ describe('MannerPictogram', () => {
       />,
     );
 
-    expect(screen.getByText(/^image:.*:32:32:16:cover$/)).toBeTruthy();
+    expect(screen.getByText(`image:${testUriOf('put-trash-in-bin')}:32:32:16:cover`)).toBeTruthy();
   });
 
   it.each([
@@ -59,7 +69,9 @@ describe('MannerPictogram', () => {
     );
 
     expect(
-      screen.getByText(new RegExp(`^image:.*:${size}:${size}:${expectedBorderRadius}:cover$`)),
+      screen.getByText(
+        `image:${testUriOf('show-consideration')}:${size}:${size}:${expectedBorderRadius}:cover`,
+      ),
     ).toBeTruthy();
   });
 
