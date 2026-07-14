@@ -1,11 +1,12 @@
 import type { PublicUser } from '../domain/public-user';
+import { useAuthStore } from '../store/use-auth-store';
 
-// 認証実装までの暫定固定ユーザー（レビュー投稿者として使用）。
-const CURRENT_USER: PublicUser = {
-  name: '荒川蓮',
-  iconUrl: 'https://i.pravatar.cc/150?img=68',
-};
-
-export function useCurrentUser(): PublicUser {
-  return CURRENT_USER;
+/**
+ * 現在ログイン中のユーザーを返す。未ログイン時は null。
+ *
+ * 認証状態は {@link useAuthStore} が保持する。呼び出し側は null
+ * （＝未ログイン）を必ず考慮すること。
+ */
+export function useCurrentUser(): PublicUser | null {
+  return useAuthStore((state) => state.currentUser);
 }

@@ -47,6 +47,18 @@ export function ReviewForm({ spotId }: { spotId: string }) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
 
+  // 現在ユーザーが変わったら（ログアウト／別ユーザーへの切替）書きかけの下書きを破棄する。
+  // 前のユーザーの入力を次のユーザーへ持ち越さないため（同名ユーザーも id で区別する）。
+  // 副作用ではなくレンダー中の「変化に伴う state 調整」で行う（React 推奨）。
+  const currentUserId = currentUser?.id ?? null;
+  const [draftOwnerId, setDraftOwnerId] = useState(currentUserId);
+  if (draftOwnerId !== currentUserId) {
+    setDraftOwnerId(currentUserId);
+    setExpanded(false);
+    setRating(0);
+    setComment('');
+  }
+
   function handleSubmit() {
     if (rating === 0 || comment.trim() === '') return;
     submit({ rating: { value: rating }, comment: comment.trim() });
@@ -59,6 +71,12 @@ export function ReviewForm({ spotId }: { spotId: string }) {
     setRating(0);
     setComment('');
     setExpanded(false);
+  }
+
+  // 未ログイン時はレビュー投稿できないためフォームを表示しない。
+  // ログイン導線の表示は別要件で対応する。
+  if (!currentUser) {
+    return null;
   }
 
   if (!expanded) {

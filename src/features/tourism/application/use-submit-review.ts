@@ -19,6 +19,8 @@ export function useSubmitReview(spotId: string) {
 
   return useCallback(
     (input: ReviewEdit) => {
+      // 未ログイン時は投稿者を確定できないため投稿しない。
+      if (!author) return;
       const review: Review = {
         id: generateReviewId(),
         rating: input.rating,

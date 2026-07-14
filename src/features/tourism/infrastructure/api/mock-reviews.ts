@@ -13,6 +13,7 @@ type MockReviewBase = {
   id: MockReviewId;
   language: SupportedLanguage;
   rating: number;
+  authorId: string;
   authorIconUrl: string;
   postedAt: string;
 };
@@ -23,6 +24,7 @@ const MOCK_REVIEWS_BY_SPOT: Record<MockSpotId, MockReviewBase[]> = {
       id: 'kobe-port-tower-1',
       language: 'ja',
       rating: 5,
+      authorId: 'user-12',
       authorIconUrl: 'https://i.pravatar.cc/150?img=12',
       postedAt: '2025-11-03T10:24:00.000Z',
     },
@@ -30,6 +32,7 @@ const MOCK_REVIEWS_BY_SPOT: Record<MockSpotId, MockReviewBase[]> = {
       id: 'kobe-port-tower-2',
       language: 'en',
       rating: 4,
+      authorId: 'user-45',
       authorIconUrl: 'https://i.pravatar.cc/150?img=45',
       postedAt: '2025-10-18T07:50:00.000Z',
     },
@@ -39,6 +42,7 @@ const MOCK_REVIEWS_BY_SPOT: Record<MockSpotId, MockReviewBase[]> = {
       id: 'kitano-ijinkan-1',
       language: 'ko',
       rating: 4,
+      authorId: 'user-33',
       authorIconUrl: 'https://i.pravatar.cc/150?img=33',
       postedAt: '2025-09-27T05:10:00.000Z',
     },
@@ -46,6 +50,7 @@ const MOCK_REVIEWS_BY_SPOT: Record<MockSpotId, MockReviewBase[]> = {
       id: 'kitano-ijinkan-2',
       language: 'zh',
       rating: 5,
+      authorId: 'user-23',
       authorIconUrl: 'https://i.pravatar.cc/150?img=23',
       postedAt: '2025-08-14T02:35:00.000Z',
     },
@@ -55,6 +60,7 @@ const MOCK_REVIEWS_BY_SPOT: Record<MockSpotId, MockReviewBase[]> = {
       id: 'nankinmachi-1',
       language: 'ja',
       rating: 5,
+      authorId: 'user-7',
       authorIconUrl: 'https://i.pravatar.cc/150?img=7',
       postedAt: '2025-12-01T11:05:00.000Z',
     },
@@ -62,6 +68,7 @@ const MOCK_REVIEWS_BY_SPOT: Record<MockSpotId, MockReviewBase[]> = {
       id: 'nankinmachi-2',
       language: 'en',
       rating: 3,
+      authorId: 'user-49',
       authorIconUrl: 'https://i.pravatar.cc/150?img=49',
       postedAt: '2025-11-22T08:42:00.000Z',
     },
@@ -71,6 +78,7 @@ const MOCK_REVIEWS_BY_SPOT: Record<MockSpotId, MockReviewBase[]> = {
       id: 'arima-onsen-1',
       language: 'ko',
       rating: 5,
+      authorId: 'user-15',
       authorIconUrl: 'https://i.pravatar.cc/150?img=15',
       postedAt: '2025-10-09T13:18:00.000Z',
     },
@@ -78,6 +86,7 @@ const MOCK_REVIEWS_BY_SPOT: Record<MockSpotId, MockReviewBase[]> = {
       id: 'arima-onsen-2',
       language: 'zh',
       rating: 4,
+      authorId: 'user-27',
       authorIconUrl: 'https://i.pravatar.cc/150?img=27',
       postedAt: '2025-07-30T06:00:00.000Z',
     },
@@ -87,6 +96,7 @@ const MOCK_REVIEWS_BY_SPOT: Record<MockSpotId, MockReviewBase[]> = {
       id: 'mount-rokko-1',
       language: 'ja',
       rating: 5,
+      authorId: 'user-51',
       authorIconUrl: 'https://i.pravatar.cc/150?img=51',
       postedAt: '2025-11-15T09:33:00.000Z',
     },
@@ -94,6 +104,7 @@ const MOCK_REVIEWS_BY_SPOT: Record<MockSpotId, MockReviewBase[]> = {
       id: 'mount-rokko-2',
       language: 'en',
       rating: 4,
+      authorId: 'user-60',
       authorIconUrl: 'https://i.pravatar.cc/150?img=60',
       postedAt: '2025-09-02T04:21:00.000Z',
     },
@@ -125,6 +136,7 @@ function buildReview(base: MockReviewBase): Review {
     rating: { value: base.rating },
     comment: localized.comment,
     author: {
+      id: base.authorId,
       name: localized.authorName,
       iconUrl: base.authorIconUrl,
     },
