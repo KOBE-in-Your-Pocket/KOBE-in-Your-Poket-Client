@@ -10,6 +10,8 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 24,
     textAlign: 'center',
+    // flex:1 の左右区切り線に押されて長い訳文がはみ出さないよう、見出し側を縮小可能にする。
+    flexShrink: 1,
   },
   // サブタイトルの左右に薄い区切り線を入れる行（ホームのタイトル区切り線と同じ 1dp・textSecondary）。
   sectionTitleRow: {
