@@ -15,6 +15,11 @@ export type MannerItem = {
   description: string;
   /** アイコン識別キー（アイコンコンポーネントへのマッピング用）。 */
   icon: string;
+  /**
+   * ピクトグラム画像の参照キー（画像アセットへのマッピング用）。
+   * 対応する画像が無い場合は null（UI 側で `icon` によるフォールバック表示を想定）。
+   */
+  imageKey: string | null;
   kind: MannerKind;
   scope: MannerScope;
   /**

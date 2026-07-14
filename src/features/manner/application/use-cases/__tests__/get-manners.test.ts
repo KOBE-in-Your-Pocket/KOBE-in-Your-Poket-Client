@@ -18,6 +18,7 @@ describe('getManners', () => {
         title: 'Test',
         description: 'Description',
         icon: 'test',
+        imageKey: null,
         kind: 'manner',
         scope: 'local',
         relatedSpotIds: [],

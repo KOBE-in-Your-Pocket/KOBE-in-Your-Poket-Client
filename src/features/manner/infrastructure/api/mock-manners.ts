@@ -16,12 +16,14 @@ type MockMannerBase = Omit<MannerItem, 'title' | 'description'> & {
  * mock のマナー項目一覧。
  * 分類（manner / rule）・地域（local / japan）・関連スポットID を混在させている。
  * 言語依存の文言は {@link MOCK_MANNER_LOCALIZATIONS} で管理する。
- * `icon` は対応するピクトグラム識別キー（UI 側でアイコンにマッピングする想定）。
+ * `icon` は対応するベクターアイコン識別キー（UI 側でアイコンにマッピングする想定）。
+ * `imageKey` はピクトグラム画像アセットの参照キー。画像未提供の項目は null。
  */
 const MOCK_MANNER_BASES: MockMannerBase[] = [
   {
     id: 'no-eating-while-walking',
     icon: 'no-eating-while-walking',
+    imageKey: 'no-eating-while-walking',
     kind: 'rule',
     scope: 'local',
     relatedSpotIds: ['nankinmachi'],
@@ -29,6 +31,7 @@ const MOCK_MANNER_BASES: MockMannerBase[] = [
   {
     id: 'put-trash-in-bin',
     icon: 'put-trash-in-bin',
+    imageKey: 'put-trash-in-bin',
     kind: 'manner',
     scope: 'japan',
     relatedSpotIds: [],
@@ -36,6 +39,7 @@ const MOCK_MANNER_BASES: MockMannerBase[] = [
   {
     id: 'no-trespassing',
     icon: 'no-trespassing',
+    imageKey: 'no-trespassing',
     kind: 'rule',
     scope: 'local',
     relatedSpotIds: ['kitano-ijinkan'],
@@ -43,6 +47,7 @@ const MOCK_MANNER_BASES: MockMannerBase[] = [
   {
     id: 'handle-products-with-care',
     icon: 'handle-products-with-care',
+    imageKey: 'handle-products-with-care',
     kind: 'manner',
     scope: 'local',
     relatedSpotIds: ['nankinmachi'],
@@ -50,6 +55,7 @@ const MOCK_MANNER_BASES: MockMannerBase[] = [
   {
     id: 'do-not-obstruct-pedestrians',
     icon: 'do-not-obstruct-pedestrians',
+    imageKey: 'do-not-obstruct-pedestrians',
     kind: 'manner',
     scope: 'japan',
     relatedSpotIds: [],
@@ -57,6 +63,7 @@ const MOCK_MANNER_BASES: MockMannerBase[] = [
   {
     id: 'no-smoking-while-walking',
     icon: 'no-smoking-while-walking',
+    imageKey: 'no-smoking-while-walking',
     kind: 'rule',
     scope: 'japan',
     relatedSpotIds: [],
@@ -64,6 +71,7 @@ const MOCK_MANNER_BASES: MockMannerBase[] = [
   {
     id: 'hold-your-suitcase',
     icon: 'hold-your-suitcase',
+    imageKey: 'hold-your-suitcase',
     kind: 'manner',
     scope: 'japan',
     relatedSpotIds: [],
@@ -71,6 +79,7 @@ const MOCK_MANNER_BASES: MockMannerBase[] = [
   {
     id: 'backpack-on-front',
     icon: 'backpack-on-front',
+    imageKey: 'backpack-on-front',
     kind: 'manner',
     scope: 'japan',
     relatedSpotIds: [],
@@ -78,6 +87,7 @@ const MOCK_MANNER_BASES: MockMannerBase[] = [
   {
     id: 'show-consideration',
     icon: 'show-consideration',
+    imageKey: 'show-consideration',
     kind: 'manner',
     scope: 'japan',
     relatedSpotIds: [],
@@ -85,6 +95,7 @@ const MOCK_MANNER_BASES: MockMannerBase[] = [
   {
     id: 'no-loud-conversation',
     icon: 'no-loud-conversation',
+    imageKey: 'no-loud-conversation',
     kind: 'manner',
     scope: 'japan',
     relatedSpotIds: [],
@@ -92,6 +103,7 @@ const MOCK_MANNER_BASES: MockMannerBase[] = [
   {
     id: 'no-phone-calls',
     icon: 'no-phone-calls',
+    imageKey: 'no-phone-calls',
     kind: 'manner',
     scope: 'japan',
     relatedSpotIds: [],
@@ -99,6 +111,7 @@ const MOCK_MANNER_BASES: MockMannerBase[] = [
   {
     id: 'no-white-clothes-in-kinsen',
     icon: 'no-white-clothes-in-kinsen',
+    imageKey: null,
     kind: 'manner',
     scope: 'local',
     relatedSpotIds: ['arima-onsen'],
@@ -106,6 +119,7 @@ const MOCK_MANNER_BASES: MockMannerBase[] = [
   {
     id: 'no-feeding-wild-boars',
     icon: 'no-feeding-wild-boars',
+    imageKey: null,
     kind: 'rule',
     scope: 'local',
     relatedSpotIds: ['mount-rokko'],
