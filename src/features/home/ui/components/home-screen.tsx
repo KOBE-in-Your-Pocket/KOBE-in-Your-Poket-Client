@@ -24,12 +24,8 @@ export function HomeScreen() {
           <HomeHero />
 
           <View style={styles.grid}>
-            {[0, 2].map((start) => (
-              <View key={start} style={styles.row}>
-                {HOME_CARDS.slice(start, start + 2).map((card) => (
-                  <HomeCard key={card.labelKey} card={card} />
-                ))}
-              </View>
+            {HOME_CARDS.map((card) => (
+              <HomeCard key={card.labelKey} card={card} />
             ))}
           </View>
         </ScrollView>
