@@ -18,8 +18,6 @@ export function ListScreen() {
   const listMode = useListModeStore((state) => state.listMode);
 
   const titleKey = listMode === 'tourism' ? 'tourism.spotList.title' : 'evacuation.list.title';
-  const subtitleKey =
-    listMode === 'tourism' ? 'tourism.spotList.subtitle' : 'evacuation.list.subtitle';
 
   return (
     <ThemedView style={styles.container}>
@@ -32,15 +30,11 @@ export function ListScreen() {
         <ThemedText type="subtitle" style={styles.title}>
           {t(titleKey)}
         </ThemedText>
-        <ThemedText type="smallBold" themeColor="textSecondary">
-          {t(subtitleKey)}
-        </ThemedText>
-        <View style={styles.toggleRow}>
-          <ListModeToggle />
-        </View>
         <ListGenreFilter />
       </View>
       <SwitchableList />
+      {/* モードトグルは右下に固定表示（スクロールに追従しないようリストの外＝container 直下に置く）。 */}
+      <ListModeToggle />
     </ThemedView>
   );
 }
@@ -53,9 +47,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
     paddingBottom: Spacing.two,
     gap: Spacing.two,
-  },
-  toggleRow: {
-    alignItems: 'flex-end',
   },
   title: {
     fontSize: 28,
