@@ -17,6 +17,12 @@
       "map": "Map",
       "manners": "Manners",
       "evacuation": "Shelters"
+    },
+    "catchphrase": {
+      "line1": "Beyond language",
+      "line2": "Beyond customs",
+      "line3": "Never lost again",
+      "tagline": "A Kobe journey connected by pictograms"
     }
   },
   "settings": {
