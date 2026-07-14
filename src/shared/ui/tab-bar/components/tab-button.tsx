@@ -18,7 +18,10 @@ export function TabButton({ children, isFocused, symbol, ...props }: TabButtonPr
     <Pressable {...props} style={({ pressed }) => [styles.tabButton, pressed && styles.pressed]}>
       <View style={[styles.tabButtonInner, isFocused && styles.tabButtonInnerFocused]}>
         <SymbolView tintColor={tintColor} name={symbol} size={22} />
-        <ThemedText type="small" style={[styles.tabLabel, { color: tintColor }]}>
+        <ThemedText
+          type="small"
+          style={[styles.tabLabel, isFocused && styles.tabLabelFocused, { color: tintColor }]}
+        >
           {children}
         </ThemedText>
       </View>

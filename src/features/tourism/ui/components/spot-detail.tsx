@@ -383,7 +383,7 @@ export function SpotDetailContent({ spot }: { spot: Spot }) {
               <ReviewCard
                 key={review.id}
                 review={review}
-                isOwn={review.author.name === currentUser.name}
+                isOwn={review.author.id === currentUser?.id}
                 onUpdate={(changes) => updateReview(review.id, changes)}
                 onDelete={() => deleteReview(review.id)}
               />
