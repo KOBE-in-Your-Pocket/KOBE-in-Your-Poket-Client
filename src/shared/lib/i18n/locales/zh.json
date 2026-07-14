@@ -17,6 +17,12 @@
       "map": "地图",
       "manners": "礼仪",
       "evacuation": "疏散场所"
+    },
+    "catchphrase": {
+      "line1": "语言的隔阂",
+      "line2": "礼仪的差异",
+      "line3": "不再迷茫",
+      "tagline": "用图标连接的神户之旅"
     }
   },
   "settings": {

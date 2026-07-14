@@ -24,6 +24,7 @@ jest.mock('react-native-safe-area-context', () => ({
 
 jest.mock('@/shared/config', () => ({
   Spacing: { half: 2, one: 4, two: 8, three: 16, four: 24, five: 32, six: 64 },
+  MODE_SELECTED_COLOR: { tourism: '#3C87F7', evacuation: '#E8573C' },
 }));
 
 jest.mock('@/shared/lib/theme', () => ({
