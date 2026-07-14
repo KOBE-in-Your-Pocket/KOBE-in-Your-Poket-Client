@@ -5,7 +5,6 @@ import { Text as MockText } from 'react-native';
 
 import { TabButton } from '../tab-button';
 
-import { styles } from '../../styles/tab-button.styles';
 import { TAB_BAR_COLORS, TAB_DEFS } from '../../tab-bar-config';
 
 import type { ReactNode } from 'react';
@@ -36,10 +35,11 @@ describe('TabButton', () => {
       </TabButton>,
     );
 
-    // 現在タブ: tabLabelFocused（太字＋拡大）が適用され、アクティブ色になる。
+    // 現在タブ: tabLabelFocused（太字 800 ＋拡大 13）が適用され、アクティブ色になる。
+    // 期待値はリテラルで固定し、tabLabel と tabLabelFocused が同値へ退行した場合も検知する。
     expect(screen.getByText('ホーム')).toHaveStyle({
-      fontSize: styles.tabLabelFocused.fontSize,
-      fontWeight: styles.tabLabelFocused.fontWeight,
+      fontSize: 13,
+      fontWeight: '800',
       color: TAB_BAR_COLORS.active,
     });
 
@@ -49,10 +49,10 @@ describe('TabButton', () => {
       </TabButton>,
     );
 
-    // 非アクティブ: tabLabelFocused は非適用（通常サイズ・weight）で、非アクティブ色になる。
+    // 非アクティブ: tabLabelFocused は非適用（通常サイズ 11 ・weight 600）で、非アクティブ色になる。
     expect(screen.getByText('ホーム')).toHaveStyle({
-      fontSize: styles.tabLabel.fontSize,
-      fontWeight: styles.tabLabel.fontWeight,
+      fontSize: 11,
+      fontWeight: '600',
       color: TAB_BAR_COLORS.inactive,
     });
   });
