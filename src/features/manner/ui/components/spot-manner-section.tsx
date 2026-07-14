@@ -8,6 +8,7 @@ import type { MannerItem } from '../../domain/manner-item';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
+import { KIND_ACCENT_COLOR, KIND_CARD_BACKGROUND_SUBTLE } from '../styles/kind-badge.styles';
 import { styles } from '../styles/spot-manner-section.styles';
 
 import { KindBadge } from './kind-badge';
@@ -15,19 +16,22 @@ import { MannerIcon } from './manner-icon';
 
 function SpotMannerItem({ manner }: { manner: MannerItem }) {
   const theme = useTheme();
-  const isRule = manner.kind === 'rule';
+  const accent = KIND_ACCENT_COLOR[manner.kind];
 
   return (
-    <ThemedView style={[styles.card, isRule && styles.ruleCard]}>
+    <ThemedView
+      style={[
+        styles.card,
+        { backgroundColor: KIND_CARD_BACKGROUND_SUBTLE[manner.kind], borderColor: accent },
+      ]}
+    >
       <View style={[styles.iconWrapper, { backgroundColor: theme.backgroundElement }]}>
         <MannerIcon icon={manner.icon} size={18} />
       </View>
 
       <View style={styles.content}>
         <KindBadge kind={manner.kind} />
-        <ThemedText style={[styles.itemTitle, isRule && styles.ruleItemTitle]}>
-          {manner.title}
-        </ThemedText>
+        <ThemedText style={[styles.itemTitle, { color: accent }]}>{manner.title}</ThemedText>
         <ThemedText type="small" themeColor="textSecondary" style={styles.itemDescription}>
           {manner.description}
         </ThemedText>

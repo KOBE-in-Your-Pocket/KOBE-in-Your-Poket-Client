@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useFilteredManners } from '../hooks/use-filtered-manners';
 
+import { KIND_ACCENT_COLOR, KIND_CARD_BACKGROUND } from '../styles/kind-badge.styles';
 import { RELATED_SPOT_LINK_COLOR, styles } from '../styles/manner-list.styles';
 
 import type { MannerItem } from '../../domain/manner-item';
@@ -70,19 +71,22 @@ function MannerListItem({
   spots: RelatedSpot[] | undefined;
 }) {
   const theme = useTheme();
-  const isRule = manner.kind === 'rule';
+  const accent = KIND_ACCENT_COLOR[manner.kind];
 
   return (
-    <ThemedView style={[styles.card, isRule && styles.ruleCard]}>
+    <ThemedView
+      style={[
+        styles.card,
+        { backgroundColor: KIND_CARD_BACKGROUND[manner.kind], borderColor: accent },
+      ]}
+    >
       <View style={[styles.iconWrapper, { backgroundColor: theme.backgroundElement }]}>
         <MannerIcon icon={manner.icon} />
       </View>
 
       <View style={styles.content}>
         <KindBadge kind={manner.kind} />
-        <ThemedText style={[styles.itemTitle, isRule && styles.ruleItemTitle]}>
-          {manner.title}
-        </ThemedText>
+        <ThemedText style={[styles.itemTitle, { color: accent }]}>{manner.title}</ThemedText>
         <ThemedText type="small" themeColor="textSecondary" style={styles.itemDescription}>
           {manner.description}
         </ThemedText>
