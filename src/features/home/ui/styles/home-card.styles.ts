@@ -6,21 +6,34 @@ import { Spacing } from '@/shared/config';
 export const CARD_FOREGROUND = '#FFFFFF';
 
 export const styles = StyleSheet.create({
+  // 1列で縦積み。左右半分ずつに区切り、左=アイコン / 右=名称。
   card: {
-    flex: 1,
-    minHeight: 120,
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: 80,
     borderRadius: 16,
-    padding: Spacing.three,
-    justifyContent: 'space-between',
+    paddingVertical: Spacing.two,
+    paddingHorizontal: Spacing.three,
   },
   pressed: {
     opacity: 0.85,
   },
+  // 4分割のうち左1（アイコン）。
+  iconHalf: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   icon: {
-    width: 28,
-    height: 28,
+    width: 32,
+    height: 32,
+  },
+  // 4分割のうち右3（名称）。
+  labelHalf: {
+    flex: 3,
+    justifyContent: 'center',
   },
   label: {
-    marginTop: Spacing.three,
+    textAlign: 'center',
   },
 });
