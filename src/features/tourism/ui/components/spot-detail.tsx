@@ -367,9 +367,13 @@ export function SpotDetailContent({ spot }: { spot: Spot }) {
         <SpotMannerSection spotId={spot.id} />
 
         <View style={styles.section}>
-          <ThemedText type="smallBold" style={styles.sectionTitle}>
-            {t('tourism.spotDetail.reviews')}
-          </ThemedText>
+          <View style={styles.sectionTitleRow}>
+            <View style={[styles.sectionTitleDivider, { backgroundColor: theme.textSecondary }]} />
+            <ThemedText type="smallBold" style={styles.sectionTitle}>
+              {t('tourism.spotDetail.reviews')}
+            </ThemedText>
+            <View style={[styles.sectionTitleDivider, { backgroundColor: theme.textSecondary }]} />
+          </View>
           <ReviewForm spotId={spot.id} />
           <ReviewLanguageFilter value={reviewLang} onChange={setReviewLang} />
           {isReviewsPending ? (

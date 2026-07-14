@@ -27,6 +27,11 @@ export const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
   },
+  // 現在タブのラベルを太字＋やや大きめで強調する（色・枠線に加えて文字でも現在地を示す）。
+  tabLabelFocused: {
+    fontSize: 13,
+    fontWeight: '800',
+  },
   pressed: {
     opacity: 0.7,
   },
