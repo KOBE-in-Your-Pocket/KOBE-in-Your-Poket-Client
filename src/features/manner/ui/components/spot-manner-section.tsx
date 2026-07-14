@@ -12,7 +12,7 @@ import { KIND_ACCENT_COLOR, KIND_CARD_BACKGROUND_SUBTLE } from '../styles/kind-b
 import { styles } from '../styles/spot-manner-section.styles';
 
 import { KindBadge } from './kind-badge';
-import { MannerIcon } from './manner-icon';
+import { MannerPictogram } from './manner-pictogram';
 
 function SpotMannerItem({ manner }: { manner: MannerItem }) {
   const theme = useTheme();
@@ -26,7 +26,7 @@ function SpotMannerItem({ manner }: { manner: MannerItem }) {
       ]}
     >
       <View style={[styles.iconWrapper, { backgroundColor: theme.backgroundElement }]}>
-        <MannerIcon icon={manner.icon} size={18} />
+        <MannerPictogram manner={manner} size={32} />
       </View>
 
       <View style={styles.content}>

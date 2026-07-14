@@ -30,6 +30,35 @@ describe('fetchManners', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  it('imageKey は id ごとに期待される値と一致する', async () => {
+    const EXPECTED_IMAGE_KEYS: Record<string, string | null> = {
+      'no-eating-while-walking': 'no-eating-while-walking',
+      'put-trash-in-bin': 'put-trash-in-bin',
+      'no-trespassing': 'no-trespassing',
+      'handle-products-with-care': 'handle-products-with-care',
+      'do-not-obstruct-pedestrians': 'do-not-obstruct-pedestrians',
+      'no-smoking-while-walking': 'no-smoking-while-walking',
+      'hold-your-suitcase': 'hold-your-suitcase',
+      'backpack-on-front': 'backpack-on-front',
+      'show-consideration': 'show-consideration',
+      'no-loud-conversation': 'no-loud-conversation',
+      'no-phone-calls': 'no-phone-calls',
+      'no-white-clothes-in-kinsen': null,
+      'no-feeding-wild-boars': null,
+    };
+
+    const manners = await fetchManners('ja');
+
+    expect(manners.map((manner) => manner.id).sort()).toEqual(
+      Object.keys(EXPECTED_IMAGE_KEYS).sort(),
+    );
+    for (const manner of manners) {
+      expect(manner.imageKey).toBe(EXPECTED_IMAGE_KEYS[manner.id]);
+    }
+    expect(manners.filter((manner) => manner.imageKey !== null)).toHaveLength(11);
+    expect(manners.filter((manner) => manner.imageKey === null)).toHaveLength(2);
+  });
+
   it('manner / rule と local / japan と関連スポットID有無が混在している', async () => {
     const manners = await fetchManners('ja');
 
