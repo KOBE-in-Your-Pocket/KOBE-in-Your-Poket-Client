@@ -27,8 +27,4 @@ export const styles = StyleSheet.create({
   grid: {
     gap: Spacing.three,
   },
-  row: {
-    flexDirection: 'row',
-    gap: Spacing.three,
-  },
 });
