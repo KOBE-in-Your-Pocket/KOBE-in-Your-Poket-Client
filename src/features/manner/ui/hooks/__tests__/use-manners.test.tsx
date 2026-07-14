@@ -34,7 +34,7 @@ function createStubRepository(): MannerRepository {
 
 function createWrapper(repository: MannerRepository) {
   const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
+    defaultOptions: { queries: { retry: false, gcTime: 0 } },
   });
 
   function Wrapper({ children }: PropsWithChildren) {
