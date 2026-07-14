@@ -2,8 +2,6 @@ import { StyleSheet } from 'react-native';
 
 import { BottomTabInset, Spacing } from '@/shared/config';
 
-import { RULE_ACCENT_COLOR, RULE_CARD_BACKGROUND } from './kind-badge.styles';
-
 /** マナー種別の分類色（KIND_BADGE_COLORS）とは無関係な、スポットリンク用の固定色。 */
 export const RELATED_SPOT_LINK_COLOR = {
   background: '#EAF2FF',
@@ -35,18 +33,14 @@ export const styles = StyleSheet.create({
     fontSize: 28,
     lineHeight: 34,
   },
+  // カードは分類アクセント色の枠線＋薄い背景で強調する（色はコンポーネントで分類ごとに指定）。
   card: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: Spacing.three,
     padding: Spacing.three,
     borderRadius: Spacing.three,
-  },
-  /** ルール項目はマナーより目立たせるため、枠線＋薄い背景色で強調する。 */
-  ruleCard: {
-    backgroundColor: RULE_CARD_BACKGROUND,
     borderWidth: 1.5,
-    borderColor: RULE_ACCENT_COLOR,
   },
   iconWrapper: {
     width: 40,
@@ -59,13 +53,10 @@ export const styles = StyleSheet.create({
     flex: 1,
     gap: Spacing.half,
   },
+  // タイトルは分類アクセント色で強調する（色はコンポーネントで指定）。
   itemTitle: {
     fontSize: 16,
     fontWeight: '700',
-  },
-  /** ルール項目のタイトルはアクセント色でさらに強調する。 */
-  ruleItemTitle: {
-    color: RULE_ACCENT_COLOR,
   },
   itemDescription: {
     lineHeight: 20,

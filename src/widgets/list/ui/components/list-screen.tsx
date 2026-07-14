@@ -30,12 +30,11 @@ export function ListScreen() {
         <ThemedText type="subtitle" style={styles.title}>
           {t(titleKey)}
         </ThemedText>
-        <View style={styles.toggleRow}>
-          <ListModeToggle />
-        </View>
         <ListGenreFilter />
       </View>
       <SwitchableList />
+      {/* モードトグルは右下に固定表示（スクロールに追従しないようリストの外＝container 直下に置く）。 */}
+      <ListModeToggle />
     </ThemedView>
   );
 }
@@ -48,9 +47,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
     paddingBottom: Spacing.two,
     gap: Spacing.two,
-  },
-  toggleRow: {
-    alignItems: 'flex-end',
   },
   title: {
     fontSize: 28,

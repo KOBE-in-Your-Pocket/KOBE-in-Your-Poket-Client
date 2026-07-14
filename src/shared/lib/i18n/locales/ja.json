@@ -17,6 +17,12 @@
       "map": "地図",
       "manners": "マナー",
       "evacuation": "避難所"
+    },
+    "catchphrase": {
+      "line1": "言葉の壁も",
+      "line2": "マナーの違いも",
+      "line3": "もう迷わない",
+      "tagline": "ピクトグラムで繋がる神戸の旅"
     }
   },
   "settings": {
