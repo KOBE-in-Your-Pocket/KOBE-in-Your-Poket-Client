@@ -30,6 +30,16 @@ describe('fetchManners', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  it('imageKey は画像アセットが用意されている項目のみ設定され、未提供の項目は null', async () => {
+    const manners = await fetchManners('ja');
+
+    for (const manner of manners) {
+      expect(manner.imageKey === null || typeof manner.imageKey === 'string').toBe(true);
+    }
+    expect(manners.some((manner) => manner.imageKey !== null)).toBe(true);
+    expect(manners.some((manner) => manner.imageKey === null)).toBe(true);
+  });
+
   it('manner / rule と local / japan と関連スポットID有無が混在している', async () => {
     const manners = await fetchManners('ja');
 
