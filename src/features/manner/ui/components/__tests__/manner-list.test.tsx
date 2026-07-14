@@ -47,8 +47,10 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-jest.mock('../manner-icon', () => ({
-  MannerIcon: () => null,
+jest.mock('../manner-pictogram', () => ({
+  MannerPictogram: ({ manner, size }: { manner: MannerItem; size?: number }) => (
+    <MockText>{`pictogram:${manner.id}:${size}`}</MockText>
+  ),
 }));
 
 // バッジは種別が渡っていることだけ確認できれば十分なので、kind を text として露出する軽量モックにする。
@@ -116,6 +118,15 @@ describe('MannerList', () => {
     expect(screen.getByText(mockManners[0].description)).toBeTruthy();
     expect(screen.getByText(mockManners[1].title)).toBeTruthy();
     expect(screen.getByText(mockManners[1].description)).toBeTruthy();
+  });
+
+  it('各カードに MannerPictogram を size=40 で表示する', () => {
+    mockUseFilteredManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
+
+    render(<MannerList spots={mockSpots} />);
+
+    expect(screen.getByText(`pictogram:${mockManners[0].id}:40`)).toBeTruthy();
+    expect(screen.getByText(`pictogram:${mockManners[1].id}:40`)).toBeTruthy();
   });
 
   it('各カードに項目の種別に応じた KindBadge を表示する', () => {

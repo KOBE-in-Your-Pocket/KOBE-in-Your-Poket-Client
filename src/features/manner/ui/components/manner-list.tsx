@@ -17,7 +17,7 @@ import { ThemedText, ThemedView } from '@/shared/ui';
 
 import { KindBadge } from './kind-badge';
 import { KindFilter } from './kind-filter';
-import { MannerIcon } from './manner-icon';
+import { MannerPictogram } from './manner-pictogram';
 import { ScopeFilter } from './scope-filter';
 
 /** manner 機能が tourism 機能に依存しないよう、Spot の形を直接importせずこの最小形で受け取る。 */
@@ -81,7 +81,7 @@ function MannerListItem({
       ]}
     >
       <View style={[styles.iconWrapper, { backgroundColor: theme.backgroundElement }]}>
-        <MannerIcon icon={manner.icon} />
+        <MannerPictogram manner={manner} size={40} />
       </View>
 
       <View style={styles.content}>

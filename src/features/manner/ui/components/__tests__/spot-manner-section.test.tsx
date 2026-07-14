@@ -39,8 +39,10 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-jest.mock('../manner-icon', () => ({
-  MannerIcon: () => null,
+jest.mock('../manner-pictogram', () => ({
+  MannerPictogram: ({ manner, size }: { manner: MannerItem; size?: number }) => (
+    <MockText>{`pictogram:${manner.id}:${size}`}</MockText>
+  ),
 }));
 
 jest.mock('../kind-badge', () => ({
@@ -100,6 +102,15 @@ describe('SpotMannerSection', () => {
     expect(screen.getByText(mockManners[0].description)).toBeTruthy();
     expect(screen.getByText(mockManners[1].title)).toBeTruthy();
     expect(screen.getByText(mockManners[1].description)).toBeTruthy();
+  });
+
+  it('各項目に MannerPictogram を size=32 で表示する', () => {
+    mockUseSpotManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
+
+    render(<SpotMannerSection spotId="nankinmachi" />);
+
+    expect(screen.getByText(`pictogram:${mockManners[0].id}:32`)).toBeTruthy();
+    expect(screen.getByText(`pictogram:${mockManners[1].id}:32`)).toBeTruthy();
   });
 
   it('各項目に種別に応じた KindBadge を表示する', () => {
