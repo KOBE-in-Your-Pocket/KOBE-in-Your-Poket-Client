@@ -53,6 +53,7 @@ type SpotMannerSectionProps = {
  */
 export function SpotMannerSection({ spotId }: SpotMannerSectionProps) {
   const { t } = useTranslation();
+  const theme = useTheme();
   const { data: manners, isPending, isError } = useSpotManners(spotId);
 
   if (isPending || isError || manners === undefined || manners.length === 0) {
@@ -61,9 +62,13 @@ export function SpotMannerSection({ spotId }: SpotMannerSectionProps) {
 
   return (
     <View style={styles.section}>
-      <ThemedText type="smallBold" style={styles.sectionTitle}>
-        {t('manner.spotSection.title')}
-      </ThemedText>
+      <View style={styles.sectionTitleRow}>
+        <View style={[styles.sectionTitleDivider, { backgroundColor: theme.textSecondary }]} />
+        <ThemedText type="smallBold" style={styles.sectionTitle}>
+          {t('manner.spotSection.title')}
+        </ThemedText>
+        <View style={[styles.sectionTitleDivider, { backgroundColor: theme.textSecondary }]} />
+      </View>
 
       <View style={styles.itemList}>
         {manners.map((manner) => (
