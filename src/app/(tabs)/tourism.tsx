@@ -1,19 +1,11 @@
-import { useFocusEffect } from 'expo-router';
-import { useCallback } from 'react';
-
-import { ListScreen, useListModeStore } from '@/widgets/list';
+import { ListScreen, useListModeOnTabSwitch } from '@/widgets/list';
 
 /**
  * 観光タブ・ホーム画面の観光スポットショートカット共通のルート。
- * タブナビゲーターは画面をアンマウントせず保持するため、マウント時ではなく
- * フォーカスの都度 listMode を設定する（useFocusEffect）。
+ * タブ切り替え時の listMode 制御は {@link useListModeOnTabSwitch} を参照。
  */
 export default function TourismTabRoute() {
-  useFocusEffect(
-    useCallback(() => {
-      useListModeStore.getState().setListMode('tourism');
-    }, []),
-  );
+  useListModeOnTabSwitch('tourism');
 
   return <ListScreen />;
 }
