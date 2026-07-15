@@ -2,8 +2,8 @@ import { Platform, StyleSheet } from 'react-native';
 
 import { BottomTabInset, Spacing } from '@/shared/config';
 
-/** カテゴリ表示・詳細ボタンのテラコッタ系アクセントカラー（スポット一覧と統一）。 */
-export const CARD_ACCENT_COLOR = '#C67B4A';
+/** 詳細/経路ボタンのアクセントカラー（観光モードの青。モードトグル・ホームと統一）。 */
+export const CARD_ACCENT_COLOR = '#3B82F6';
 /** 評価の星アイコンのカラー（スポット一覧と統一）。 */
 export const RATING_STAR_COLOR = '#F5A623';
 
