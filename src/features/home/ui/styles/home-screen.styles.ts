@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { PixelRatio, StyleSheet } from 'react-native';
 
 import { BottomTabInset, Fonts, Spacing } from '@/shared/config';
 
@@ -29,10 +29,10 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   // タイトルとコンテンツを分ける区切り線。上下で同一のものを使う（色はテーマ依存でコンポーネント側から指定）。
-  // 太さは hairlineWidth（≈0.5dp）だと表示位置により上下でサブピクセルの丸めが変わり
-  // 太さ・濃さが不揃いに見えるため、1dp の実ピクセルに固定して上下を揃える。
+  // 太さは物理ピクセルの整数倍になる dp 値に固定する。hairlineWidth や 1dp だと
+  // 描画位置の端数によって上下で 2px/3px に丸められ、太さ・濃さが不揃いに見えるため。
   divider: {
-    height: 1,
+    height: PixelRatio.roundToNearestPixel(1),
     alignSelf: 'stretch',
   },
   grid: {
