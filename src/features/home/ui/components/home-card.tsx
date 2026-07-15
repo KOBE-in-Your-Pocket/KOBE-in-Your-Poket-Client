@@ -28,6 +28,7 @@ export function HomeCard({ card }: { card: HomeCardDef }) {
       <View style={styles.iconHalf}>
         <SymbolView name={card.symbol} tintColor={CARD_FOREGROUND} size={32} style={styles.icon} />
       </View>
+      <View style={styles.divider} />
       <View style={styles.labelHalf}>
         <ThemedText type="smallBold" style={[styles.label, { color: CARD_FOREGROUND }]}>
           {label}
