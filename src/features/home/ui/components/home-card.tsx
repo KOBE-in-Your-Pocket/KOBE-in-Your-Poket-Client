@@ -8,11 +8,12 @@ import { CARD_FOREGROUND, styles } from '../styles/home-card.styles';
 
 import { ThemedText } from '@/shared/ui';
 
-/** ホームの Quick Access カード 1 枚。アイコン＋ラベルで該当機能へ遷移する。 */
+/** ホームの Quick Access カード 1 枚。アイコン＋ラベル＋説明文で該当機能へ遷移する。 */
 export function HomeCard({ card }: { card: HomeCardDef }) {
   const { t } = useTranslation();
   const router = useRouter();
   const label = t(card.labelKey);
+  const description = t(card.descriptionKey);
 
   return (
     <Pressable
@@ -32,6 +33,9 @@ export function HomeCard({ card }: { card: HomeCardDef }) {
       <View style={styles.labelHalf}>
         <ThemedText type="smallBold" style={[styles.label, { color: CARD_FOREGROUND }]}>
           {label}
+        </ThemedText>
+        <ThemedText type="small" style={[styles.description, { color: CARD_FOREGROUND }]}>
+          {description}
         </ThemedText>
       </View>
     </Pressable>

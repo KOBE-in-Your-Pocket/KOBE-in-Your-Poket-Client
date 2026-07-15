@@ -13,10 +13,22 @@
   },
   "home": {
     "shortcuts": {
-      "tourism": "観光スポット",
-      "map": "地図",
-      "manners": "マナー",
-      "evacuation": "避難所"
+      "tourism": {
+        "label": "観光スポット",
+        "description": "人気のスポットを探す"
+      },
+      "map": {
+        "label": "地図",
+        "description": "周辺の地図を見る"
+      },
+      "manners": {
+        "label": "マナー",
+        "description": "地域のマナーを学ぶ"
+      },
+      "evacuation": {
+        "label": "避難所",
+        "description": "近くの避難所を探す"
+      }
     },
     "catchphrase": {
       "line1": "言葉の壁も",

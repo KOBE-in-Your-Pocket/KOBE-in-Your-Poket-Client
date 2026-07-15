@@ -40,11 +40,24 @@ export const styles = StyleSheet.create({
     height: 32,
   },
   // 名称領域。アイコン領域との比率は 1:4（比率を上げるほどアイコンと区切り線が左へ寄る）。
+  // 縦方向は中央寄せ、テキストは左揃え（名称の下に説明文を積む）。
   labelHalf: {
     flex: 4,
     justifyContent: 'center',
+    paddingLeft: Spacing.three,
   },
   label: {
-    textAlign: 'center',
+    fontSize: 16,
+    lineHeight: 22,
+    textAlign: 'left',
+  },
+  // 名称下の補足説明。強調せず小さめ・薄めで主張を抑える。
+  description: {
+    marginTop: Spacing.half,
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: '400',
+    textAlign: 'left',
+    opacity: 0.9,
   },
 });

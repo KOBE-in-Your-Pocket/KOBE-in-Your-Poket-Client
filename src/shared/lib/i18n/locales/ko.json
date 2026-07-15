@@ -13,10 +13,22 @@
   },
   "home": {
     "shortcuts": {
-      "tourism": "관광 스폿",
-      "map": "지도",
-      "manners": "매너",
-      "evacuation": "대피소"
+      "tourism": {
+        "label": "관광 스폿",
+        "description": "인기 스폿 둘러보기"
+      },
+      "map": {
+        "label": "지도",
+        "description": "주변 지도 보기"
+      },
+      "manners": {
+        "label": "매너",
+        "description": "지역 매너 배우기"
+      },
+      "evacuation": {
+        "label": "대피소",
+        "description": "가까운 대피소 찾기"
+      }
     },
     "catchphrase": {
       "line1": "언어의 장벽도",
