@@ -26,6 +26,18 @@ describe('ApiError.fromResponse', () => {
     expect(error.violations).toEqual([]);
   });
 
+  it('violations が配列でないボディはフォールバック扱いにする', () => {
+    const error = ApiError.fromResponse(400, {
+      status: 400,
+      error: 'Bad Request',
+      message: 'Validation failed',
+      violations: 'broken',
+    });
+
+    expect(error.error).toBe('UNKNOWN');
+    expect(error.violations).toEqual([]);
+  });
+
   it.each([undefined, null, 'plain text', { unexpected: true }])(
     '統一エラー形式でないボディ（%p）はステータスのみで組み立てる',
     (body) => {

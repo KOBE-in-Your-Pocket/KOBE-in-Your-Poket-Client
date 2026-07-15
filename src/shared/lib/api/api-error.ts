@@ -50,5 +50,9 @@ function isApiErrorResponse(body: unknown): body is ApiErrorResponse {
   }
 
   const candidate = body as Record<string, unknown>;
-  return typeof candidate.error === 'string' && typeof candidate.message === 'string';
+  return (
+    typeof candidate.error === 'string' &&
+    typeof candidate.message === 'string' &&
+    (candidate.violations === undefined || Array.isArray(candidate.violations))
+  );
 }
