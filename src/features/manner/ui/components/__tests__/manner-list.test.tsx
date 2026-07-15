@@ -75,6 +75,7 @@ jest.mock('@/shared/lib/theme', () => ({
 jest.mock('@/shared/config', () => ({
   Spacing: { half: 2, one: 4, two: 8, three: 16, four: 24, five: 32, six: 64 },
   BottomTabInset: 48,
+  Fonts: { cursive: 'CursiveFont' },
 }));
 
 jest.mock('react-native-safe-area-context', () => ({
