@@ -1,23 +1,36 @@
-import { useMemo } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 
-import { useSpots } from './use-spots';
+import { resolveLanguage } from '@/shared/lib/i18n';
+
+import { fetchSpotById } from '../infrastructure/api/spot-api';
+
+import { SPOTS_QUERY_KEY } from './use-spots';
+
+import type { Spot } from '../domain/spot';
 
 /**
  * 指定スポットの詳細を取得する application 層フック。
  *
- * {@link useSpots} と同じキャッシュを共有し、一覧取得済みなら追加取得なしに
- * 詳細を引ける。`spotId` が未指定のときは `data` は `undefined`。
+ * 詳細エンドポイント（{@link fetchSpotById}）を `spotId` 込みのキーで呼ぶため、
+ * 一覧に含まれないスポットでもディープリンクから開ける。
+ * {@link useSpots} の一覧キャッシュに該当スポットがあれば placeholder として
+ * 即座に描画し、裏で詳細を取得して差し替える。
+ *
+ * `spotId` が未指定のときは取得しない。該当スポットが無ければ（404）`data` は `null`。
  */
 export function useSpotDetail(spotId: string | null | undefined) {
-  const spotsQuery = useSpots();
+  const { i18n } = useTranslation();
+  const language = resolveLanguage(i18n.language);
+  const queryClient = useQueryClient();
 
-  const data = useMemo(() => {
-    if (!spotId || !spotsQuery.data) return undefined;
-    return spotsQuery.data.find((spot) => spot.id === spotId);
-  }, [spotId, spotsQuery.data]);
-
-  return {
-    ...spotsQuery,
-    data,
-  };
+  return useQuery<Spot | null>({
+    queryKey: [...SPOTS_QUERY_KEY, 'detail', spotId, language],
+    enabled: Boolean(spotId),
+    queryFn: () => fetchSpotById(spotId as string, language),
+    placeholderData: () =>
+      queryClient
+        .getQueryData<Spot[]>([...SPOTS_QUERY_KEY, language])
+        ?.find((spot) => spot.id === spotId),
+  });
 }
