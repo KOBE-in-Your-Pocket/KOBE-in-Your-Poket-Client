@@ -2,8 +2,10 @@ import { Platform, StyleSheet } from 'react-native';
 
 import { BottomTabInset, Spacing } from '@/shared/config';
 
-/** 詳細/経路ボタンのアクセントカラー（避難モードの赤。モードトグル・ホームと統一）。 */
+/** 詳細ボタンのアクセントカラー（避難モードの赤。モードトグル・ホームと統一）。 */
 export const CARD_ACCENT_COLOR = '#EF4444';
+/** 経路案内ボタンの背景色（観光・避難のカードで共通の紫）。 */
+export const NAV_BUTTON_COLOR = '#8B5CF6';
 
 export const styles = StyleSheet.create({
   card: {
@@ -119,7 +121,7 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
   },
   navButton: {
-    backgroundColor: CARD_ACCENT_COLOR,
+    backgroundColor: NAV_BUTTON_COLOR,
   },
   navButtonText: {
     color: '#FFFFFF',
