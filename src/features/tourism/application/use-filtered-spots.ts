@@ -1,12 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
-import { useTranslation } from 'react-i18next';
+import { useMemo } from 'react';
 
-import { resolveLanguage } from '@/shared/lib/i18n';
-
-import { fetchSpots } from '../infrastructure/api/mock-spots';
 import { useGenreFilterStore } from '../store/use-genre-filter-store';
 
-import { SPOTS_QUERY_KEY } from './use-spots';
+import { useSpots } from './use-spots';
 
 import type { Spot } from '../domain/spot';
 import type { SelectedGenre } from '../store/use-genre-filter-store';
@@ -23,16 +19,20 @@ export function filterSpotsByGenre(spots: Spot[], genre: SelectedGenre): Spot[] 
 /**
  * 選択中ジャンルで絞り込んだ観光スポット一覧を返す application 層フック。
  *
- * selectedGenre が 'all' のときは全件を返す。
+ * 取得は {@link useSpots}（実 API）に委譲し、selectedGenre でクライアント側フィルタする。
+ * 'all' のときは全件を返す。
  */
 export function useFilteredSpots() {
-  const { i18n } = useTranslation();
-  const language = resolveLanguage(i18n.language);
   const selectedGenre = useGenreFilterStore((state) => state.selectedGenre);
+  const spotsQuery = useSpots();
 
-  return useQuery<Spot[], Error, Spot[]>({
-    queryKey: [...SPOTS_QUERY_KEY, language, selectedGenre],
-    queryFn: () => fetchSpots(language),
-    select: (spots) => filterSpotsByGenre(spots, selectedGenre),
-  });
+  const data = useMemo(() => {
+    if (!spotsQuery.data) return spotsQuery.data;
+    return filterSpotsByGenre(spotsQuery.data, selectedGenre);
+  }, [spotsQuery.data, selectedGenre]);
+
+  return {
+    ...spotsQuery,
+    data,
+  };
 }

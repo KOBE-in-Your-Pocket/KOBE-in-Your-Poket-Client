@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { resolveLanguage } from '@/shared/lib/i18n';
 
-import { fetchSpots } from '../infrastructure/api/mock-spots';
+import { fetchSpots } from '../infrastructure/api/spot-api';
 
 import type { Spot } from '../domain/spot';
 
