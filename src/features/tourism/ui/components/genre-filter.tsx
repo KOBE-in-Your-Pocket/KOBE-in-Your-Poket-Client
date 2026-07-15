@@ -3,7 +3,7 @@ import { Pressable, ScrollView } from 'react-native';
 
 import { useGenreFilterStore } from '../../store/use-genre-filter-store';
 
-import { styles } from '../styles/genre-filter.styles';
+import { SELECTED_CHIP_COLOR, styles } from '../styles/genre-filter.styles';
 
 import type { SelectedGenre } from '../../store/use-genre-filter-store';
 
@@ -37,7 +37,7 @@ export function GenreFilter() {
             key={genre}
             style={[
               styles.chip,
-              { backgroundColor: isSelected ? theme.backgroundSelected : theme.backgroundElement },
+              { backgroundColor: isSelected ? SELECTED_CHIP_COLOR : theme.backgroundElement },
             ]}
             onPress={() => setSelectedGenre(genre)}
             accessibilityRole="button"
