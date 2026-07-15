@@ -9,7 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useEvacuationShelterDetail } from '../../application/hooks/use-evacuation-shelter-detail';
 
-import { DETAIL_ACCENT_COLOR, styles } from '../styles/evacuation-shelter-detail.styles';
+import { EXTERNAL_LINK_COLOR, styles } from '../styles/evacuation-shelter-detail.styles';
 
 import type { EvacuationShelter } from '../../domain/evacuation-shelter';
 
@@ -161,7 +161,7 @@ function ShelterDetailContent({ shelter }: { shelter: EvacuationShelter }) {
             accessibilityLabel={t('evacuation.shelterDetail.externalLink')}
           >
             <SymbolView
-              tintColor={DETAIL_ACCENT_COLOR}
+              tintColor={EXTERNAL_LINK_COLOR}
               name={{ ios: 'link', android: 'link', web: 'link' }}
               size={16}
             />
@@ -169,7 +169,7 @@ function ShelterDetailContent({ shelter }: { shelter: EvacuationShelter }) {
               {t('evacuation.shelterDetail.externalLink')}
             </ThemedText>
             <SymbolView
-              tintColor={DETAIL_ACCENT_COLOR}
+              tintColor={EXTERNAL_LINK_COLOR}
               name={{ ios: 'arrow.up.right', android: 'open_in_new', web: 'open_in_new' }}
               size={14}
             />
