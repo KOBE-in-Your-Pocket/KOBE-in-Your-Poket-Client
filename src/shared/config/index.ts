@@ -1,3 +1,4 @@
+export { getApiBaseUrl, warnIfApiBaseUrlMissing } from './api';
 export type { AppMode } from './app-mode';
 export { MODE_SELECTED_COLOR } from './app-mode';
 export {
