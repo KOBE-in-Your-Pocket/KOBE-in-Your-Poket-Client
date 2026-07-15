@@ -13,8 +13,7 @@ type HomeCardDef = {
 
 /**
  * ホームの Quick Access カード定義（観光 / 地図 / マナー / 避難所）。
- * 各カードは実ルートへ遷移する。色は 4 枚を同一彩度・明度で揃えた home 専用パレット
- * （珊瑚 / 青 / 緑 / 紫。白文字が読める明度に調整）。
+ * 各カードは実ルートへ遷移する。色は機能ごとの識別色（琥珀 / 青 / 緑 / 赤）で、白文字前提。
  * `as const satisfies` でシンボル名のリテラル型を保持し SymbolView に渡せるようにする。
  */
 export const HOME_CARDS = [
@@ -22,28 +21,28 @@ export const HOME_CARDS = [
     labelKey: 'home.shortcuts.tourism.label',
     descriptionKey: 'home.shortcuts.tourism.description',
     href: '/(tabs)/tourism',
-    color: '#D45B45',
+    color: '#F59E0B',
     symbol: { ios: 'mappin.and.ellipse', android: 'location_on', web: 'location_on' },
   },
   {
     labelKey: 'home.shortcuts.map.label',
     descriptionKey: 'home.shortcuts.map.description',
     href: '/(tabs)/map',
-    color: '#3A6EA5',
+    color: '#3B82F6',
     symbol: { ios: 'map', android: 'map', web: 'map' },
   },
   {
     labelKey: 'home.shortcuts.manners.label',
     descriptionKey: 'home.shortcuts.manners.description',
     href: '/(tabs)/manners',
-    color: '#2E8B57',
+    color: '#22C55E',
     symbol: { ios: 'book', android: 'menu_book', web: 'menu_book' },
   },
   {
     labelKey: 'home.shortcuts.evacuation.label',
     descriptionKey: 'home.shortcuts.evacuation.description',
     href: '/(tabs)/evacuation',
-    color: '#6E54AE',
+    color: '#EF4444',
     symbol: { ios: 'shield.fill', android: 'shield', web: 'shield' },
   },
 ] as const satisfies readonly HomeCardDef[];
