@@ -2,6 +2,33 @@ import type { ExpoConfig } from 'expo/config';
 
 const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
 
+// ── Google サインイン（iOS）─────────────────────────────────
+// クライアント ID は「<id>.apps.googleusercontent.com」形式。ネイティブ側の
+// URL スキームはその逆順表記（com.googleusercontent.apps.<id>）なので、ここで導出する。
+const googleIosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
+const googleIosUrlScheme = googleIosClientId
+  ? `com.googleusercontent.apps.${googleIosClientId.replace(/\.apps\.googleusercontent\.com$/, '')}`
+  : undefined;
+
+// ── ローカル実機検証用の署名オーバーライド ─────────────────────
+// 本番 bundle id (com.kobeinyourpocket.client) は組織の Apple Developer
+// アカウントが所有しているため、無料の個人チームでは同一 id を登録できない。
+// LOCAL_DEV_IOS=1 のときだけ dev 用 id + 個人チームに切り替える。
+// この分岐は EAS / App Store 向けビルド（LOCAL_DEV_IOS 未設定）には一切影響しない。
+const isLocalDevIos = process.env.LOCAL_DEV_IOS === '1';
+const iosBundleIdentifier = isLocalDevIos
+  ? 'com.kobeinyourpocket.client.dev'
+  : 'com.kobeinyourpocket.client';
+const iosAppleTeamId = isLocalDevIos ? process.env.IOS_DEV_TEAM_ID : undefined;
+
+if (!googleIosClientId) {
+  console.warn(
+    '[app.config] EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID が未設定です。\n' +
+      '  Google サインインの URL スキームがネイティブビルドに焼き込まれず、サインインは動作しません。\n' +
+      '  ネイティブビルド（dev client 再作成）前に .env に設定してください（.env.example 参照）。',
+  );
+}
+
 if (!googleMapsApiKey) {
   console.warn(
     '[app.config] GOOGLE_MAPS_API_KEY が未設定です。\n' +
@@ -21,7 +48,24 @@ export default (): ExpoConfig => ({
   userInterfaceStyle: 'automatic',
   ios: {
     icon: './assets/expo.icon',
-    bundleIdentifier: 'com.kobeinyourpocket.client',
+    bundleIdentifier: iosBundleIdentifier,
+    ...(iosAppleTeamId ? { appleTeamId: iosAppleTeamId } : {}),
+    infoPlist: {
+      // 開発用 backend（EC2）は HTTPS 未設定。数値 IP は NSExceptionDomains に
+      // 使えないため、nip.io ホスト経由（例: 18.181.34.28.nip.io）で平文 HTTP を許可する。
+      // LOCAL_DEV_IOS 時は ArbitraryLoads も有効化し、万一の漏れに備える。
+      NSAppTransportSecurity: {
+        NSAllowsArbitraryLoads: isLocalDevIos,
+        NSAllowsLocalNetworking: true,
+        NSExceptionDomains: {
+          'nip.io': {
+            NSIncludesSubdomains: true,
+            NSExceptionAllowsInsecureHTTPLoads: true,
+            NSExceptionRequiresForwardSecrecy: false,
+          },
+        },
+      },
+    },
   },
   android: {
     adaptiveIcon: {
@@ -68,6 +112,26 @@ export default (): ExpoConfig => ({
       },
     ],
     'expo-sqlite',
+    'expo-secure-store',
+    // GoogleSignIn → AppCheckCore 11.3+ が RecaptchaInterop を引き込み、Expo の静的
+    // CocoaPods 統合で落ちるため、11.2.0 にピン留めする（issue #1517 の公式回避）。
+    [
+      'expo-build-properties',
+      {
+        ios: {
+          extraPods: [{ name: 'AppCheckCore', version: '11.2.0' }],
+        },
+      },
+    ],
+    // URL スキーム未設定だと plugin がビルドエラーになるため、設定時のみ追加する。
+    ...(googleIosUrlScheme
+      ? [
+          ['@react-native-google-signin/google-signin', { iosUrlScheme: googleIosUrlScheme }] as [
+            string,
+            unknown,
+          ],
+        ]
+      : []),
   ],
   experiments: {
     typedRoutes: true,

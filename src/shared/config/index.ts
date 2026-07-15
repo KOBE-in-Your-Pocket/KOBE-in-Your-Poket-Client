@@ -9,4 +9,5 @@ export {
   Spacing,
   type ThemeColor,
 } from './theme';
+export { getApiBaseUrl } from './api';
 export { buildSpotImageUrl, getS3ImageBaseUrl } from './spot-image';

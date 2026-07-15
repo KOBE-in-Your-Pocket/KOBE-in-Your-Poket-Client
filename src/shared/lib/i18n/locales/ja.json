@@ -26,7 +26,11 @@
     }
   },
   "settings": {
-    "language": "言語"
+    "language": "言語",
+    "account": "アカウント",
+    "signInWithGoogle": "Google でサインイン",
+    "signOut": "ログアウト",
+    "signInError": "サインインに失敗しました。時間をおいて再度お試しください。"
   },
   "tourism": {
     "spotList": {

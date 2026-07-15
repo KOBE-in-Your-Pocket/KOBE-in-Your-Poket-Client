@@ -26,7 +26,11 @@
     }
   },
   "settings": {
-    "language": "Language"
+    "language": "Language",
+    "account": "Account",
+    "signInWithGoogle": "Sign in with Google",
+    "signOut": "Sign out",
+    "signInError": "Sign-in failed. Please try again later."
   },
   "tourism": {
     "spotList": {
