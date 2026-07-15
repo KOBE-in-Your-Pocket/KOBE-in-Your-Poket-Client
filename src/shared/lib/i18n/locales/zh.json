@@ -13,10 +13,22 @@
   },
   "home": {
     "shortcuts": {
-      "tourism": "观光景点",
-      "map": "地图",
-      "manners": "礼仪",
-      "evacuation": "疏散场所"
+      "tourism": {
+        "label": "观光景点",
+        "description": "浏览热门景点"
+      },
+      "map": {
+        "label": "地图",
+        "description": "查看周边地图"
+      },
+      "manners": {
+        "label": "礼仪",
+        "description": "了解当地礼仪"
+      },
+      "evacuation": {
+        "label": "避难所",
+        "description": "查找附近的避难所"
+      }
     },
     "catchphrase": {
       "line1": "语言的隔阂",
