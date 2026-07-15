@@ -19,6 +19,8 @@ export function HomeCard({ card }: { card: HomeCardDef }) {
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
+      // 視覚的に追加した説明文をスクリーンリーダーにも伝える。
+      accessibilityHint={description}
       onPress={() => router.navigate(card.href)}
       style={({ pressed }) => [
         styles.card,
