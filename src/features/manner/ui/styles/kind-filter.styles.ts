@@ -1,6 +1,6 @@
 import { FILTER_NEUTRAL_COLOR } from './filter-group.styles';
 
-import type { SelectedKind } from '../../store/use-kind-filter-store';
+import type { SelectedKind } from '@/features/manner';
 
 /**
  * カテゴリー選択タブの選択時カラー。

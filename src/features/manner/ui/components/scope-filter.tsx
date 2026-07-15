@@ -4,7 +4,7 @@ import { useScopeFilterStore } from '../../store/use-scope-filter-store';
 
 import { SCOPE_SELECTED_COLOR } from '../styles/scope-filter.styles';
 
-import type { SelectedScope } from '../../store/use-scope-filter-store';
+import type { SelectedScope } from '@/features/manner';
 
 import { FilterGroup } from './filter-group';
 

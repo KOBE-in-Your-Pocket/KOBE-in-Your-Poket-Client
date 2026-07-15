@@ -1,6 +1,6 @@
 import { FILTER_NEUTRAL_COLOR } from './filter-group.styles';
 
-import type { SelectedScope } from '../../store/use-scope-filter-store';
+import type { SelectedScope } from '@/features/manner';
 
 /**
  * 対象選択タブの選択時カラー。

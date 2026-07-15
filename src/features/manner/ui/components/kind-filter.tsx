@@ -4,7 +4,7 @@ import { useKindFilterStore } from '../../store/use-kind-filter-store';
 
 import { KIND_SELECTED_COLOR } from '../styles/kind-filter.styles';
 
-import type { SelectedKind } from '../../store/use-kind-filter-store';
+import type { SelectedKind } from '@/features/manner';
 
 import { FilterGroup } from './filter-group';
 
