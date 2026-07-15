@@ -1,10 +1,19 @@
 import { getApiBaseUrl, warnIfApiBaseUrlMissing } from '../api';
 
+/** 元値が undefined の場合は delete で復元する（代入すると文字列 "undefined" が残るため）。 */
+function restoreBaseUrl(original: string | undefined): void {
+  if (original === undefined) {
+    delete process.env.EXPO_PUBLIC_API_BASE_URL;
+  } else {
+    process.env.EXPO_PUBLIC_API_BASE_URL = original;
+  }
+}
+
 describe('getApiBaseUrl', () => {
   const originalBaseUrl = process.env.EXPO_PUBLIC_API_BASE_URL;
 
   afterEach(() => {
-    process.env.EXPO_PUBLIC_API_BASE_URL = originalBaseUrl;
+    restoreBaseUrl(originalBaseUrl);
   });
 
   it('末尾スラッシュを除去して返す', () => {
@@ -33,7 +42,7 @@ describe('warnIfApiBaseUrlMissing', () => {
 
   afterEach(() => {
     warnSpy.mockRestore();
-    process.env.EXPO_PUBLIC_API_BASE_URL = originalBaseUrl;
+    restoreBaseUrl(originalBaseUrl);
   });
 
   it('設定済みの場合は警告しない', () => {
