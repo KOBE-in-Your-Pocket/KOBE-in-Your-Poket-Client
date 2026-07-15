@@ -1,52 +1,38 @@
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView } from 'react-native';
 
 import { useScopeFilterStore } from '../../store/use-scope-filter-store';
 
-import { styles } from '../styles/scope-filter.styles';
+import { SCOPE_SELECTED_COLOR } from '../styles/scope-filter.styles';
 
 import type { SelectedScope } from '../../store/use-scope-filter-store';
 
-import { useTheme } from '@/shared/lib/theme';
-import { ThemedText } from '@/shared/ui';
+import { FilterGroup } from './filter-group';
 
+/** 「対象」絞り込みの選択肢と表示順（全て・各所・全国）。 */
 const SCOPES: SelectedScope[] = ['all', 'local', 'japan'];
 
 /**
- * マナー項目一覧の地域スコープ絞り込みチップを表示するコンポーネント。
+ * マナー一覧の「対象」絞り込み。
  *
- * 「すべて」「各所特有」「日本全般」を横スクロールで表示し、タップで
- * `useScopeFilterStore` の selectedScope を更新する。
+ * 見出しバッジ「対象」＋タグ（全て / 各所 / 全国）を {@link FilterGroup} で表示し、
+ * 選択値を `useScopeFilterStore` の selectedScope に反映する。
  */
 export function ScopeFilter() {
   const { t } = useTranslation();
-  const theme = useTheme();
   const { selectedScope, setSelectedScope } = useScopeFilterStore();
 
+  const options = SCOPES.map((scope) => ({
+    value: scope,
+    label: t(`manner.scopeFilter.${scope}`),
+    selectedColor: SCOPE_SELECTED_COLOR[scope],
+  }));
+
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      style={styles.scroll}
-      contentContainerStyle={styles.contentContainer}
-    >
-      {SCOPES.map((scope) => {
-        const isSelected = scope === selectedScope;
-        return (
-          <Pressable
-            key={scope}
-            style={[
-              styles.chip,
-              { backgroundColor: isSelected ? theme.backgroundSelected : theme.backgroundElement },
-            ]}
-            onPress={() => setSelectedScope(scope)}
-            accessibilityRole="button"
-            accessibilityState={{ selected: isSelected }}
-          >
-            <ThemedText style={styles.chipText}>{t(`manner.scopeFilter.${scope}`)}</ThemedText>
-          </Pressable>
-        );
-      })}
-    </ScrollView>
+    <FilterGroup
+      label={t('manner.filter.target')}
+      options={options}
+      selected={selectedScope}
+      onSelect={setSelectedScope}
+    />
   );
 }

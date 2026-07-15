@@ -136,6 +136,10 @@
     "spotSection": {
       "title": "Manners for This Place"
     },
+    "filter": {
+      "category": "Category",
+      "target": "Target"
+    },
     "kind": {
       "manner": "Manner",
       "rule": "Rule"

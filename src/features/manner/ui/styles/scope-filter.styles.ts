@@ -1,23 +1,13 @@
-import { StyleSheet } from 'react-native';
+import { FILTER_NEUTRAL_COLOR } from './filter-group.styles';
 
-import { Spacing } from '@/shared/config';
+import type { SelectedScope } from '../../store/use-scope-filter-store';
 
-export const styles = StyleSheet.create({
-  scroll: {
-    marginTop: Spacing.two,
-  },
-  contentContainer: {
-    flexDirection: 'row',
-    gap: Spacing.two,
-    paddingVertical: Spacing.one,
-  },
-  chip: {
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
-    borderRadius: Spacing.five,
-  },
-  chipText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-});
+/**
+ * 対象選択タブの選択時カラー。
+ * 「全て」は中立グレー、各所・全国は青で色分けする。
+ */
+export const SCOPE_SELECTED_COLOR: Record<SelectedScope, string> = {
+  all: FILTER_NEUTRAL_COLOR,
+  local: '#3B82F6',
+  japan: '#3B82F6',
+};

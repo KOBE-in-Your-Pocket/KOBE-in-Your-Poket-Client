@@ -1,52 +1,38 @@
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView } from 'react-native';
 
 import { useKindFilterStore } from '../../store/use-kind-filter-store';
 
-import { styles } from '../styles/kind-filter.styles';
+import { KIND_SELECTED_COLOR } from '../styles/kind-filter.styles';
 
 import type { SelectedKind } from '../../store/use-kind-filter-store';
 
-import { useTheme } from '@/shared/lib/theme';
-import { ThemedText } from '@/shared/ui';
+import { FilterGroup } from './filter-group';
 
-const KINDS: SelectedKind[] = ['all', 'manner', 'rule'];
+/** 「カテゴリー」絞り込みの選択肢と表示順（全て・ルール・マナー）。 */
+const KINDS: SelectedKind[] = ['all', 'rule', 'manner'];
 
 /**
- * マナー項目一覧の種別絞り込みチップを表示するコンポーネント。
+ * マナー一覧の「カテゴリー」絞り込み。
  *
- * 「すべて」「マナー」「ルール」を横スクロールで表示し、タップで
- * `useKindFilterStore` の selectedKind を更新する。
+ * 見出しバッジ「カテゴリー」＋タグ（全て / ルール / マナー）を {@link FilterGroup} で表示し、
+ * 選択値を `useKindFilterStore` の selectedKind に反映する。
  */
 export function KindFilter() {
   const { t } = useTranslation();
-  const theme = useTheme();
   const { selectedKind, setSelectedKind } = useKindFilterStore();
 
+  const options = KINDS.map((kind) => ({
+    value: kind,
+    label: t(`manner.kindFilter.${kind}`),
+    selectedColor: KIND_SELECTED_COLOR[kind],
+  }));
+
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      style={styles.scroll}
-      contentContainerStyle={styles.contentContainer}
-    >
-      {KINDS.map((kind) => {
-        const isSelected = kind === selectedKind;
-        return (
-          <Pressable
-            key={kind}
-            style={[
-              styles.chip,
-              { backgroundColor: isSelected ? theme.backgroundSelected : theme.backgroundElement },
-            ]}
-            onPress={() => setSelectedKind(kind)}
-            accessibilityRole="button"
-            accessibilityState={{ selected: isSelected }}
-          >
-            <ThemedText style={styles.chipText}>{t(`manner.kindFilter.${kind}`)}</ThemedText>
-          </Pressable>
-        );
-      })}
-    </ScrollView>
+    <FilterGroup
+      label={t('manner.filter.category')}
+      options={options}
+      selected={selectedKind}
+      onSelect={setSelectedKind}
+    />
   );
 }
