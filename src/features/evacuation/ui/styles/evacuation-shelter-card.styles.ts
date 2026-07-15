@@ -2,8 +2,8 @@ import { Platform, StyleSheet } from 'react-native';
 
 import { BottomTabInset, Spacing } from '@/shared/config';
 
-/** カテゴリ表示・詳細/経路ボタンのアクセントカラー（避難所ピンの緑と統一）。 */
-export const CARD_ACCENT_COLOR = '#0F8A4F';
+/** 詳細/経路ボタンのアクセントカラー（避難モードの赤。モードトグル・ホームと統一）。 */
+export const CARD_ACCENT_COLOR = '#EF4444';
 
 export const styles = StyleSheet.create({
   card: {
