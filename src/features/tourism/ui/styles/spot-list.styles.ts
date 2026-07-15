@@ -4,7 +4,8 @@ import { Spacing } from '@/shared/config';
 
 export const CATEGORY_COLOR = '#C67B4A';
 export const RATING_STAR_COLOR = '#F5A623';
-export const ROUTE_BUTTON_COLOR = CATEGORY_COLOR;
+/** 経路案内ボタンの背景色（各コンテンツ・ピンカードで共通の紫）。 */
+export const ROUTE_BUTTON_COLOR = '#8B5CF6';
 
 export const styles = StyleSheet.create({
   centered: {
