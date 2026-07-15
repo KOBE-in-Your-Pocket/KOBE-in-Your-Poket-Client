@@ -5,6 +5,6 @@ export type AppMode = 'tourism' | 'evacuation';
  * 地図・一覧のモードトグル（SegmentedControl）で共通利用し、両画面の見た目を揃える。
  */
 export const MODE_SELECTED_COLOR: Record<AppMode, string> = {
-  tourism: '#3C87F7',
-  evacuation: '#E8573C',
+  tourism: '#3B82F6',
+  evacuation: '#EF4444',
 };
