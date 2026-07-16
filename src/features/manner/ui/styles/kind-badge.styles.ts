@@ -14,7 +14,7 @@ type KindBadgeColorSet = {
 
 /**
  * 分類ごとのバッジ配色。
- * ルール・マナーとも塗りつぶしのバッジ（背景＝分類色 / 白文字）で強調する。
+ * ルールは塗りつぶしの警告アンバー、マナーは塗りつぶしの緑。いずれも背景＝分類色 / 白文字で強調する。
  */
 export const KIND_BADGE_COLORS: Record<MannerKind, KindBadgeColorSet> = {
   manner: {
@@ -23,15 +23,15 @@ export const KIND_BADGE_COLORS: Record<MannerKind, KindBadgeColorSet> = {
     foreground: '#FFFFFF',
   },
   rule: {
-    background: '#D92D20',
-    border: '#D92D20',
+    background: '#F59E0B',
+    border: '#F59E0B',
     foreground: '#FFFFFF',
   },
 };
 
 /**
  * 分類ごとのアクセント色（カードの枠線・タイトルに使用）。
- * ルールは警告レッド、マナーは緑。いずれも塗りつぶしバッジの背景色を流用する。カード系 UI はこの値を参照する。
+ * ルールは警告アンバー、マナーは緑。いずれも塗りつぶしバッジの背景色を流用する。カード系 UI はこの値を参照する。
  */
 export const KIND_ACCENT_COLOR: Record<MannerKind, string> = {
   manner: KIND_BADGE_COLORS.manner.background,
