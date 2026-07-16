@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { ActivityIndicator, Text as MockText, View as MockView } from 'react-native';
 
-import { MannerList, type RelatedSpot } from '../manner-list';
+import { MannerList } from '../manner-list';
 
 import type { MannerItem } from '../../../domain/manner-item';
 import type { ReactNode } from 'react';
@@ -29,8 +29,6 @@ const mockManners: MannerItem[] = [
     relatedSpotIds: [],
   },
 ];
-
-const mockSpots: RelatedSpot[] = [{ id: 'nankinmachi', name: '南京町' }];
 
 // jest.mock ファクトリから参照するため mock プレフィックスを付ける（out-of-scope 変数制約）。
 const mockUseFilteredManners = jest.fn();
@@ -96,7 +94,7 @@ describe('MannerList', () => {
   it('取得中は ActivityIndicator を表示する', () => {
     mockUseFilteredManners.mockReturnValue({ data: undefined, isPending: true, isError: false });
 
-    render(<MannerList spots={mockSpots} />);
+    render(<MannerList />);
 
     expect(screen.UNSAFE_getByType(ActivityIndicator)).toBeTruthy();
   });
@@ -104,36 +102,34 @@ describe('MannerList', () => {
   it('取得失敗時はエラーメッセージを表示する', () => {
     mockUseFilteredManners.mockReturnValue({ data: undefined, isPending: false, isError: true });
 
-    render(<MannerList spots={mockSpots} />);
+    render(<MannerList />);
 
     expect(screen.getByText('manner.list.loadError')).toBeTruthy();
   });
 
-  it('取得成功時はヘッダーと各項目のタイトル・説明を表示する', () => {
+  it('取得成功時はヘッダーと各カードのタイトルを表示する', () => {
     mockUseFilteredManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
 
-    render(<MannerList spots={mockSpots} />);
+    render(<MannerList />);
 
     expect(screen.getByText('manner.list.title')).toBeTruthy();
     expect(screen.getByText(mockManners[0].title)).toBeTruthy();
-    expect(screen.getByText(mockManners[0].description)).toBeTruthy();
     expect(screen.getByText(mockManners[1].title)).toBeTruthy();
-    expect(screen.getByText(mockManners[1].description)).toBeTruthy();
   });
 
-  it('各カードに MannerPictogram を size=40 で表示する', () => {
+  it('各カードにピクトグラムを size=72 で表示する', () => {
     mockUseFilteredManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
 
-    render(<MannerList spots={mockSpots} />);
+    render(<MannerList />);
 
-    expect(screen.getByText(`pictogram:${mockManners[0].id}:40`)).toBeTruthy();
-    expect(screen.getByText(`pictogram:${mockManners[1].id}:40`)).toBeTruthy();
+    expect(screen.getByText(`pictogram:${mockManners[0].id}:72`)).toBeTruthy();
+    expect(screen.getByText(`pictogram:${mockManners[1].id}:72`)).toBeTruthy();
   });
 
   it('各カードに項目の種別に応じた KindBadge を表示する', () => {
     mockUseFilteredManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
 
-    render(<MannerList spots={mockSpots} />);
+    render(<MannerList />);
 
     expect(screen.getByText('kind:rule')).toBeTruthy();
     expect(screen.getByText('kind:manner')).toBeTruthy();
@@ -142,7 +138,7 @@ describe('MannerList', () => {
   it('一覧上部に KindFilter と ScopeFilter を配置する', () => {
     mockUseFilteredManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
 
-    render(<MannerList spots={mockSpots} />);
+    render(<MannerList />);
 
     expect(screen.getByText('kind-filter')).toBeTruthy();
     expect(screen.getByText('scope-filter')).toBeTruthy();
@@ -151,52 +147,23 @@ describe('MannerList', () => {
   it('絞り込み結果が 0 件でも KindFilter と ScopeFilter を表示し続ける', () => {
     mockUseFilteredManners.mockReturnValue({ data: [], isPending: false, isError: false });
 
-    render(<MannerList spots={mockSpots} />);
+    render(<MannerList />);
 
     expect(screen.getByText('manner.list.empty')).toBeTruthy();
     expect(screen.getByText('kind-filter')).toBeTruthy();
     expect(screen.getByText('scope-filter')).toBeTruthy();
   });
 
-  it('relatedSpotIds に対応するスポット名リンクを表示する', () => {
-    mockUseFilteredManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
-
-    render(<MannerList spots={mockSpots} />);
-
-    expect(screen.getByText('manner.list.relatedSpots')).toBeTruthy();
-    expect(screen.getByText('南京町')).toBeTruthy();
-  });
-
-  it('relatedSpotIds が空の項目にはスポットリンクを表示しない', () => {
-    mockUseFilteredManners.mockReturnValue({
-      data: [mockManners[1]],
-      isPending: false,
-      isError: false,
-    });
-
-    render(<MannerList spots={mockSpots} />);
-
-    expect(screen.queryByText('manner.list.relatedSpots')).toBeNull();
-  });
-
-  it('スポット名リンクをタップすると観光詳細へ遷移する', () => {
-    mockUseFilteredManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
-
-    render(<MannerList spots={mockSpots} />);
-
-    fireEvent.press(screen.getByText('南京町'));
-
-    expect(router.push).toHaveBeenCalledWith({
-      pathname: '/tourism/[id]',
-      params: { id: 'nankinmachi' },
-    });
-  });
-
-  it('spots が未指定（取得中）でもクラッシュせずリンクを表示しない', () => {
+  it('カードをタップすると該当マナーの詳細画面へ遷移する', () => {
     mockUseFilteredManners.mockReturnValue({ data: mockManners, isPending: false, isError: false });
 
     render(<MannerList />);
 
-    expect(screen.queryByText('manner.list.relatedSpots')).toBeNull();
+    fireEvent.press(screen.getByLabelText(mockManners[0].title));
+
+    expect(router.push).toHaveBeenCalledWith({
+      pathname: '/manner/[id]',
+      params: { id: mockManners[0].id },
+    });
   });
 });

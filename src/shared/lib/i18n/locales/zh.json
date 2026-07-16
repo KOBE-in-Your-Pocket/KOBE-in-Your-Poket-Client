@@ -137,6 +137,11 @@
       "empty": "未找到礼仪信息。",
       "relatedSpots": "相关地点"
     },
+    "detail": {
+      "back": "返回",
+      "loadError": "无法加载礼仪信息。",
+      "notFound": "未找到礼仪信息。"
+    },
     "spotSection": {
       "title": "此处的礼仪"
     },
