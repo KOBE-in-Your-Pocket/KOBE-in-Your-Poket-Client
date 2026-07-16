@@ -1,9 +1,6 @@
 import { MannerScreen } from '@/features/manner';
-import { useSpots } from '@/features/tourism';
 
-/** manner 機能が tourism 機能に依存しないよう、スポットデータはここ（app 層）で取得して渡す。 */
+/** マナー一覧タブ。一覧はピクトグラム主体の2列グリッドで、タップで詳細（`/manner/[id]`）へ遷移する。 */
 export default function MannersRoute() {
-  const { data: spots } = useSpots();
-
-  return <MannerScreen spots={spots} />;
+  return <MannerScreen />;
 }

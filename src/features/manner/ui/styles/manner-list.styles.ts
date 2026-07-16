@@ -2,12 +2,6 @@ import { PixelRatio, StyleSheet } from 'react-native';
 
 import { BottomTabInset, Fonts, Spacing } from '@/shared/config';
 
-/** マナー種別の分類色（KIND_BADGE_COLORS）とは無関係な、スポットリンク用の固定色。 */
-export const RELATED_SPOT_LINK_COLOR = {
-  background: '#EAF2FF',
-  foreground: '#1D5BBF',
-};
-
 export const styles = StyleSheet.create({
   centered: {
     flex: 1,
@@ -16,9 +10,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
   },
   listContent: {
-    paddingHorizontal: Spacing.three,
+    paddingHorizontal: Spacing.two,
     paddingBottom: BottomTabInset + Spacing.three,
-    gap: Spacing.two,
   },
   /** 絞り込み結果が 0 件のときにヘッダー下へ表示する空メッセージ。 */
   empty: {
@@ -43,54 +36,34 @@ export const styles = StyleSheet.create({
     height: PixelRatio.roundToNearestPixel(1),
     alignSelf: 'stretch',
   },
-  // カードは分類アクセント色の枠線＋薄い背景で強調する（色はコンポーネントで分類ごとに指定）。
+  // 2 列グリッドの1セル。幅を 50% に固定し、奇数件でも最後のカードが2列分に広がらないようにする。
+  // 内側の余白（padding）が列間・行間のすき間になる。
+  cell: {
+    width: '50%',
+    padding: Spacing.two,
+  },
+  // 2 列グリッドのカード。ピクトグラムを大きく中央に、その下にバッジ・タイトルを縦積みする。
+  // 幅はセル（cell）が決めるため、flex:1 は行内で高さを揃える用途のみ。
+  // 分類アクセント色の枠線＋薄い背景で強調する（色はコンポーネントで分類ごとに指定）。
   card: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: Spacing.three,
+    flex: 1,
+    alignItems: 'center',
+    gap: Spacing.two,
     padding: Spacing.three,
     borderRadius: Spacing.three,
     borderWidth: 1.5,
   },
-  iconWrapper: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  pictogramWrapper: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  content: {
-    flex: 1,
-    gap: Spacing.half,
-  },
   // タイトルは分類アクセント色で強調する（色はコンポーネントで指定）。
   itemTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '700',
-  },
-  itemDescription: {
-    lineHeight: 20,
-  },
-  relatedSpots: {
-    gap: Spacing.half,
-    marginTop: Spacing.half,
-  },
-  relatedSpotChips: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.one,
-  },
-  relatedSpotChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.half,
-    paddingHorizontal: Spacing.two,
-    paddingVertical: Spacing.half,
-    borderRadius: Spacing.four,
-    backgroundColor: RELATED_SPOT_LINK_COLOR.background,
-  },
-  relatedSpotText: {
-    color: RELATED_SPOT_LINK_COLOR.foreground,
-    fontWeight: '600',
+    textAlign: 'center',
   },
 });
