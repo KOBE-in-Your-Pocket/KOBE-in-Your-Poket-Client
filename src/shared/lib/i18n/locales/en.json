@@ -136,7 +136,10 @@
     "detail": {
       "back": "Back",
       "loadError": "Could not load manner information.",
-      "notFound": "No manner information found."
+      "notFound": "No manner information found.",
+      "relatedSpotsLoading": "Loading related spots...",
+      "relatedSpotsError": "Could not load related spots.",
+      "relatedSpotsEmpty": "No related spots."
     },
     "spotSection": {
       "title": "Manners for This Place"

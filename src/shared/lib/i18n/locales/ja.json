@@ -136,7 +136,10 @@
     "detail": {
       "back": "戻る",
       "loadError": "マナー情報を読み込めませんでした。",
-      "notFound": "マナー情報が見つかりませんでした。"
+      "notFound": "マナー情報が見つかりませんでした。",
+      "relatedSpotsLoading": "関連スポットを読み込み中...",
+      "relatedSpotsError": "関連スポットを読み込めませんでした。",
+      "relatedSpotsEmpty": "関連スポットはありません。"
     },
     "spotSection": {
       "title": "この場所のマナー"
