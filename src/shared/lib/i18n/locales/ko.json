@@ -38,7 +38,11 @@
     }
   },
   "settings": {
-    "language": "언어"
+    "language": "언어",
+    "account": "계정",
+    "signInWithGoogle": "Google로 로그인",
+    "signOut": "로그아웃",
+    "signInError": "로그인에 실패했습니다. 잠시 후 다시 시도해 주세요."
   },
   "tourism": {
     "spotList": {

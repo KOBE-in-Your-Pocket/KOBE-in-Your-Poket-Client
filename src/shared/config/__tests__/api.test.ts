@@ -11,15 +11,11 @@ function restoreBaseUrl(original: string | undefined): void {
 
 describe('getApiBaseUrl', () => {
   const originalBaseUrl = process.env.EXPO_PUBLIC_API_BASE_URL;
+  const originalNodeEnv = process.env.NODE_ENV;
 
   afterEach(() => {
     restoreBaseUrl(originalBaseUrl);
-  });
-
-  it('末尾スラッシュを除去して返す', () => {
-    process.env.EXPO_PUBLIC_API_BASE_URL = 'http://10.0.2.2:9090/';
-
-    expect(getApiBaseUrl()).toBe('http://10.0.2.2:9090');
+    process.env.NODE_ENV = originalNodeEnv;
   });
 
   it('未設定・空白のみの場合は undefined を返す', () => {
@@ -28,6 +24,33 @@ describe('getApiBaseUrl', () => {
 
     process.env.EXPO_PUBLIC_API_BASE_URL = '   ';
     expect(getApiBaseUrl()).toBeUndefined();
+  });
+
+  it('末尾スラッシュを除去して返す', () => {
+    process.env.EXPO_PUBLIC_API_BASE_URL = 'http://10.0.2.2:9090/';
+    expect(getApiBaseUrl()).toBe('http://10.0.2.2:9090');
+  });
+
+  it('不正な URL は undefined を返す', () => {
+    process.env.EXPO_PUBLIC_API_BASE_URL = 'not-a-url';
+    expect(getApiBaseUrl()).toBeUndefined();
+  });
+
+  it('http/https 以外のプロトコルは undefined を返す', () => {
+    process.env.EXPO_PUBLIC_API_BASE_URL = 'ftp://api.example.com';
+    expect(getApiBaseUrl()).toBeUndefined();
+  });
+
+  it('本番環境では http を拒否する', () => {
+    process.env.NODE_ENV = 'production';
+    process.env.EXPO_PUBLIC_API_BASE_URL = 'http://api.example.com';
+    expect(getApiBaseUrl()).toBeUndefined();
+  });
+
+  it('本番環境では https を許可する', () => {
+    process.env.NODE_ENV = 'production';
+    process.env.EXPO_PUBLIC_API_BASE_URL = 'https://api.example.com';
+    expect(getApiBaseUrl()).toBe('https://api.example.com');
   });
 });
 

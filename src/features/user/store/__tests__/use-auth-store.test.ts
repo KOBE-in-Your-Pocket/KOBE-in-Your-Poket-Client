@@ -2,6 +2,14 @@ import { useAuthStore } from '../use-auth-store';
 
 const INITIAL_STATE = useAuthStore.getState();
 
+const SESSION = {
+  accessToken: 'access-token',
+  refreshToken: 'refresh-token',
+  expiresIn: 3600,
+  tokenType: 'bearer',
+  user: { id: 'user-google', name: 'Google 太郎', iconUrl: '' },
+};
+
 describe('useAuthStore', () => {
   beforeEach(() => {
     useAuthStore.setState(INITIAL_STATE);
@@ -18,6 +26,16 @@ describe('useAuthStore', () => {
       useAuthStore.getState().logout();
 
       expect(useAuthStore.getState().currentUser).toBeNull();
+    });
+
+    it('トークンもすべて未設定に戻す', () => {
+      useAuthStore.getState().setSession(SESSION);
+      useAuthStore.getState().logout();
+
+      const state = useAuthStore.getState();
+      expect(state.currentUser).toBeNull();
+      expect(state.accessToken).toBeNull();
+      expect(state.refreshToken).toBeNull();
     });
   });
 
@@ -41,6 +59,27 @@ describe('useAuthStore', () => {
       useAuthStore.getState().login(user);
 
       expect(useAuthStore.getState().currentUser).toEqual(user);
+    });
+
+    it('モックログインではトークンを設定しない', () => {
+      useAuthStore.getState().setSession(SESSION);
+      useAuthStore
+        .getState()
+        .login({ id: 'user-sato', name: '佐藤太郎', iconUrl: 'https://example.com/taro.png' });
+
+      expect(useAuthStore.getState().accessToken).toBeNull();
+      expect(useAuthStore.getState().refreshToken).toBeNull();
+    });
+  });
+
+  describe('setSession', () => {
+    it('ユーザーとトークンを設定する', () => {
+      useAuthStore.getState().setSession(SESSION);
+
+      const state = useAuthStore.getState();
+      expect(state.currentUser).toEqual(SESSION.user);
+      expect(state.accessToken).toBe('access-token');
+      expect(state.refreshToken).toBe('refresh-token');
     });
   });
 });
