@@ -5,6 +5,7 @@ import {
   savePersistedSession,
 } from '../../infrastructure/storage/session-storage';
 import { useAuthStore } from '../../store/use-auth-store';
+import { bumpSessionGeneration, resetSessionGenerationForTests } from '../session-operation';
 import { restoreSession } from '../use-restore-session';
 
 jest.mock('../../infrastructure/api/auth-api', () => {
@@ -39,6 +40,7 @@ const REFRESHED_SESSION = {
 describe('restoreSession', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    resetSessionGenerationForTests();
     useAuthStore.setState({ currentUser: null, accessToken: null, refreshToken: null });
   });
 
@@ -81,6 +83,25 @@ describe('restoreSession', () => {
     await restoreSession();
 
     expect(clearMock).not.toHaveBeenCalled();
+    expect(useAuthStore.getState().currentUser).toBeNull();
+  });
+
+  it('リフレッシュ待機中にログアウトされた場合、古いセッションを復元しない', async () => {
+    loadMock.mockResolvedValue(PERSISTED);
+    let resolveRefresh: (value: typeof REFRESHED_SESSION) => void = () => {};
+    refreshMock.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveRefresh = resolve;
+        }),
+    );
+
+    const restorePromise = restoreSession();
+    bumpSessionGeneration();
+    resolveRefresh(REFRESHED_SESSION);
+    await restorePromise;
+
+    expect(saveMock).not.toHaveBeenCalled();
     expect(useAuthStore.getState().currentUser).toBeNull();
   });
 });

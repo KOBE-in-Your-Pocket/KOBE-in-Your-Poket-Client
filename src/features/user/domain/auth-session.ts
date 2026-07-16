@@ -16,3 +16,9 @@ export type AuthSession = {
   /** ログインしたユーザー。 */
   user: PublicUser;
 };
+
+/** secure-store に保存するセッションの部分集合。 */
+export type PersistedSession = {
+  refreshToken: string;
+  user: PublicUser;
+};

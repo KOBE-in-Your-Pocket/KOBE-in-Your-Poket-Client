@@ -73,6 +73,29 @@ describe('auth-api', () => {
         status: 500,
       });
     });
+
+    it('必須フィールド欠落のレスポンスは AuthApiError を投げる', async () => {
+      global.fetch = mockFetchResponse(200, { accessToken: 'only-access' });
+
+      await expect(signInWithGoogle('token', { baseUrl: BASE_URL })).rejects.toMatchObject({
+        name: 'AuthApiError',
+        status: 502,
+      });
+    });
+
+    it('不正な JSON レスポンスは AuthApiError を投げる', async () => {
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: () => Promise.reject(new Error('invalid json')),
+      });
+
+      await expect(signInWithGoogle('token', { baseUrl: BASE_URL })).rejects.toMatchObject({
+        name: 'AuthApiError',
+        status: 502,
+        message: '認証 API のレスポンスを解析できませんでした',
+      });
+    });
   });
 
   describe('refreshAuthSession', () => {

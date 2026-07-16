@@ -1,7 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 
-import type { AuthSession } from '../../domain/auth-session';
-import type { PublicUser } from '../../domain/public-user';
+import type { AuthSession, PersistedSession } from '../../domain/auth-session';
 
 /**
  * セッションの永続化（expo-secure-store）。
@@ -12,12 +11,6 @@ import type { PublicUser } from '../../domain/public-user';
  */
 
 const SESSION_KEY = 'auth.session';
-
-/** secure-store に保存するセッションの部分集合。 */
-export type PersistedSession = {
-  refreshToken: string;
-  user: PublicUser;
-};
 
 /** セッションを保存する。ログイン成功時・リフレッシュ成功時に呼ぶ。 */
 export async function savePersistedSession(session: AuthSession): Promise<void> {

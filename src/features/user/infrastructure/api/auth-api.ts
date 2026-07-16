@@ -1,5 +1,6 @@
 import { getApiBaseUrl } from '@/shared/config';
 
+import { AuthApiError } from '../../domain/auth-api-error';
 import type { AuthSession } from '../../domain/auth-session';
 
 /** backend 全 API 共通のエラーレスポンス形式（400 系）。 */
@@ -10,17 +11,7 @@ type ApiErrorBody = {
   violations?: unknown[];
 };
 
-/** backend がエラーレスポンス（4xx/5xx）を返したことを表すエラー。 */
-export class AuthApiError extends Error {
-  /** HTTP ステータスコード。 */
-  readonly status: number;
-
-  constructor(status: number, message: string) {
-    super(message);
-    this.name = 'AuthApiError';
-    this.status = status;
-  }
-}
+export { AuthApiError };
 
 /** /auth/google と /auth/refresh が返すセッションレスポンス。 */
 type SessionResponseBody = {
@@ -83,6 +74,65 @@ async function postJson(
   return response;
 }
 
+function parseSessionResponseBody(json: unknown): SessionResponseBody {
+  if (!json || typeof json !== 'object') {
+    throw new AuthApiError(502, '認証 API のレスポンス形式が不正です');
+  }
+
+  const body = json as Record<string, unknown>;
+  const user = body.user;
+
+  if (typeof body.accessToken !== 'string' || !body.accessToken) {
+    throw new AuthApiError(502, '認証 API のレスポンスに accessToken がありません');
+  }
+  if (typeof body.refreshToken !== 'string' || !body.refreshToken) {
+    throw new AuthApiError(502, '認証 API のレスポンスに refreshToken がありません');
+  }
+  if (typeof body.expiresIn !== 'number' || !Number.isFinite(body.expiresIn)) {
+    throw new AuthApiError(502, '認証 API のレスポンスに expiresIn がありません');
+  }
+  if (typeof body.tokenType !== 'string' || !body.tokenType) {
+    throw new AuthApiError(502, '認証 API のレスポンスに tokenType がありません');
+  }
+  if (!user || typeof user !== 'object') {
+    throw new AuthApiError(502, '認証 API のレスポンスに user がありません');
+  }
+
+  const userBody = user as Record<string, unknown>;
+  if (typeof userBody.id !== 'string' || !userBody.id) {
+    throw new AuthApiError(502, '認証 API のレスポンスに user.id がありません');
+  }
+  if (typeof userBody.name !== 'string') {
+    throw new AuthApiError(502, '認証 API のレスポンスに user.name がありません');
+  }
+  if (userBody.iconUrl !== null && typeof userBody.iconUrl !== 'string') {
+    throw new AuthApiError(502, '認証 API のレスポンスに user.iconUrl がありません');
+  }
+
+  return {
+    accessToken: body.accessToken,
+    refreshToken: body.refreshToken,
+    expiresIn: body.expiresIn,
+    tokenType: body.tokenType,
+    user: {
+      id: userBody.id,
+      name: userBody.name,
+      iconUrl: userBody.iconUrl as string | null,
+    },
+  };
+}
+
+async function parseSessionResponse(response: Response): Promise<AuthSession> {
+  let json: unknown;
+  try {
+    json = await response.json();
+  } catch {
+    throw new AuthApiError(502, '認証 API のレスポンスを解析できませんでした');
+  }
+
+  return toAuthSession(parseSessionResponseBody(json));
+}
+
 /** iconUrl が null の場合は空文字に寄せる（PublicUser の iconUrl は string のため）。 */
 function toAuthSession(body: SessionResponseBody): AuthSession {
   return {
@@ -111,7 +161,7 @@ export async function signInWithGoogle(
     signal: options.signal,
   });
 
-  return toAuthSession((await response.json()) as SessionResponseBody);
+  return parseSessionResponse(response);
 }
 
 /**
@@ -127,7 +177,7 @@ export async function refreshAuthSession(
     signal: options.signal,
   });
 
-  return toAuthSession((await response.json()) as SessionResponseBody);
+  return parseSessionResponse(response);
 }
 
 /** backend 側のセッションを破棄する（204 を返す）。 */

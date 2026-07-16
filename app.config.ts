@@ -5,7 +5,7 @@ const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
 // ── Google サインイン（iOS）─────────────────────────────────
 // クライアント ID は「<id>.apps.googleusercontent.com」形式。ネイティブ側の
 // URL スキームはその逆順表記（com.googleusercontent.apps.<id>）なので、ここで導出する。
-const googleIosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
+const googleIosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID?.trim();
 const googleIosUrlScheme = googleIosClientId
   ? `com.googleusercontent.apps.${googleIosClientId.replace(/\.apps\.googleusercontent\.com$/, '')}`
   : undefined;
@@ -51,20 +51,23 @@ export default (): ExpoConfig => ({
     bundleIdentifier: iosBundleIdentifier,
     ...(iosAppleTeamId ? { appleTeamId: iosAppleTeamId } : {}),
     infoPlist: {
-      // 開発用 backend（EC2）は HTTPS 未設定。数値 IP は NSExceptionDomains に
-      // 使えないため、nip.io ホスト経由（例: 18.181.34.28.nip.io）で平文 HTTP を許可する。
-      // LOCAL_DEV_IOS 時は ArbitraryLoads も有効化し、万一の漏れに備える。
-      NSAppTransportSecurity: {
-        NSAllowsArbitraryLoads: isLocalDevIos,
-        NSAllowsLocalNetworking: true,
-        NSExceptionDomains: {
-          'nip.io': {
-            NSIncludesSubdomains: true,
-            NSExceptionAllowsInsecureHTTPLoads: true,
-            NSExceptionRequiresForwardSecrecy: false,
-          },
-        },
-      },
+      // ローカル実機検証（LOCAL_DEV_IOS=1）時のみ、開発用 backend 向けの平文 HTTP を許可する。
+      // 本番 iOS ビルドへ ATS 例外を持ち込まないため、条件付きで設定する。
+      ...(isLocalDevIos
+        ? {
+            NSAppTransportSecurity: {
+              NSAllowsArbitraryLoads: true,
+              NSAllowsLocalNetworking: true,
+              NSExceptionDomains: {
+                'nip.io': {
+                  NSIncludesSubdomains: true,
+                  NSExceptionAllowsInsecureHTTPLoads: true,
+                  NSExceptionRequiresForwardSecrecy: false,
+                },
+              },
+            },
+          }
+        : {}),
     },
   },
   android: {

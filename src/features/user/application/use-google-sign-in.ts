@@ -4,9 +4,14 @@ import { useMutation } from '@tanstack/react-query';
 import { Platform } from 'react-native';
 
 import type { AuthSession } from '../domain/auth-session';
-import { signInWithGoogle } from '../infrastructure/api/auth-api';
-import { savePersistedSession } from '../infrastructure/storage/session-storage';
+import type { AuthGateway, SessionStore } from '../domain/auth-ports';
 import { useAuthStore } from '../store/use-auth-store';
+import { defaultAuthGateway, defaultSessionStore } from './auth-deps';
+import {
+  bumpSessionGeneration,
+  getSessionGeneration,
+  isSessionGenerationCurrent,
+} from './session-operation';
 
 let googleSignInConfigured = false;
 
@@ -49,14 +54,27 @@ function ensureGoogleSignInConfigured(): void {
   googleSignInConfigured = true;
 }
 
+type GoogleSignInDeps = {
+  authGateway: AuthGateway;
+  sessionStore: SessionStore;
+};
+
 /**
  * Google サインインの一連の流れを実行する。
  *
  * Google のネイティブサインイン → ID トークンを backend へ POST →
- * ストア更新 + secure-store への永続化。
+ * secure-store への永続化 → ストア更新。
  * ユーザーがサインインをキャンセルした場合は null を返す（エラーにしない）。
  */
-export async function performGoogleSignIn(): Promise<AuthSession | null> {
+export async function performGoogleSignIn(
+  deps: GoogleSignInDeps = {
+    authGateway: defaultAuthGateway,
+    sessionStore: defaultSessionStore,
+  },
+): Promise<AuthSession | null> {
+  bumpSessionGeneration();
+  const generation = getSessionGeneration();
+
   ensureGoogleSignInConfigured();
 
   await GoogleSignin.hasPlayServices();
@@ -70,18 +88,23 @@ export async function performGoogleSignIn(): Promise<AuthSession | null> {
     throw new Error('Google から ID トークンを取得できませんでした。');
   }
 
-  const session = await signInWithGoogle(idToken);
+  const session = await deps.authGateway.signInWithGoogle(idToken);
+  if (!isSessionGenerationCurrent(generation)) {
+    return null;
+  }
+
+  await deps.sessionStore.savePersistedSession(session);
+  if (!isSessionGenerationCurrent(generation)) {
+    return null;
+  }
+
   useAuthStore.getState().setSession(session);
-  await savePersistedSession(session);
   return session;
 }
 
 /** Google サインインを実行する mutation。キャンセル時は null で成功扱いになる。 */
 export function useGoogleSignIn() {
   return useMutation({
-    mutationFn: performGoogleSignIn,
-    onError: (error) => {
-      console.error('[GoogleSignIn]', error);
-    },
+    mutationFn: () => performGoogleSignIn(),
   });
 }

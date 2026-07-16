@@ -1,12 +1,15 @@
 import { useEffect } from 'react';
 
-import { AuthApiError, refreshAuthSession } from '../infrastructure/api/auth-api';
-import {
-  clearPersistedSession,
-  loadPersistedSession,
-  savePersistedSession,
-} from '../infrastructure/storage/session-storage';
+import { AuthApiError } from '../domain/auth-api-error';
+import type { AuthGateway, SessionStore } from '../domain/auth-ports';
 import { useAuthStore } from '../store/use-auth-store';
+import { defaultAuthGateway, defaultSessionStore } from './auth-deps';
+import { getSessionGeneration, isSessionGenerationCurrent } from './session-operation';
+
+type RestoreSessionDeps = {
+  authGateway: AuthGateway;
+  sessionStore: SessionStore;
+};
 
 /**
  * secure-store に保存済みのセッションを復元する。
@@ -16,19 +19,37 @@ import { useAuthStore } from '../store/use-auth-store';
  * backend がエラーを返した場合（失効）は保存分を破棄して未ログインに戻す。
  * ネットワークエラー等では保存分を残し、次回起動時に再試行する。
  */
-export async function restoreSession(): Promise<void> {
-  const persisted = await loadPersistedSession();
-  if (!persisted) {
+export async function restoreSession(
+  deps: RestoreSessionDeps = {
+    authGateway: defaultAuthGateway,
+    sessionStore: defaultSessionStore,
+  },
+): Promise<void> {
+  const generation = getSessionGeneration();
+  const persisted = await deps.sessionStore.loadPersistedSession();
+  if (!persisted || !isSessionGenerationCurrent(generation)) {
     return;
   }
 
   try {
-    const session = await refreshAuthSession(persisted.refreshToken);
+    const session = await deps.authGateway.refreshAuthSession(persisted.refreshToken);
+    if (!isSessionGenerationCurrent(generation)) {
+      return;
+    }
+
+    await deps.sessionStore.savePersistedSession(session);
+    if (!isSessionGenerationCurrent(generation)) {
+      return;
+    }
+
     useAuthStore.getState().setSession(session);
-    await savePersistedSession(session);
   } catch (error) {
+    if (!isSessionGenerationCurrent(generation)) {
+      return;
+    }
+
     if (error instanceof AuthApiError) {
-      await clearPersistedSession();
+      await deps.sessionStore.clearPersistedSession();
     }
   }
 }

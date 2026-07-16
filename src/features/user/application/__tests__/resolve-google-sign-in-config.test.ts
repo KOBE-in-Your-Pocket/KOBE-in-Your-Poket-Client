@@ -5,11 +5,22 @@ import { resolveGoogleSignInConfig } from '../use-google-sign-in';
 describe('resolveGoogleSignInConfig', () => {
   const originalIos = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
   const originalWeb = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
+  const originalPlatformOs = Platform.OS;
 
   afterEach(() => {
-    process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID = originalIos;
-    process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID = originalWeb;
-    (Platform as { OS: string }).OS = 'ios';
+    if (originalIos === undefined) {
+      delete process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
+    } else {
+      process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID = originalIos;
+    }
+
+    if (originalWeb === undefined) {
+      delete process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
+    } else {
+      process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID = originalWeb;
+    }
+
+    (Platform as { OS: string }).OS = originalPlatformOs;
   });
 
   it('iOS では iosClientId を返す', () => {
