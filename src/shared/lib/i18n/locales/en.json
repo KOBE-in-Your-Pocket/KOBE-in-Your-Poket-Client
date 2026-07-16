@@ -134,13 +134,13 @@
     "list": {
       "title": "Manners",
       "loadError": "Could not load manner information.",
-      "empty": "No manner information found.",
-      "relatedSpots": "Related Spots"
+      "empty": "No manner information found."
     },
     "detail": {
       "back": "Back",
       "loadError": "Could not load manner information.",
       "notFound": "No manner information found.",
+      "relatedSpots": "Related Spots",
       "relatedSpotsLoading": "Loading related spots...",
       "relatedSpotsError": "Could not load related spots.",
       "relatedSpotsEmpty": "No related spots."

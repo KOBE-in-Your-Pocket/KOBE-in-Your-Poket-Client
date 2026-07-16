@@ -56,7 +56,7 @@ describe('MannerRelatedSpots', () => {
       />,
     );
 
-    expect(screen.getByText('manner.list.relatedSpots')).toBeTruthy();
+    expect(screen.getByText('manner.detail.relatedSpots')).toBeTruthy();
   });
 
   it('取得中は読込中の文言を表示する', () => {
@@ -104,6 +104,18 @@ describe('MannerRelatedSpots', () => {
       pathname: '/tourism/[id]',
       params: { id: 'nankinmachi' },
     });
+  });
+
+  it('手元にリンク可能なデータがあれば、再取得失敗(isError)でもエラーではなくリンクを表示し続ける', () => {
+    render(
+      <MannerRelatedSpots
+        manner={WITH_RELATION}
+        state={{ data: [{ id: 'nankinmachi', name: '南京町' }], isPending: false, isError: true }}
+      />,
+    );
+
+    expect(screen.getByText('南京町')).toBeTruthy();
+    expect(screen.queryByText('manner.detail.relatedSpotsError')).toBeNull();
   });
 
   it('取得成功でも該当スポットが無ければ「なし」を表示する', () => {

@@ -46,25 +46,15 @@ export function MannerRelatedSpots({
   return (
     <View style={styles.relatedSpots}>
       <ThemedText type="small" themeColor="textSecondary">
-        {t('manner.list.relatedSpots')}
+        {t('manner.detail.relatedSpots')}
       </ThemedText>
       {!hasRelations ? (
         <ThemedText type="small" themeColor="textSecondary">
           {t('manner.detail.relatedSpotsEmpty')}
         </ThemedText>
-      ) : state.isPending ? (
-        <ThemedText type="small" themeColor="textSecondary">
-          {t('manner.detail.relatedSpotsLoading')}
-        </ThemedText>
-      ) : state.isError ? (
-        <ThemedText type="small" themeColor="textSecondary">
-          {t('manner.detail.relatedSpotsError')}
-        </ThemedText>
-      ) : relatedSpots.length === 0 ? (
-        <ThemedText type="small" themeColor="textSecondary">
-          {t('manner.detail.relatedSpotsEmpty')}
-        </ThemedText>
-      ) : (
+      ) : relatedSpots.length > 0 ? (
+        // 手元にリンク可能なデータがあれば、裏の再取得が失敗中（isError）でもまずリンクを表示し、
+        // エラー文言でリンクを隠さない。取得状態より「表示できるデータの有無」を優先する。
         <View style={styles.relatedSpotChips}>
           {relatedSpots.map((spot) => (
             <Pressable
@@ -85,6 +75,18 @@ export function MannerRelatedSpots({
             </Pressable>
           ))}
         </View>
+      ) : state.isPending ? (
+        <ThemedText type="small" themeColor="textSecondary">
+          {t('manner.detail.relatedSpotsLoading')}
+        </ThemedText>
+      ) : state.isError ? (
+        <ThemedText type="small" themeColor="textSecondary">
+          {t('manner.detail.relatedSpotsError')}
+        </ThemedText>
+      ) : (
+        <ThemedText type="small" themeColor="textSecondary">
+          {t('manner.detail.relatedSpotsEmpty')}
+        </ThemedText>
       )}
     </View>
   );
