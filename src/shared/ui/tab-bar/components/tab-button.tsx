@@ -20,6 +20,9 @@ export function TabButton({ children, isFocused, symbol, ...props }: TabButtonPr
         <SymbolView tintColor={tintColor} name={symbol} size={22} />
         <ThemedText
           type="small"
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.75}
           style={[styles.tabLabel, isFocused && styles.tabLabelFocused, { color: tintColor }]}
         >
           {children}

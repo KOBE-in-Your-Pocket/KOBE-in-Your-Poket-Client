@@ -18,8 +18,17 @@ jest.mock('@/shared/config', () => ({
 // @/shared/ui バレルは Reanimated / react-native-maps 等を巻き込むため、
 // ラベル表示に必要な ThemedText だけを style を通す軽量スタブへ差し替える。
 jest.mock('@/shared/ui', () => ({
-  ThemedText: ({ children, style }: { children?: ReactNode; style?: StyleProp<TextStyle> }) => (
-    <MockText style={style}>{children}</MockText>
+  ThemedText: ({
+    children,
+    style,
+    ...rest
+  }: {
+    children?: ReactNode;
+    style?: StyleProp<TextStyle>;
+  }) => (
+    <MockText style={style} {...rest}>
+      {children}
+    </MockText>
   ),
 }));
 
@@ -35,10 +44,10 @@ describe('TabButton', () => {
       </TabButton>,
     );
 
-    // 現在タブ: tabLabelFocused（太字 800 ＋拡大 13）が適用され、アクティブ色になる。
+    // 現在タブ: tabLabelFocused（太字 800）が適用され、アクティブ色になる。サイズは固定のまま。
     // 期待値はリテラルで固定し、tabLabel と tabLabelFocused が同値へ退行した場合も検知する。
     expect(screen.getByText('ホーム')).toHaveStyle({
-      fontSize: 13,
+      fontSize: 11,
       fontWeight: '800',
       color: TAB_BAR_COLORS.active,
     });
@@ -54,6 +63,23 @@ describe('TabButton', () => {
       fontSize: 11,
       fontWeight: '600',
       color: TAB_BAR_COLORS.inactive,
+    });
+  });
+
+  it('長い英語ラベルでも1行に収め、フォーカス時もフォントサイズを変えない', () => {
+    render(
+      <TabButton isFocused symbol={SYMBOL}>
+        Settings
+      </TabButton>,
+    );
+
+    const label = screen.getByText('Settings');
+
+    expect(label).toHaveProp('numberOfLines', 1);
+    expect(label).toHaveProp('adjustsFontSizeToFit', true);
+    expect(label).toHaveStyle({
+      fontSize: 11,
+      fontWeight: '800',
     });
   });
 });
