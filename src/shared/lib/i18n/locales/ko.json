@@ -40,9 +40,27 @@
   "settings": {
     "language": "언어",
     "account": "계정",
+    "signIn": "로그인 / 회원가입",
     "signInWithGoogle": "Google로 로그인",
     "signOut": "로그아웃",
     "signInError": "로그인에 실패했습니다. 잠시 후 다시 시도해 주세요."
+  },
+  "auth": {
+    "title": "계정",
+    "or": "또는",
+    "signInTab": "로그인",
+    "signUpTab": "회원가입",
+    "namePlaceholder": "표시 이름",
+    "emailPlaceholder": "이메일 주소",
+    "passwordPlaceholder": "비밀번호 (6자 이상)",
+    "submitSignIn": "로그인",
+    "submitSignUp": "가입하기",
+    "close": "닫기",
+    "invalidCredentials": "이메일 주소 또는 비밀번호가 올바르지 않습니다.",
+    "signUpError": "회원가입에 실패했습니다. 입력 내용을 확인한 후 다시 시도해 주세요.",
+    "confirmationEmailSent": "확인 이메일을 보냈습니다. 이메일의 링크로 인증을 완료한 후 로그인해 주세요.",
+    "emailNotConfirmed": "이메일 주소 인증이 완료되지 않았습니다. 확인 이메일의 링크를 열어 주세요.",
+    "emailRateLimited": "확인 이메일 발송 한도에 도달했습니다. 잠시 후 다시 시도해 주세요."
   },
   "tourism": {
     "spotList": {
