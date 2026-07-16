@@ -7,7 +7,7 @@ import { styles } from '../styles/manner-detail.styles';
 
 import { MannerDetailContent } from './manner-detail';
 
-import type { RelatedSpot } from './manner-related-spots';
+import type { RelatedSpotsState } from './manner-related-spots';
 
 import { ThemedText, ThemedView } from '@/shared/ui';
 
@@ -16,14 +16,14 @@ import { ThemedText, ThemedView } from '@/shared/ui';
  *
  * `mannerId` を受け取り application 層の {@link useMannerDetail} 経由で詳細を取得する。
  * 表示は {@link MannerDetailContent} に委譲する。データ取得・状態管理はこの feature 内に閉じる。
- * 関連スポットは manner→tourism 依存を避けるため app 層から `spots` として受け取る。
+ * 関連スポットは manner→tourism 依存を避けるため、取得状態ごと app 層から `relatedSpots` として受け取る。
  */
 export function MannerDetailScreen({
   mannerId,
-  spots,
+  relatedSpots,
 }: {
   mannerId: string;
-  spots?: RelatedSpot[];
+  relatedSpots: RelatedSpotsState;
 }) {
   const { t } = useTranslation();
   const { data: manner, isPending, isError } = useMannerDetail(mannerId);
@@ -43,7 +43,7 @@ export function MannerDetailScreen({
           <ThemedText themeColor="textSecondary">{t('manner.detail.notFound')}</ThemedText>
         </View>
       ) : (
-        <MannerDetailContent manner={manner} spots={spots} />
+        <MannerDetailContent manner={manner} relatedSpots={relatedSpots} />
       )}
     </ThemedView>
   );

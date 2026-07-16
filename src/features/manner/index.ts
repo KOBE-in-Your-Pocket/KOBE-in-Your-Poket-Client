@@ -9,7 +9,7 @@ export { createMockMannerRepository } from './infrastructure/api/mock-manner-rep
 export { MannerScreen } from './ui/components/manner-screen';
 export { MannerList } from './ui/components/manner-list';
 export { MannerDetailScreen } from './ui/components/manner-detail-screen';
-export type { RelatedSpot } from './ui/components/manner-related-spots';
+export type { RelatedSpot, RelatedSpotsState } from './ui/components/manner-related-spots';
 export { SpotMannerSection } from './ui/components/spot-manner-section';
 export { useScopeFilterStore } from './store/use-scope-filter-store';
 export type { SelectedScope } from './store/use-scope-filter-store';

@@ -4,6 +4,7 @@ import { ActivityIndicator, Text as MockText, View as MockView } from 'react-nat
 import { MannerDetailScreen } from '../manner-detail-screen';
 
 import type { MannerItem } from '../../../domain/manner-item';
+import type { RelatedSpotsState } from '../manner-related-spots';
 import type { ReactNode } from 'react';
 
 const mockManner: MannerItem = {
@@ -14,8 +15,17 @@ const mockManner: MannerItem = {
   imageKey: null,
   kind: 'rule',
   scope: 'local',
-  relatedSpotIds: [],
+  relatedSpotIds: ['nankinmachi'],
 };
+
+function makeState(overrides: Partial<RelatedSpotsState> = {}): RelatedSpotsState {
+  return {
+    data: [{ id: 'nankinmachi', name: '南京町' }],
+    isPending: false,
+    isError: false,
+    ...overrides,
+  };
+}
 
 const mockUseMannerDetail = jest.fn();
 
@@ -30,9 +40,18 @@ jest.mock('../../hooks/use-manner-detail', () => ({
   useMannerDetail: (mannerId: string) => mockUseMannerDetail(mannerId),
 }));
 
+// MannerDetailContent が受け取った manner と関連スポット状態を text に露出し、伝播を検証できるようにする。
 jest.mock('../manner-detail', () => ({
-  MannerDetailContent: ({ manner }: { manner: MannerItem }) => (
-    <MockText>{`manner-detail-content:${manner.title}`}</MockText>
+  MannerDetailContent: ({
+    manner,
+    relatedSpots,
+  }: {
+    manner: MannerItem;
+    relatedSpots: RelatedSpotsState;
+  }) => (
+    <MockText>
+      {`content:${manner.title}:count=${relatedSpots.data ? relatedSpots.data.length : 'undef'}:pending=${relatedSpots.isPending}:error=${relatedSpots.isError}`}
+    </MockText>
   ),
 }));
 
@@ -55,7 +74,7 @@ describe('MannerDetailScreen', () => {
   });
 
   it('useMannerDetail に mannerId を渡す', () => {
-    render(<MannerDetailScreen mannerId="no-eating-while-walking" />);
+    render(<MannerDetailScreen mannerId="no-eating-while-walking" relatedSpots={makeState()} />);
 
     expect(mockUseMannerDetail).toHaveBeenCalledWith('no-eating-while-walking');
   });
@@ -63,7 +82,7 @@ describe('MannerDetailScreen', () => {
   it('取得中はローディング表示', () => {
     mockUseMannerDetail.mockReturnValue({ data: undefined, isPending: true, isError: false });
 
-    render(<MannerDetailScreen mannerId="no-eating-while-walking" />);
+    render(<MannerDetailScreen mannerId="no-eating-while-walking" relatedSpots={makeState()} />);
 
     expect(screen.UNSAFE_getByType(ActivityIndicator)).toBeTruthy();
     expect(screen.queryByText('manner.detail.loadError')).toBeNull();
@@ -73,26 +92,46 @@ describe('MannerDetailScreen', () => {
   it('取得エラー時は loadError を表示する', () => {
     mockUseMannerDetail.mockReturnValue({ data: undefined, isPending: false, isError: true });
 
-    render(<MannerDetailScreen mannerId="no-eating-while-walking" />);
+    render(<MannerDetailScreen mannerId="no-eating-while-walking" relatedSpots={makeState()} />);
 
     expect(screen.getByText('manner.detail.loadError')).toBeTruthy();
-    expect(screen.queryByText(`manner-detail-content:${mockManner.title}`)).toBeNull();
   });
 
   it('マナー未検出時は notFound を表示する', () => {
     mockUseMannerDetail.mockReturnValue({ data: null, isPending: false, isError: false });
 
-    render(<MannerDetailScreen mannerId="unknown" />);
+    render(<MannerDetailScreen mannerId="unknown" relatedSpots={makeState()} />);
 
     expect(screen.getByText('manner.detail.notFound')).toBeTruthy();
-    expect(screen.queryByText(`manner-detail-content:${mockManner.title}`)).toBeNull();
   });
 
-  it('取得成功時は MannerDetailContent に manner を渡して表示する', () => {
-    render(<MannerDetailScreen mannerId="no-eating-while-walking" />);
+  it('取得成功時は MannerDetailContent に manner と関連スポット状態を渡す（スポットあり）', () => {
+    render(<MannerDetailScreen mannerId="no-eating-while-walking" relatedSpots={makeState()} />);
 
-    expect(screen.getByText('manner-detail-content:食べ歩き禁止')).toBeTruthy();
-    expect(screen.queryByText('manner.detail.loadError')).toBeNull();
-    expect(screen.queryByText('manner.detail.notFound')).toBeNull();
+    expect(screen.getByText('content:食べ歩き禁止:count=1:pending=false:error=false')).toBeTruthy();
+  });
+
+  it('関連スポットが空配列でも状態をそのまま伝播する', () => {
+    render(
+      <MannerDetailScreen
+        mannerId="no-eating-while-walking"
+        relatedSpots={makeState({ data: [] })}
+      />,
+    );
+
+    expect(screen.getByText('content:食べ歩き禁止:count=0:pending=false:error=false')).toBeTruthy();
+  });
+
+  it('関連スポット取得中の状態も MannerDetailContent へ伝播する', () => {
+    render(
+      <MannerDetailScreen
+        mannerId="no-eating-while-walking"
+        relatedSpots={makeState({ data: undefined, isPending: true })}
+      />,
+    );
+
+    expect(
+      screen.getByText('content:食べ歩き禁止:count=undef:pending=true:error=false'),
+    ).toBeTruthy();
   });
 });

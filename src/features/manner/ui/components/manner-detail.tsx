@@ -14,7 +14,7 @@ import { ThemedText } from '@/shared/ui';
 
 import { KindBadge } from './kind-badge';
 import { MannerPictogram } from './manner-pictogram';
-import { MannerRelatedSpots, type RelatedSpot } from './manner-related-spots';
+import { MannerRelatedSpots, type RelatedSpotsState } from './manner-related-spots';
 
 function BackButton({ label }: { label: string }) {
   const insets = useSafeAreaInsets();
@@ -44,10 +44,10 @@ function BackButton({ label }: { label: string }) {
  */
 export function MannerDetailContent({
   manner,
-  spots,
+  relatedSpots,
 }: {
   manner: MannerItem;
-  spots?: RelatedSpot[];
+  relatedSpots: RelatedSpotsState;
 }) {
   const { t } = useTranslation();
   const accent = KIND_ACCENT_COLOR[manner.kind];
@@ -65,7 +65,7 @@ export function MannerDetailContent({
         <ThemedText themeColor="textSecondary" style={styles.description}>
           {manner.description}
         </ThemedText>
-        <MannerRelatedSpots manner={manner} spots={spots} />
+        <MannerRelatedSpots manner={manner} state={relatedSpots} />
       </View>
     </ScrollView>
   );

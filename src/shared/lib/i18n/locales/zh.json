@@ -140,7 +140,10 @@
     "detail": {
       "back": "返回",
       "loadError": "无法加载礼仪信息。",
-      "notFound": "未找到礼仪信息。"
+      "notFound": "未找到礼仪信息。",
+      "relatedSpotsLoading": "正在加载相关地点...",
+      "relatedSpotsError": "无法加载相关地点。",
+      "relatedSpotsEmpty": "没有相关地点。"
     },
     "spotSection": {
       "title": "此处的礼仪"
