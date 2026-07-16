@@ -4,6 +4,10 @@ import { Spacing } from '@/shared/config';
 
 /** カテゴリ表示のアクセントカラー（避難所ピン・カードの緑と統一）。 */
 export const DETAIL_ACCENT_COLOR = '#0F8A4F';
+/** 外部リンク（テキスト・アイコン）の色（避難モードの赤）。 */
+export const EXTERNAL_LINK_COLOR = '#EF4444';
+/** 経路案内ボタンの背景色（各コンテンツ・ピンカードで共通の紫）。 */
+export const ROUTE_BUTTON_COLOR = '#8B5CF6';
 
 export const styles = StyleSheet.create({
   container: {
@@ -59,7 +63,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.one,
-    backgroundColor: DETAIL_ACCENT_COLOR,
+    backgroundColor: ROUTE_BUTTON_COLOR,
     paddingVertical: Spacing.two,
     paddingHorizontal: Spacing.three,
     borderRadius: Spacing.five,
@@ -75,7 +79,7 @@ export const styles = StyleSheet.create({
   },
   linkText: {
     flex: 1,
-    color: DETAIL_ACCENT_COLOR,
+    color: EXTERNAL_LINK_COLOR,
     fontWeight: '600',
   },
 });

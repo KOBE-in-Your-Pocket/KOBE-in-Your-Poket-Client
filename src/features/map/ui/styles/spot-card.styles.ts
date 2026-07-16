@@ -2,10 +2,12 @@ import { Platform, StyleSheet } from 'react-native';
 
 import { BottomTabInset, Spacing } from '@/shared/config';
 
-/** カテゴリ表示・詳細ボタンのテラコッタ系アクセントカラー（スポット一覧と統一）。 */
-export const CARD_ACCENT_COLOR = '#C67B4A';
+/** 詳細ボタンのアクセントカラー（観光モードの青。モードトグル・ホームと統一）。 */
+export const CARD_ACCENT_COLOR = '#3B82F6';
 /** 評価の星アイコンのカラー（スポット一覧と統一）。 */
 export const RATING_STAR_COLOR = '#F5A623';
+/** 経路案内ボタンの背景色（観光・避難のカードで共通の紫）。 */
+export const NAV_BUTTON_COLOR = '#8B5CF6';
 
 export const styles = StyleSheet.create({
   card: {
@@ -138,7 +140,7 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
   },
   navButton: {
-    backgroundColor: CARD_ACCENT_COLOR,
+    backgroundColor: NAV_BUTTON_COLOR,
   },
   navButtonText: {
     color: '#FFFFFF',

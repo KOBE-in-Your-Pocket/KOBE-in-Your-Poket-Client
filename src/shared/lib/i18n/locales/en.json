@@ -13,10 +13,22 @@
   },
   "home": {
     "shortcuts": {
-      "tourism": "Tourist Spots",
-      "map": "Map",
-      "manners": "Manners",
-      "evacuation": "Shelters"
+      "tourism": {
+        "label": "Tourist Spots",
+        "description": "Browse popular spots"
+      },
+      "map": {
+        "label": "Map",
+        "description": "Check the area map"
+      },
+      "manners": {
+        "label": "Manners",
+        "description": "Learn local etiquette"
+      },
+      "evacuation": {
+        "label": "Shelters",
+        "description": "Find nearby shelters"
+      }
     },
     "catchphrase": {
       "line1": "Beyond language",
@@ -127,6 +139,10 @@
     },
     "spotSection": {
       "title": "Manners for This Place"
+    },
+    "filter": {
+      "category": "Category",
+      "target": "Target"
     },
     "kind": {
       "manner": "Manner",

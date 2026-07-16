@@ -20,7 +20,7 @@ jest.mock('react-i18next', () => ({
 
 jest.mock('@/shared/config', () => ({
   Spacing: { half: 2, one: 4, two: 8, three: 16, four: 24, five: 32, six: 64 },
-  MODE_SELECTED_COLOR: { tourism: '#3C87F7', evacuation: '#E8573C' },
+  MODE_SELECTED_COLOR: { tourism: '#3B82F6', evacuation: '#EF4444' },
 }));
 
 jest.mock('@/shared/lib/theme', () => ({

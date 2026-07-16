@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { PixelRatio, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Fonts, Spacing } from '@/shared/config';
@@ -24,12 +24,18 @@ export function ListScreen() {
       <View
         style={[
           styles.header,
-          { paddingTop: insets.top + Spacing.three, backgroundColor: theme.background },
+          // ホーム画面のタイトル位置（SafeArea + padding 24 + marginTop 4）と揃える。
+          {
+            paddingTop: insets.top + Spacing.four + Spacing.one,
+            backgroundColor: theme.background,
+          },
         ]}
       >
+        <View style={[styles.divider, { backgroundColor: theme.textSecondary }]} />
         <ThemedText type="title" style={styles.title} numberOfLines={1} adjustsFontSizeToFit>
           {t(titleKey)}
         </ThemedText>
+        <View style={[styles.divider, { backgroundColor: theme.textSecondary }]} />
         <ListGenreFilter />
       </View>
       <SwitchableList />
@@ -55,5 +61,12 @@ const styles = StyleSheet.create({
     fontSize: 30,
     lineHeight: 40,
     textAlign: 'center',
+  },
+  // タイトルを上下で挟む区切り線（ホーム画面と同一スタイル）。
+  // 高さは物理ピクセルの整数倍に固定する。1dp 固定だと描画位置の端数により
+  // 2px/3px に丸められて上下の太さが揃わないため（理由は home-screen.styles.ts 参照）。
+  divider: {
+    height: PixelRatio.roundToNearestPixel(1),
+    alignSelf: 'stretch',
   },
 });

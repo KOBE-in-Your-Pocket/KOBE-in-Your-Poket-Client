@@ -2,7 +2,10 @@ import { Stack } from 'expo-router';
 
 import { createMockMannerRepository, MannerRepositoryProvider } from '@/features/manner';
 import { useRestoreSession } from '@/features/user';
+import { warnIfApiBaseUrlMissing } from '@/shared/config';
 import { AppProviders } from '@/shared/ui';
+
+warnIfApiBaseUrlMissing();
 
 const mannerRepository = createMockMannerRepository();
 

@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { PixelRatio, StyleSheet } from 'react-native';
 
-import { BottomTabInset, Spacing } from '@/shared/config';
+import { BottomTabInset, Fonts, Spacing } from '@/shared/config';
 
 /** マナー種別の分類色（KIND_BADGE_COLORS）とは無関係な、スポットリンク用の固定色。 */
 export const RELATED_SPOT_LINK_COLOR = {
@@ -28,10 +28,20 @@ export const styles = StyleSheet.create({
   },
   header: {
     paddingBottom: Spacing.two,
+    gap: Spacing.two,
   },
+  // 一覧画面・ホーム画面と同じ装飾タイトル（筆記体・中央揃え・fontSize 30 / lineHeight 40）。
   title: {
-    fontSize: 28,
-    lineHeight: 34,
+    fontFamily: Fonts.cursive,
+    fontWeight: 'normal',
+    fontSize: 30,
+    lineHeight: 40,
+    textAlign: 'center',
+  },
+  // タイトルを上下で挟む区切り線（一覧画面・ホーム画面と同一スタイル）。
+  divider: {
+    height: PixelRatio.roundToNearestPixel(1),
+    alignSelf: 'stretch',
   },
   // カードは分類アクセント色の枠線＋薄い背景で強調する（色はコンポーネントで分類ごとに指定）。
   card: {

@@ -13,10 +13,22 @@
   },
   "home": {
     "shortcuts": {
-      "tourism": "観光スポット",
-      "map": "地図",
-      "manners": "マナー",
-      "evacuation": "避難所"
+      "tourism": {
+        "label": "観光スポット",
+        "description": "人気のスポットを探す"
+      },
+      "map": {
+        "label": "地図",
+        "description": "周辺の地図を見る"
+      },
+      "manners": {
+        "label": "マナー",
+        "description": "地域のマナーを学ぶ"
+      },
+      "evacuation": {
+        "label": "避難所",
+        "description": "近くの避難所を探す"
+      }
     },
     "catchphrase": {
       "line1": "言葉の壁も",
@@ -128,17 +140,21 @@
     "spotSection": {
       "title": "この場所のマナー"
     },
+    "filter": {
+      "category": "カテゴリー",
+      "target": "対象"
+    },
     "kind": {
       "manner": "マナー",
       "rule": "ルール"
     },
     "scopeFilter": {
-      "all": "すべて",
-      "local": "各所特有",
-      "japan": "日本全般"
+      "all": "全て",
+      "local": "各所",
+      "japan": "全国"
     },
     "kindFilter": {
-      "all": "すべて",
+      "all": "全て",
       "manner": "マナー",
       "rule": "ルール"
     }

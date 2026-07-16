@@ -98,13 +98,17 @@ function MannerListItem({
 
 function ListHeader() {
   const { t } = useTranslation();
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.header, { paddingTop: insets.top + Spacing.three }]}>
-      <ThemedText type="subtitle" style={styles.title}>
+    // 一覧画面（Tourist Spots）と同じ装飾タイトル：筆記体・中央揃えのタイトルを上下の区切り線で挟む。
+    <View style={[styles.header, { paddingTop: insets.top + Spacing.four + Spacing.one }]}>
+      <View style={[styles.divider, { backgroundColor: theme.textSecondary }]} />
+      <ThemedText type="title" style={styles.title} numberOfLines={1} adjustsFontSizeToFit>
         {t('manner.list.title')}
       </ThemedText>
+      <View style={[styles.divider, { backgroundColor: theme.textSecondary }]} />
       <KindFilter />
       <ScopeFilter />
     </View>
