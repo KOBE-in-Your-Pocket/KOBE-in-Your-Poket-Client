@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/shared/config';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
+import { AccountSection } from './account-section';
 import { LanguageSelector } from './language-selector';
 
 export function SettingsScreen() {
@@ -15,6 +16,7 @@ export function SettingsScreen() {
       <SafeAreaView style={styles.safeArea}>
         <ThemedText type="title">{t('tabs.settings')}</ThemedText>
         <LanguageSelector />
+        <AccountSection />
       </SafeAreaView>
     </ThemedView>
   );

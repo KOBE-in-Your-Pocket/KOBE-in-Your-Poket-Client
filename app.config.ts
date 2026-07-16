@@ -2,6 +2,41 @@ import type { ExpoConfig } from 'expo/config';
 
 const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
 
+// ── Google サインイン（iOS）─────────────────────────────────
+// クライアント ID は「<id>.apps.googleusercontent.com」形式。ネイティブ側の
+// URL スキームはその逆順表記（com.googleusercontent.apps.<id>）なので、ここで導出する。
+const googleIosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID?.trim();
+const googleIosUrlScheme = googleIosClientId
+  ? `com.googleusercontent.apps.${googleIosClientId.replace(/\.apps\.googleusercontent\.com$/, '')}`
+  : undefined;
+
+// ── ローカル実機検証用の署名オーバーライド ─────────────────────
+// 本番 bundle id (com.kobeinyourpocket.client) は組織の Apple Developer
+// アカウントが所有しているため、無料の個人チームでは同一 id を登録できない。
+// LOCAL_DEV_IOS=1 のときだけ dev 用 id + 個人チームに切り替える。
+// この分岐は EAS / App Store 向けビルド（LOCAL_DEV_IOS 未設定）には一切影響しない。
+const isLocalDevIos = process.env.LOCAL_DEV_IOS === '1';
+const iosBundleIdentifier = isLocalDevIos
+  ? 'com.kobeinyourpocket.client.dev'
+  : 'com.kobeinyourpocket.client';
+const iosAppleTeamId = isLocalDevIos ? process.env.IOS_DEV_TEAM_ID : undefined;
+
+// 開発用 backend が HTTP のときだけ ATS 例外を焼き込む（シミュレータ / EAS Dev Client 向け）。
+// 本番 iOS ビルド（production / preview プロファイル）では例外を入れない。
+const apiBaseUrl = process.env.EXPO_PUBLIC_API_BASE_URL?.trim();
+const usesHttpBackend = apiBaseUrl?.startsWith('http://') ?? false;
+const isProductionIosBuild =
+  process.env.EAS_BUILD_PROFILE === 'production' || process.env.EAS_BUILD_PROFILE === 'preview';
+const needsInsecureHttpExceptions = !isProductionIosBuild && (isLocalDevIos || usesHttpBackend);
+
+if (!googleIosClientId) {
+  console.warn(
+    '[app.config] EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID が未設定です。\n' +
+      '  Google サインインの URL スキームがネイティブビルドに焼き込まれず、サインインは動作しません。\n' +
+      '  ネイティブビルド（dev client 再作成）前に .env に設定してください（.env.example 参照）。',
+  );
+}
+
 if (!googleMapsApiKey) {
   console.warn(
     '[app.config] GOOGLE_MAPS_API_KEY が未設定です。\n' +
@@ -21,7 +56,29 @@ export default (): ExpoConfig => ({
   userInterfaceStyle: 'automatic',
   ios: {
     icon: './assets/expo.icon',
-    bundleIdentifier: 'com.kobeinyourpocket.client',
+    bundleIdentifier: iosBundleIdentifier,
+    ...(iosAppleTeamId ? { appleTeamId: iosAppleTeamId } : {}),
+    infoPlist: {
+      // 開発ビルドで HTTP backend を使う場合のみ ATS 例外を設定する。
+      // - LOCAL_DEV_IOS=1: 実機ローカル検証（localhost / LAN IP も許可）
+      // - EXPO_PUBLIC_API_BASE_URL が http:// 始まり: シミュレータ / EAS Dev Client（nip.io 等）
+      // 本番 iOS ビルド（production / preview）では例外を入れない。
+      ...(needsInsecureHttpExceptions
+        ? {
+            NSAppTransportSecurity: {
+              ...(isLocalDevIos ? { NSAllowsArbitraryLoads: true } : {}),
+              NSAllowsLocalNetworking: true,
+              NSExceptionDomains: {
+                'nip.io': {
+                  NSIncludesSubdomains: true,
+                  NSExceptionAllowsInsecureHTTPLoads: true,
+                  NSExceptionRequiresForwardSecrecy: false,
+                },
+              },
+            },
+          }
+        : {}),
+    },
   },
   android: {
     adaptiveIcon: {
@@ -68,6 +125,26 @@ export default (): ExpoConfig => ({
       },
     ],
     'expo-sqlite',
+    'expo-secure-store',
+    // GoogleSignIn → AppCheckCore 11.3+ が RecaptchaInterop を引き込み、Expo の静的
+    // CocoaPods 統合で落ちるため、11.2.0 にピン留めする（issue #1517 の公式回避）。
+    [
+      'expo-build-properties',
+      {
+        ios: {
+          extraPods: [{ name: 'AppCheckCore', version: '11.2.0' }],
+        },
+      },
+    ],
+    // URL スキーム未設定だと plugin がビルドエラーになるため、設定時のみ追加する。
+    ...(googleIosUrlScheme
+      ? [
+          ['@react-native-google-signin/google-signin', { iosUrlScheme: googleIosUrlScheme }] as [
+            string,
+            unknown,
+          ],
+        ]
+      : []),
   ],
   experiments: {
     typedRoutes: true,
