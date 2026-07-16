@@ -136,6 +136,10 @@
     "spotSection": {
       "title": "이 장소의 매너"
     },
+    "filter": {
+      "category": "카테고리",
+      "target": "대상"
+    },
     "kind": {
       "manner": "매너",
       "rule": "규칙"

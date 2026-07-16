@@ -136,6 +136,10 @@
     "spotSection": {
       "title": "此处的礼仪"
     },
+    "filter": {
+      "category": "类别",
+      "target": "对象"
+    },
     "kind": {
       "manner": "礼仪",
       "rule": "规则"
