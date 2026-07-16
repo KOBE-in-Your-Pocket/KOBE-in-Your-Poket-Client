@@ -42,7 +42,21 @@
     "account": "계정",
     "signInWithGoogle": "Google로 로그인",
     "signOut": "로그아웃",
-    "signInError": "로그인에 실패했습니다. 잠시 후 다시 시도해 주세요."
+    "signInError": "로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.",
+    "accountEdit": {
+      "title": "계정 편집",
+      "back": "뒤로",
+      "save": "저장",
+      "displayName": "표시 이름",
+      "displayNamePlaceholder": "표시 이름 입력",
+      "nameInvalid": "표시 이름은 1〜{{max}}자로 입력해 주세요",
+      "changeIcon": "아이콘 변경",
+      "iconLibraryTitle": "사진 선택",
+      "iconLibraryDescription": "아이콘으로 사용할 사진을 선택하세요 (샘플 사진)",
+      "iconLibraryPhoto": "샘플 사진",
+      "iconLibraryClose": "닫기",
+      "notSignedIn": "계정을 편집하려면 로그인이 필요합니다."
+    }
   },
   "tourism": {
     "spotList": {

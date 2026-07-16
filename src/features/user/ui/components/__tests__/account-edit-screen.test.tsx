@@ -1,0 +1,85 @@
+import { fireEvent, render, screen } from '@testing-library/react-native';
+import { Text as MockText, View as MockView } from 'react-native';
+
+import { useAuthStore } from '../../../store/use-auth-store';
+import { AccountEditScreen } from '../account-edit-screen';
+
+import type { ReactNode } from 'react';
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
+}));
+
+jest.mock('@/shared/lib/theme', () => ({
+  useTheme: () => ({
+    background: '#FFFFFF',
+    text: '#000000',
+    textSecondary: '#60646C',
+    backgroundElement: '#F0F0F3',
+    backgroundSelected: '#E0E1E6',
+  }),
+}));
+
+// shared/ui バレルは Reanimated / react-native-maps などネイティブ UI を含むため軽量スタブへ差し替える。
+jest.mock('@/shared/ui', () => ({
+  ThemedText: ({ children }: { children?: ReactNode }) => <MockText>{children}</MockText>,
+  ThemedView: ({ children }: { children?: ReactNode }) => <MockView>{children}</MockView>,
+}));
+
+jest.mock('react-native-safe-area-context', () => ({
+  SafeAreaView: ({ children }: { children?: ReactNode }) => <MockView>{children}</MockView>,
+}));
+
+jest.mock('expo-image', () => ({ Image: () => null }));
+jest.mock('expo-symbols', () => ({ SymbolView: () => null }));
+jest.mock('expo-router', () => ({
+  router: { back: jest.fn(), push: jest.fn() },
+}));
+
+const USER = { id: 'user-1', name: 'Google 太郎', iconUrl: 'https://i.pravatar.cc/150?img=12' };
+
+describe('AccountEditScreen', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useAuthStore.setState({
+      currentUser: USER,
+      accessToken: 'access-token',
+      refreshToken: 'refresh-token',
+    });
+  });
+
+  it('未ログイン時はログイン案内を表示する', () => {
+    useAuthStore.getState().logout();
+    render(<AccountEditScreen />);
+
+    expect(screen.getByText('settings.accountEdit.notSignedIn')).toBeTruthy();
+  });
+
+  it('現在のアカウント情報（表示名）を初期表示する', () => {
+    render(<AccountEditScreen />);
+
+    expect(screen.getByDisplayValue('Google 太郎')).toBeTruthy();
+  });
+
+  it('表示名が空のときはバリデーションのヒントを表示する', () => {
+    render(<AccountEditScreen />);
+
+    fireEvent.changeText(
+      screen.getByPlaceholderText('settings.accountEdit.displayNamePlaceholder'),
+      '   ',
+    );
+
+    expect(screen.getByText('settings.accountEdit.nameInvalid')).toBeTruthy();
+  });
+
+  it('アイコンをタップするとモック写真ライブラリが開き、写真を選ぶと閉じる', () => {
+    render(<AccountEditScreen />);
+
+    fireEvent.press(screen.getByLabelText('settings.accountEdit.changeIcon'));
+    expect(screen.getByText('settings.accountEdit.iconLibraryTitle')).toBeTruthy();
+
+    fireEvent.press(screen.getAllByLabelText('settings.accountEdit.iconLibraryPhoto')[0]);
+
+    expect(screen.queryByText('settings.accountEdit.iconLibraryTitle')).toBeNull();
+  });
+});
