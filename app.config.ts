@@ -21,6 +21,14 @@ const iosBundleIdentifier = isLocalDevIos
   : 'com.kobeinyourpocket.client';
 const iosAppleTeamId = isLocalDevIos ? process.env.IOS_DEV_TEAM_ID : undefined;
 
+// 開発用 backend が HTTP のときだけ ATS 例外を焼き込む（シミュレータ / EAS Dev Client 向け）。
+// 本番 iOS ビルド（production / preview プロファイル）では例外を入れない。
+const apiBaseUrl = process.env.EXPO_PUBLIC_API_BASE_URL?.trim();
+const usesHttpBackend = apiBaseUrl?.startsWith('http://') ?? false;
+const isProductionIosBuild =
+  process.env.EAS_BUILD_PROFILE === 'production' || process.env.EAS_BUILD_PROFILE === 'preview';
+const needsInsecureHttpExceptions = !isProductionIosBuild && (isLocalDevIos || usesHttpBackend);
+
 if (!googleIosClientId) {
   console.warn(
     '[app.config] EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID が未設定です。\n' +
@@ -51,12 +59,14 @@ export default (): ExpoConfig => ({
     bundleIdentifier: iosBundleIdentifier,
     ...(iosAppleTeamId ? { appleTeamId: iosAppleTeamId } : {}),
     infoPlist: {
-      // ローカル実機検証（LOCAL_DEV_IOS=1）時のみ、開発用 backend 向けの平文 HTTP を許可する。
-      // 本番 iOS ビルドへ ATS 例外を持ち込まないため、条件付きで設定する。
-      ...(isLocalDevIos
+      // 開発ビルドで HTTP backend を使う場合のみ ATS 例外を設定する。
+      // - LOCAL_DEV_IOS=1: 実機ローカル検証（localhost / LAN IP も許可）
+      // - EXPO_PUBLIC_API_BASE_URL が http:// 始まり: シミュレータ / EAS Dev Client（nip.io 等）
+      // 本番 iOS ビルド（production / preview）では例外を入れない。
+      ...(needsInsecureHttpExceptions
         ? {
             NSAppTransportSecurity: {
-              NSAllowsArbitraryLoads: true,
+              ...(isLocalDevIos ? { NSAllowsArbitraryLoads: true } : {}),
               NSAllowsLocalNetworking: true,
               NSExceptionDomains: {
                 'nip.io': {
