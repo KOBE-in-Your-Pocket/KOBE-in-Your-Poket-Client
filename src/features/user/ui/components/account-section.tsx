@@ -36,7 +36,11 @@ export function AccountSection() {
             accessibilityRole="button"
             accessibilityLabel={t('settings.editAccount')}
             onPress={() => router.push('/settings/account-edit')}
-            style={[styles.row, { backgroundColor: theme.backgroundElement }]}
+            style={({ pressed }) => [
+              styles.row,
+              { backgroundColor: theme.backgroundElement },
+              pressed && styles.pressed,
+            ]}
           >
             <View style={styles.userInfo}>
               <UserAvatar iconUrl={currentUser.iconUrl} size={32} />
@@ -106,6 +110,9 @@ const styles = StyleSheet.create({
   },
   userName: {
     flexShrink: 1,
+  },
+  pressed: {
+    opacity: 0.85,
   },
   googleButton: {
     width: '100%',
