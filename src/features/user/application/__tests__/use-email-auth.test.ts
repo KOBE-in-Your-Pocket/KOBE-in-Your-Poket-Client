@@ -1,7 +1,13 @@
+import { AuthApiError } from '../../domain/auth-api-error';
 import type { AuthSession } from '../../domain/auth-session';
 import { useAuthStore } from '../../store/use-auth-store';
 import { resetSessionGenerationForTests } from '../session-operation';
-import { performEmailSignIn, performEmailSignUp } from '../use-email-auth';
+import {
+  performEmailSignIn,
+  performEmailSignUp,
+  resolveEmailSignInErrorKind,
+  resolveEmailSignUpErrorKind,
+} from '../use-email-auth';
 
 const SESSION: AuthSession = {
   accessToken: 'access-token',
@@ -76,6 +82,40 @@ describe('use-email-auth', () => {
 
       expect(useAuthStore.getState().currentUser).toBeNull();
     });
+
+    it('並行サインインでは後発の操作だけが永続化される', async () => {
+      const staleSession: AuthSession = {
+        ...SESSION,
+        user: { id: 'user-old', name: '古いユーザー', iconUrl: '' },
+      };
+
+      // 先発の backend 応答を保留し、その間に後発のサインインを完了させる。
+      let resolveStale: (session: AuthSession) => void = () => undefined;
+      signInWithEmail.mockImplementationOnce(
+        () => new Promise<AuthSession>((resolve) => (resolveStale = resolve)),
+      );
+
+      const stalePromise = performEmailSignIn(
+        { email: 'old@example.com', password: 'password123' },
+        deps(),
+      );
+
+      signInWithEmail.mockResolvedValueOnce(SESSION);
+      const current = await performEmailSignIn(
+        { email: 'taro@example.com', password: 'password123' },
+        deps(),
+      );
+      expect(current).toEqual(SESSION);
+
+      resolveStale(staleSession);
+      const stale = await stalePromise;
+
+      // 先発（古い世代）の結果は破棄され、書き込みも行われない。
+      expect(stale).toBeNull();
+      expect(savePersistedSession).toHaveBeenCalledTimes(1);
+      expect(savePersistedSession).toHaveBeenCalledWith(SESSION);
+      expect(useAuthStore.getState().currentUser).toEqual(SESSION.user);
+    });
   });
 
   describe('performEmailSignUp', () => {
@@ -119,6 +159,51 @@ describe('use-email-auth', () => {
       ).rejects.toThrow('email already registered');
 
       expect(useAuthStore.getState().currentUser).toBeNull();
+    });
+
+    it('確認待ち応答の受信前に別操作が始まっていたら null を返す', async () => {
+      let resolveSignUp: (result: unknown) => void = () => undefined;
+      signUpWithEmail.mockImplementationOnce(
+        () => new Promise((resolve) => (resolveSignUp = resolve)),
+      );
+
+      const signUpPromise = performEmailSignUp(
+        { email: 'taro@example.com', password: 'password123', name: 'メール 太郎' },
+        deps(),
+      );
+
+      // 応答待ちの間に別のサインインが世代を進める。
+      signInWithEmail.mockResolvedValueOnce(SESSION);
+      await performEmailSignIn({ email: 'other@example.com', password: 'password123' }, deps());
+
+      resolveSignUp({ status: 'confirmationRequired' });
+
+      await expect(signUpPromise).resolves.toBeNull();
+    });
+  });
+
+  describe('resolveEmailSignInErrorKind', () => {
+    it.each([
+      [new AuthApiError(400, 'Invalid login credentials'), 'invalidCredentials'],
+      [new AuthApiError(401, 'unauthorized'), 'invalidCredentials'],
+      [
+        new AuthApiError(400, '{"code":400,"error_code":"email_not_confirmed"}'),
+        'emailNotConfirmed',
+      ],
+      [new AuthApiError(500, 'server error'), 'unknown'],
+      [new Error('network'), 'unknown'],
+    ])('%s → %s', (error, expected) => {
+      expect(resolveEmailSignInErrorKind(error)).toBe(expected);
+    });
+  });
+
+  describe('resolveEmailSignUpErrorKind', () => {
+    it.each([
+      [new AuthApiError(429, 'email rate limit exceeded'), 'emailRateLimited'],
+      [new AuthApiError(400, 'validation error'), 'unknown'],
+      [new Error('network'), 'unknown'],
+    ])('%s → %s', (error, expected) => {
+      expect(resolveEmailSignUpErrorKind(error)).toBe(expected);
     });
   });
 });

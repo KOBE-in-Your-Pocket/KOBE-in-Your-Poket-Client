@@ -6,6 +6,7 @@ import {
   Modal,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   TextInput,
   View,
@@ -15,8 +16,12 @@ import { Spacing } from '@/shared/config';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
-import { AuthApiError } from '../../domain/auth-api-error';
-import { useEmailSignIn, useEmailSignUp } from '../../application/use-email-auth';
+import {
+  resolveEmailSignInErrorKind,
+  resolveEmailSignUpErrorKind,
+  useEmailSignIn,
+  useEmailSignUp,
+} from '../../application/use-email-auth';
 import { useGoogleSignIn } from '../../application/use-google-sign-in';
 
 /** プライマリアクションの配色（位置情報モーダルのアクセントカラーに合わせる）。 */
@@ -91,6 +96,9 @@ export function SignInModal({ visible, onClose }: SignInModalProps) {
   };
 
   const handleGoogleSignIn = () => {
+    // 前回のメール認証エラーが残ったまま表示されないようにする。
+    emailSignIn.reset();
+    emailSignUp.reset();
     googleSignIn.mutate(undefined, {
       onSuccess: (session) => {
         // キャンセル時は null が返るのでモーダルは開いたままにする。
@@ -105,6 +113,9 @@ export function SignInModal({ visible, onClose }: SignInModalProps) {
     if (!canSubmit || isPending) {
       return;
     }
+
+    // 前回の Google サインインエラーが残ったまま表示されないようにする。
+    googleSignIn.reset();
 
     const trimmedEmail = email.trim();
     if (mode === 'signIn') {
@@ -159,121 +170,131 @@ export function SignInModal({ visible, onClose }: SignInModalProps) {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ThemedView type="background" style={styles.card}>
-          <ThemedText type="subtitle" style={styles.title}>
-            {t('auth.title')}
-          </ThemedText>
-
-          <GoogleSigninButton
-            size={GoogleSigninButton.Size.Wide}
-            color={GoogleSigninButton.Color.Light}
-            disabled={isPending}
-            onPress={handleGoogleSignIn}
-            style={styles.googleButton}
-          />
-
-          <View style={styles.dividerRow}>
-            <View style={[styles.dividerLine, { backgroundColor: theme.backgroundElement }]} />
-            <ThemedText type="small" themeColor="textSecondary">
-              {t('auth.or')}
+          {/* キーボード表示時や小画面・大きな文字でも送信/閉じるまで到達できるようにスクロール可能にする */}
+          <ScrollView
+            contentContainerStyle={styles.cardContent}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <ThemedText type="subtitle" style={styles.title}>
+              {t('auth.title')}
             </ThemedText>
-            <View style={[styles.dividerLine, { backgroundColor: theme.backgroundElement }]} />
-          </View>
 
-          <View style={styles.tabs}>
-            {(['signIn', 'signUp'] as const).map((tab) => (
-              <Pressable
-                key={tab}
-                accessibilityRole="button"
-                onPress={() => switchMode(tab)}
-                style={[
-                  styles.tab,
-                  { backgroundColor: mode === tab ? ACCENT_COLOR : theme.backgroundElement },
-                ]}
-              >
-                <ThemedText
-                  type="smallBold"
-                  style={mode === tab ? styles.activeTabText : undefined}
-                  themeColor={mode === tab ? undefined : 'textSecondary'}
+            <GoogleSigninButton
+              size={GoogleSigninButton.Size.Wide}
+              color={GoogleSigninButton.Color.Light}
+              disabled={isPending}
+              onPress={handleGoogleSignIn}
+              style={styles.googleButton}
+            />
+
+            <View style={styles.dividerRow}>
+              <View style={[styles.dividerLine, { backgroundColor: theme.backgroundElement }]} />
+              <ThemedText type="small" themeColor="textSecondary">
+                {t('auth.or')}
+              </ThemedText>
+              <View style={[styles.dividerLine, { backgroundColor: theme.backgroundElement }]} />
+            </View>
+
+            <View style={styles.tabs}>
+              {(['signIn', 'signUp'] as const).map((tab) => (
+                <Pressable
+                  key={tab}
+                  accessibilityRole="button"
+                  onPress={() => switchMode(tab)}
+                  style={[
+                    styles.tab,
+                    { backgroundColor: mode === tab ? ACCENT_COLOR : theme.backgroundElement },
+                  ]}
                 >
-                  {t(tab === 'signIn' ? 'auth.signInTab' : 'auth.signUpTab')}
-                </ThemedText>
-              </Pressable>
-            ))}
-          </View>
+                  <ThemedText
+                    type="smallBold"
+                    style={mode === tab ? styles.activeTabText : undefined}
+                    themeColor={mode === tab ? undefined : 'textSecondary'}
+                  >
+                    {t(tab === 'signIn' ? 'auth.signInTab' : 'auth.signUpTab')}
+                  </ThemedText>
+                </Pressable>
+              ))}
+            </View>
 
-          {mode === 'signUp' ? (
+            {mode === 'signUp' ? (
+              <TextInput
+                style={inputStyle}
+                placeholder={t('auth.namePlaceholder')}
+                placeholderTextColor={theme.textSecondary}
+                value={name}
+                onChangeText={setName}
+                autoCapitalize="none"
+                editable={!isPending}
+              />
+            ) : null}
             <TextInput
               style={inputStyle}
-              placeholder={t('auth.namePlaceholder')}
+              placeholder={t('auth.emailPlaceholder')}
               placeholderTextColor={theme.textSecondary}
-              value={name}
-              onChangeText={setName}
+              value={email}
+              onChangeText={setEmail}
               autoCapitalize="none"
+              autoComplete="email"
+              keyboardType="email-address"
               editable={!isPending}
             />
-          ) : null}
-          <TextInput
-            style={inputStyle}
-            placeholder={t('auth.emailPlaceholder')}
-            placeholderTextColor={theme.textSecondary}
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-            autoComplete="email"
-            keyboardType="email-address"
-            editable={!isPending}
-          />
-          <TextInput
-            style={inputStyle}
-            placeholder={t('auth.passwordPlaceholder')}
-            placeholderTextColor={theme.textSecondary}
-            value={password}
-            onChangeText={setPassword}
-            autoCapitalize="none"
-            autoComplete={mode === 'signIn' ? 'password' : 'password-new'}
-            secureTextEntry
-            editable={!isPending}
-          />
+            <TextInput
+              style={inputStyle}
+              placeholder={t('auth.passwordPlaceholder')}
+              placeholderTextColor={theme.textSecondary}
+              value={password}
+              onChangeText={setPassword}
+              autoCapitalize="none"
+              autoComplete={mode === 'signIn' ? 'password' : 'password-new'}
+              secureTextEntry
+              editable={!isPending}
+            />
 
-          {confirmationSent ? (
-            <ThemedText type="small" themeColor="textSecondary">
-              {t('auth.confirmationEmailSent')}
-            </ThemedText>
-          ) : null}
+            {confirmationSent ? (
+              <ThemedText type="small" themeColor="textSecondary">
+                {t('auth.confirmationEmailSent')}
+              </ThemedText>
+            ) : null}
 
-          {errorMessage ? (
-            <ThemedText type="small" themeColor="textSecondary">
-              {errorMessage}
-            </ThemedText>
-          ) : null}
+            {errorMessage ? (
+              <ThemedText type="small" themeColor="textSecondary">
+                {errorMessage}
+              </ThemedText>
+            ) : null}
 
-          <Pressable
-            accessibilityRole="button"
-            disabled={!canSubmit || isPending}
-            onPress={handleSubmit}
-            style={[styles.submitButton, (!canSubmit || isPending) && styles.disabledButton]}
-          >
-            <ThemedText type="default" style={styles.submitButtonText}>
-              {t(mode === 'signIn' ? 'auth.submitSignIn' : 'auth.submitSignUp')}
-            </ThemedText>
-          </Pressable>
+            <Pressable
+              accessibilityRole="button"
+              disabled={!canSubmit || isPending}
+              onPress={handleSubmit}
+              style={[styles.submitButton, (!canSubmit || isPending) && styles.disabledButton]}
+            >
+              <ThemedText type="default" style={styles.submitButtonText}>
+                {t(mode === 'signIn' ? 'auth.submitSignIn' : 'auth.submitSignUp')}
+              </ThemedText>
+            </Pressable>
 
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => closeWith(false)}
-            style={styles.closeButton}
-          >
-            <ThemedText type="default" themeColor="textSecondary">
-              {t('auth.close')}
-            </ThemedText>
-          </Pressable>
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => closeWith(false)}
+              style={styles.closeButton}
+            >
+              <ThemedText type="default" themeColor="textSecondary">
+                {t('auth.close')}
+              </ThemedText>
+            </Pressable>
+          </ScrollView>
         </ThemedView>
       </KeyboardAvoidingView>
     </Modal>
   );
 }
 
-/** 認証エラーをモードに応じたユーザー向けメッセージへ変換する。 */
+/**
+ * 認証エラーをモードに応じたユーザー向けメッセージへ変換する。
+ * エラー内容の解釈（種別分類）は application 層に委ね、UI は種別 → 文言の対応のみ持つ。
+ */
 function resolveErrorMessage({
   mode,
   signInError,
@@ -292,26 +313,23 @@ function resolveErrorMessage({
   }
 
   if (mode === 'signIn' && signInError) {
-    if (
-      signInError instanceof AuthApiError &&
-      (signInError.status === 400 || signInError.status === 401)
-    ) {
-      // backend は GoTrue のエラー JSON を message にそのまま載せるため、
-      // メール未確認（email_not_confirmed）はここで判別する。
-      if (signInError.message.includes('email_not_confirmed')) {
+    switch (resolveEmailSignInErrorKind(signInError)) {
+      case 'emailNotConfirmed':
         return t('auth.emailNotConfirmed');
-      }
-      return t('auth.invalidCredentials');
+      case 'invalidCredentials':
+        return t('auth.invalidCredentials');
+      case 'unknown':
+        return t('settings.signInError');
     }
-    return t('settings.signInError');
   }
 
   if (mode === 'signUp' && signUpError) {
-    // Supabase 内蔵メールの送信レート制限（429 over_email_send_rate_limit）。
-    if (signUpError instanceof AuthApiError && signUpError.status === 429) {
-      return t('auth.emailRateLimited');
+    switch (resolveEmailSignUpErrorKind(signUpError)) {
+      case 'emailRateLimited':
+        return t('auth.emailRateLimited');
+      case 'unknown':
+        return t('auth.signUpError');
     }
-    return t('auth.signUpError');
   }
 
   return null;
@@ -328,7 +346,10 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     maxWidth: 360,
+    maxHeight: '85%',
     borderRadius: Spacing.three,
+  },
+  cardContent: {
     padding: Spacing.four,
     gap: Spacing.three,
   },

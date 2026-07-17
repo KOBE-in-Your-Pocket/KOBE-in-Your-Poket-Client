@@ -1,11 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
 
+import { AuthApiError } from '../domain/auth-api-error';
 import type { AuthSession, EmailSignUpResult } from '../domain/auth-session';
 import type { AuthGateway, SessionStore } from '../domain/auth-ports';
-import { useAuthStore } from '../store/use-auth-store';
 import { defaultAuthGateway, defaultSessionStore } from './auth-deps';
 import {
   bumpSessionGeneration,
+  commitSession,
   getSessionGeneration,
   isSessionGenerationCurrent,
 } from './session-operation';
@@ -31,26 +32,35 @@ export type EmailSignUpInput = {
   name: string;
 };
 
+/** メールサインイン失敗の種別（UI 表示用の安定した分類）。 */
+export type EmailSignInErrorKind = 'invalidCredentials' | 'emailNotConfirmed' | 'unknown';
+
+/** メール新規登録失敗の種別（UI 表示用の安定した分類）。 */
+export type EmailSignUpErrorKind = 'emailRateLimited' | 'unknown';
+
 /**
- * backend 発行のセッションを永続化してストアへ反映する。
- * 進行中に別のセッション操作が始まった場合（世代が進んだ場合）は null を返して何もしない。
+ * サインイン失敗のエラーを UI 表示用の種別へ変換する。
+ * HTTP ステータスや GoTrue のエラー内容の解釈は application 層に閉じる。
  */
-async function commitSession(
-  session: AuthSession,
-  generation: number,
-  sessionStore: SessionStore,
-): Promise<AuthSession | null> {
-  if (!isSessionGenerationCurrent(generation)) {
-    return null;
+export function resolveEmailSignInErrorKind(error: unknown): EmailSignInErrorKind {
+  if (!(error instanceof AuthApiError)) {
+    return 'unknown';
+  }
+  if (error.status !== 400 && error.status !== 401) {
+    return 'unknown';
   }
 
-  await sessionStore.savePersistedSession(session);
-  if (!isSessionGenerationCurrent(generation)) {
-    return null;
-  }
+  // backend は GoTrue のエラー JSON を message にそのまま載せるため、ここで判別する。
+  return error.message.includes('email_not_confirmed') ? 'emailNotConfirmed' : 'invalidCredentials';
+}
 
-  useAuthStore.getState().setSession(session);
-  return session;
+/** 新規登録失敗のエラーを UI 表示用の種別へ変換する。 */
+export function resolveEmailSignUpErrorKind(error: unknown): EmailSignUpErrorKind {
+  // Supabase 内蔵メールの送信レート制限（429 over_email_send_rate_limit）。
+  if (error instanceof AuthApiError && error.status === 429) {
+    return 'emailRateLimited';
+  }
+  return 'unknown';
 }
 
 /** メールアドレスとパスワードでサインインし、永続化・ストア更新まで行う。 */
@@ -80,6 +90,9 @@ export async function performEmailSignUp(
   const generation = getSessionGeneration();
 
   const result = await deps.authGateway.signUpWithEmail(input);
+  if (!isSessionGenerationCurrent(generation)) {
+    return null;
+  }
   if (result.status === 'confirmationRequired') {
     return result;
   }
