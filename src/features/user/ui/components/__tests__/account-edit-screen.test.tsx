@@ -61,15 +61,19 @@ describe('AccountEditScreen', () => {
     expect(screen.getByDisplayValue('Google 太郎')).toBeTruthy();
   });
 
-  it('表示名が空のときはバリデーションのヒントを表示する', () => {
+  it('表示名が空のときは保存ボタンが無効になり、有効な表示名で再度有効になる', () => {
     render(<AccountEditScreen />);
+    const nameInput = () =>
+      screen.getByPlaceholderText('settings.accountEdit.displayNamePlaceholder');
+    const saveButton = () => screen.getByRole('button', { name: 'settings.accountEdit.save' });
 
-    fireEvent.changeText(
-      screen.getByPlaceholderText('settings.accountEdit.displayNamePlaceholder'),
-      '   ',
-    );
-
+    fireEvent.changeText(nameInput(), '   ');
+    expect(saveButton()).toBeDisabled();
     expect(screen.getByText('settings.accountEdit.nameInvalid')).toBeTruthy();
+
+    fireEvent.changeText(nameInput(), '新しい名前');
+    expect(saveButton()).toBeEnabled();
+    expect(screen.queryByText('settings.accountEdit.nameInvalid')).toBeNull();
   });
 
   it('アイコンをタップするとモック写真ライブラリが開き、写真を選ぶと閉じる', () => {
