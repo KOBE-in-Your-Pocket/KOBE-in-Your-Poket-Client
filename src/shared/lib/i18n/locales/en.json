@@ -42,7 +42,21 @@
     "account": "Account",
     "signInWithGoogle": "Sign in with Google",
     "signOut": "Sign out",
-    "signInError": "Sign-in failed. Please try again later."
+    "signInError": "Sign-in failed. Please try again later.",
+    "accountEdit": {
+      "title": "Edit Account",
+      "back": "Back",
+      "save": "Save",
+      "displayName": "Display name",
+      "displayNamePlaceholder": "Enter display name",
+      "nameInvalid": "Display name must be 1–{{max}} characters",
+      "changeIcon": "Change icon",
+      "iconLibraryTitle": "Choose a Photo",
+      "iconLibraryDescription": "Pick a photo to use as your icon (mock photos)",
+      "iconLibraryPhoto": "Mock photo",
+      "iconLibraryClose": "Close",
+      "notSignedIn": "Sign in to edit your account."
+    }
   },
   "tourism": {
     "spotList": {

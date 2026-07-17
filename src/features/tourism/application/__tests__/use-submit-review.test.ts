@@ -18,6 +18,11 @@ jest.mock('@/shared/ui', () => ({
   ThemedView: () => null,
 }));
 
+// 同じく公開 API が AccountEditScreen 経由で expo-router を巻き込むためスタブする。
+jest.mock('expo-router', () => ({
+  router: { back: jest.fn(), push: jest.fn() },
+}));
+
 describe('useSubmitReview', () => {
   beforeEach(() => {
     useReviewStore.setState({ submittedReviews: {} });
