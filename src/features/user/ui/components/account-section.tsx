@@ -1,4 +1,6 @@
 import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import { router } from 'expo-router';
+import { SymbolView } from 'expo-symbols';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -9,10 +11,12 @@ import { ThemedText } from '@/shared/ui';
 import { useGoogleSignIn } from '../../application/use-google-sign-in';
 import { useSignOut } from '../../application/use-sign-out';
 import { useCurrentUser } from '../../application/use-current-user';
+import { UserAvatar } from './user-avatar';
 
 /**
  * 設定画面のアカウント欄。
- * 未ログイン時は公式 Google サインインボタン、ログイン中はユーザー名とログアウトボタンを表示する。
+ * 未ログイン時は公式 Google サインインボタンを表示する。
+ * ログイン中はアカウント行（タップでアカウント編集画面へ遷移）とログアウトボタンを表示する。
  */
 export function AccountSection() {
   const { t } = useTranslation();
@@ -28,9 +32,24 @@ export function AccountSection() {
       </ThemedText>
       {currentUser ? (
         <View style={styles.list}>
-          <View style={[styles.row, { backgroundColor: theme.backgroundElement }]}>
-            <ThemedText type="default">{currentUser.name}</ThemedText>
-          </View>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('settings.editAccount')}
+            onPress={() => router.push('/settings/account-edit')}
+            style={[styles.row, { backgroundColor: theme.backgroundElement }]}
+          >
+            <View style={styles.userInfo}>
+              <UserAvatar iconUrl={currentUser.iconUrl} size={32} />
+              <ThemedText type="default" numberOfLines={1} style={styles.userName}>
+                {currentUser.name}
+              </ThemedText>
+            </View>
+            <SymbolView
+              name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
+              tintColor={theme.textSecondary}
+              size={16}
+            />
+          </Pressable>
           <Pressable
             accessibilityRole="button"
             disabled={signOut.isPending}
@@ -77,6 +96,16 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.three,
     paddingHorizontal: Spacing.three,
     borderRadius: Spacing.two,
+  },
+  userInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+    marginRight: Spacing.two,
+  },
+  userName: {
+    flexShrink: 1,
   },
   googleButton: {
     width: '100%',

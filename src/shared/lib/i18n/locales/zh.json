@@ -43,6 +43,7 @@
     "signInWithGoogle": "使用 Google 登录",
     "signOut": "退出登录",
     "signInError": "登录失败，请稍后重试。",
+    "editAccount": "编辑账户",
     "accountEdit": {
       "title": "编辑账户",
       "back": "返回",

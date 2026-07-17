@@ -43,6 +43,7 @@
     "signInWithGoogle": "Sign in with Google",
     "signOut": "Sign out",
     "signInError": "Sign-in failed. Please try again later.",
+    "editAccount": "Edit account",
     "accountEdit": {
       "title": "Edit Account",
       "back": "Back",
