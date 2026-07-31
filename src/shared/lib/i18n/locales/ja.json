@@ -42,7 +42,21 @@
     "account": "アカウント",
     "signInWithGoogle": "Google でサインイン",
     "signOut": "ログアウト",
-    "signInError": "サインインに失敗しました。時間をおいて再度お試しください。"
+    "signInError": "サインインに失敗しました。時間をおいて再度お試しください。",
+    "accountEdit": {
+      "title": "アカウント編集",
+      "back": "戻る",
+      "save": "保存",
+      "displayName": "表示名",
+      "displayNamePlaceholder": "表示名を入力",
+      "nameInvalid": "表示名は1〜{{max}}文字で入力してください",
+      "changeIcon": "アイコンを変更",
+      "iconLibraryTitle": "写真を選択",
+      "iconLibraryDescription": "アイコンに使う写真を選んでください（モック写真）",
+      "iconLibraryPhoto": "モック写真",
+      "iconLibraryClose": "閉じる",
+      "notSignedIn": "アカウントを編集するにはログインが必要です。"
+    }
   },
   "tourism": {
     "spotList": {
