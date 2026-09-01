@@ -40,6 +40,7 @@
   "settings": {
     "language": "语言",
     "account": "账户",
+    "signIn": "登录 / 注册",
     "signInWithGoogle": "使用 Google 登录",
     "signOut": "退出登录",
     "signInError": "登录失败，请稍后重试。",
@@ -57,6 +58,23 @@
       "iconLibraryClose": "关闭",
       "notSignedIn": "编辑账户前请先登录。"
     }
+  },
+  "auth": {
+    "title": "账户",
+    "or": "或",
+    "signInTab": "登录",
+    "signUpTab": "注册",
+    "namePlaceholder": "昵称",
+    "emailPlaceholder": "电子邮箱",
+    "passwordPlaceholder": "密码（至少 6 位）",
+    "submitSignIn": "登录",
+    "submitSignUp": "注册",
+    "close": "关闭",
+    "invalidCredentials": "电子邮箱或密码不正确。",
+    "signUpError": "注册失败，请检查输入内容后重试。",
+    "confirmationEmailSent": "确认邮件已发送。请通过邮件中的链接完成验证后再登录。",
+    "emailNotConfirmed": "邮箱尚未完成验证。请打开确认邮件中的链接。",
+    "emailRateLimited": "确认邮件发送次数已达上限。请稍等片刻后重试。"
   },
   "tourism": {
     "spotList": {

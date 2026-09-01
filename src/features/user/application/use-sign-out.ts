@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import type { AuthGateway, SessionStore } from '../domain/auth-ports';
 import { useAuthStore } from '../store/use-auth-store';
 import { defaultAuthGateway, defaultSessionStore } from './auth-deps';
-import { bumpSessionGeneration } from './session-operation';
+import { bumpSessionGeneration, enqueueSessionWrite } from './session-operation';
 
 type SignOutDeps = {
   authGateway: AuthGateway;
@@ -41,7 +41,8 @@ export async function performSignOut(
   }
 
   try {
-    await deps.sessionStore.clearPersistedSession();
+    // 進行中のサインイン書き込みと交錯して古いセッションが残らないよう直列化する。
+    await enqueueSessionWrite(() => deps.sessionStore.clearPersistedSession());
   } finally {
     useAuthStore.getState().logout();
   }

@@ -5,13 +5,8 @@ import { Platform } from 'react-native';
 
 import type { AuthSession } from '../domain/auth-session';
 import type { AuthGateway, SessionStore } from '../domain/auth-ports';
-import { useAuthStore } from '../store/use-auth-store';
 import { defaultAuthGateway, defaultSessionStore } from './auth-deps';
-import {
-  bumpSessionGeneration,
-  getSessionGeneration,
-  isSessionGenerationCurrent,
-} from './session-operation';
+import { bumpSessionGeneration, commitSession, getSessionGeneration } from './session-operation';
 
 let googleSignInConfigured = false;
 
@@ -89,17 +84,7 @@ export async function performGoogleSignIn(
   }
 
   const session = await deps.authGateway.signInWithGoogle(idToken);
-  if (!isSessionGenerationCurrent(generation)) {
-    return null;
-  }
-
-  await deps.sessionStore.savePersistedSession(session);
-  if (!isSessionGenerationCurrent(generation)) {
-    return null;
-  }
-
-  useAuthStore.getState().setSession(session);
-  return session;
+  return commitSession(session, generation, deps.sessionStore);
 }
 
 /** Google サインインを実行する mutation。キャンセル時は null で成功扱いになる。 */

@@ -1,4 +1,11 @@
-import { AuthApiError, logoutAuthSession, refreshAuthSession, signInWithGoogle } from '../auth-api';
+import {
+  AuthApiError,
+  logoutAuthSession,
+  refreshAuthSession,
+  signInWithEmail,
+  signInWithGoogle,
+  signUpWithEmail,
+} from '../auth-api';
 
 const BASE_URL = 'https://api.example.com';
 
@@ -95,6 +102,109 @@ describe('auth-api', () => {
         status: 502,
         message: '認証 API のレスポンスを解析できませんでした',
       });
+    });
+  });
+
+  describe('signUpWithEmail', () => {
+    it('email / password / name を /api/v1/auth/signup に POST し、セッションを返す', async () => {
+      const fetchMock = mockFetchResponse(201, SESSION_BODY);
+      global.fetch = fetchMock;
+
+      const result = await signUpWithEmail(
+        { email: 'taro@example.com', password: 'password123', name: 'メール 太郎' },
+        { baseUrl: BASE_URL },
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}/api/v1/auth/signup`,
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({
+            email: 'taro@example.com',
+            password: 'password123',
+            name: 'メール 太郎',
+          }),
+        }),
+      );
+      expect(result.status).toBe('session');
+      if (result.status === 'session') {
+        expect(result.session.accessToken).toBe('access-token');
+      }
+    });
+
+    it('メール確認が有効でトークンが null の場合は confirmationRequired を返す', async () => {
+      global.fetch = mockFetchResponse(201, {
+        accessToken: null,
+        refreshToken: null,
+        expiresIn: null,
+        tokenType: null,
+        user: { id: 'user-1', name: 'メール 太郎', iconUrl: null },
+      });
+
+      const result = await signUpWithEmail(
+        { email: 'taro@example.com', password: 'password123', name: 'メール 太郎' },
+        { baseUrl: BASE_URL },
+      );
+
+      expect(result).toEqual({ status: 'confirmationRequired' });
+    });
+
+    it('バリデーションエラー時は AuthApiError を投げる', async () => {
+      global.fetch = mockFetchResponse(400, {
+        status: 400,
+        error: 'Bad Request',
+        message: 'password は 6 文字以上にしてください',
+        violations: [],
+      });
+
+      await expect(
+        signUpWithEmail(
+          { email: 'taro@example.com', password: 'short', name: 'メール 太郎' },
+          { baseUrl: BASE_URL },
+        ),
+      ).rejects.toMatchObject({
+        name: 'AuthApiError',
+        status: 400,
+        message: 'password は 6 文字以上にしてください',
+      });
+    });
+  });
+
+  describe('signInWithEmail', () => {
+    it('email / password を /api/v1/auth/login に POST し、セッションを返す', async () => {
+      const fetchMock = mockFetchResponse(200, SESSION_BODY);
+      global.fetch = fetchMock;
+
+      const session = await signInWithEmail(
+        { email: 'taro@example.com', password: 'password123' },
+        { baseUrl: BASE_URL },
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}/api/v1/auth/login`,
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ email: 'taro@example.com', password: 'password123' }),
+        }),
+      );
+      expect(session.refreshToken).toBe('refresh-token');
+    });
+
+    it('認証情報が誤っている場合は AuthApiError を投げる', async () => {
+      global.fetch = mockFetchResponse(400, {
+        status: 400,
+        error: 'Bad Request',
+        message: 'Invalid login credentials',
+        violations: [],
+      });
+
+      const promise = signInWithEmail(
+        { email: 'taro@example.com', password: 'wrong-password' },
+        { baseUrl: BASE_URL },
+      );
+
+      await expect(promise).rejects.toBeInstanceOf(AuthApiError);
+      await expect(promise).rejects.toMatchObject({ status: 400 });
     });
   });
 
