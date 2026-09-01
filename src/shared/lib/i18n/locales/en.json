@@ -40,6 +40,7 @@
   "settings": {
     "language": "Language",
     "account": "Account",
+    "signIn": "Log in / Sign up",
     "signInWithGoogle": "Sign in with Google",
     "signOut": "Sign out",
     "signInError": "Sign-in failed. Please try again later.",
@@ -57,6 +58,23 @@
       "iconLibraryClose": "Close",
       "notSignedIn": "Sign in to edit your account."
     }
+  },
+  "auth": {
+    "title": "Account",
+    "or": "or",
+    "signInTab": "Log in",
+    "signUpTab": "Sign up",
+    "namePlaceholder": "Display name",
+    "emailPlaceholder": "Email address",
+    "passwordPlaceholder": "Password (6+ characters)",
+    "submitSignIn": "Log in",
+    "submitSignUp": "Create account",
+    "close": "Close",
+    "invalidCredentials": "Incorrect email address or password.",
+    "signUpError": "Sign-up failed. Please check your input and try again.",
+    "confirmationEmailSent": "A confirmation email has been sent. Open the link in the email to verify, then log in.",
+    "emailNotConfirmed": "Your email address is not confirmed yet. Please open the link in the confirmation email.",
+    "emailRateLimited": "The confirmation email limit has been reached. Please wait a while and try again."
   },
   "tourism": {
     "spotList": {

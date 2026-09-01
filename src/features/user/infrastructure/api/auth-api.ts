@@ -1,7 +1,7 @@
 import { getApiBaseUrl } from '@/shared/config';
 
 import { AuthApiError } from '../../domain/auth-api-error';
-import type { AuthSession } from '../../domain/auth-session';
+import type { AuthSession, EmailSignUpResult } from '../../domain/auth-session';
 
 /** backend 全 API 共通のエラーレスポンス形式（400 系）。 */
 type ApiErrorBody = {
@@ -13,7 +13,7 @@ type ApiErrorBody = {
 
 export { AuthApiError };
 
-/** /auth/google と /auth/refresh が返すセッションレスポンス。 */
+/** /auth/signup, /auth/login, /auth/google, /auth/refresh が返すセッションレスポンス。 */
 type SessionResponseBody = {
   accessToken: string;
   refreshToken: string;
@@ -158,6 +158,49 @@ export async function signInWithGoogle(
 ): Promise<AuthSession> {
   const response = await postJson(`${resolveBaseUrl(options.baseUrl)}/api/v1/auth/google`, {
     body: { idToken },
+    signal: options.signal,
+  });
+
+  return parseSessionResponse(response);
+}
+
+/**
+ * メールアドレスとパスワードで新規登録する（POST /auth/signup、201 を返す）。
+ * password は backend 側で 6〜128 文字のバリデーションがかかる。
+ *
+ * backend 側でメール確認が有効な場合、登録成功でもトークンが null で返るため、
+ * その場合はセッションではなく confirmationRequired を返す。
+ */
+export async function signUpWithEmail(
+  params: { email: string; password: string; name: string },
+  options: AuthApiOptions = {},
+): Promise<EmailSignUpResult> {
+  const response = await postJson(`${resolveBaseUrl(options.baseUrl)}/api/v1/auth/signup`, {
+    body: params,
+    signal: options.signal,
+  });
+
+  let json: unknown;
+  try {
+    json = await response.json();
+  } catch {
+    throw new AuthApiError(502, '認証 API のレスポンスを解析できませんでした');
+  }
+
+  if (json && typeof json === 'object' && (json as Record<string, unknown>).accessToken == null) {
+    return { status: 'confirmationRequired' };
+  }
+
+  return { status: 'session', session: toAuthSession(parseSessionResponseBody(json)) };
+}
+
+/** メールアドレスとパスワードでサインインする（POST /auth/login）。 */
+export async function signInWithEmail(
+  params: { email: string; password: string },
+  options: AuthApiOptions = {},
+): Promise<AuthSession> {
+  const response = await postJson(`${resolveBaseUrl(options.baseUrl)}/api/v1/auth/login`, {
+    body: params,
     signal: options.signal,
   });
 

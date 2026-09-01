@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
 import { resolveLanguage } from '@/shared/lib/i18n';
 
-import { fetchSpots } from '../infrastructure/api/mock-spots';
+import { fetchSpotById } from '../infrastructure/api/spot-api';
 
 import { SPOTS_QUERY_KEY } from './use-spots';
 
@@ -12,21 +12,25 @@ import type { Spot } from '../domain/spot';
 /**
  * 指定スポットの詳細を取得する application 層フック。
  *
- * 単一スポット取得用の API はまだ無いため、一覧取得（{@link fetchSpots}）の結果を
- * `useSpots` と同じクエリキーで共有しつつ `select` で 1 件に絞り込む。
- * これにより一覧を表示済みなら追加のネットワーク取得なしに詳細を引ける。
- * 単一取得 API が用意された際は queryFn だけ差し替えればよい。
+ * 詳細エンドポイント（{@link fetchSpotById}）を `spotId` 込みのキーで呼ぶため、
+ * 一覧に含まれないスポットでもディープリンクから開ける。
+ * {@link useSpots} の一覧キャッシュに該当スポットがあれば placeholder として
+ * 即座に描画し、裏で詳細を取得して差し替える。
  *
- * `spotId` が未指定のときは取得しない。一致するスポットが無ければ `data` は `undefined`。
+ * `spotId` が未指定のときは取得しない。該当スポットが無ければ（404）`data` は `null`。
  */
 export function useSpotDetail(spotId: string | null | undefined) {
   const { i18n } = useTranslation();
   const language = resolveLanguage(i18n.language);
+  const queryClient = useQueryClient();
 
-  return useQuery<Spot[], Error, Spot | undefined>({
-    queryKey: [...SPOTS_QUERY_KEY, language],
+  return useQuery<Spot | null>({
+    queryKey: [...SPOTS_QUERY_KEY, 'detail', spotId, language],
     enabled: Boolean(spotId),
-    queryFn: () => fetchSpots(language),
-    select: (spots) => spots.find((spot) => spot.id === spotId),
+    queryFn: () => fetchSpotById(spotId as string, language),
+    placeholderData: () =>
+      queryClient
+        .getQueryData<Spot[]>([...SPOTS_QUERY_KEY, language])
+        ?.find((spot) => spot.id === spotId),
   });
 }

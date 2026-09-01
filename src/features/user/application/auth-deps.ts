@@ -2,7 +2,9 @@ import type { AuthGateway, SessionStore } from '../domain/auth-ports';
 import {
   logoutAuthSession,
   refreshAuthSession,
+  signInWithEmail,
   signInWithGoogle,
+  signUpWithEmail,
 } from '../infrastructure/api/auth-api';
 import {
   clearPersistedSession,
@@ -13,6 +15,8 @@ import {
 /** 本番用の認証 API ゲートウェイ。 */
 export const defaultAuthGateway: AuthGateway = {
   signInWithGoogle,
+  signUpWithEmail,
+  signInWithEmail,
   refreshAuthSession,
   logoutAuthSession,
 };
