@@ -31,6 +31,11 @@ jest.mock('@/shared/ui', () => ({
 jest.mock('expo-image', () => ({ Image: () => null }));
 jest.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
+// user の公開 API が AccountEditScreen 経由で expo-router を巻き込むためスタブする。
+jest.mock('expo-router', () => ({
+  router: { back: jest.fn(), push: jest.fn() },
+}));
+
 const USER = { id: 'user-arakawa', name: '荒川蓮', iconUrl: 'https://i.pravatar.cc/150?img=68' };
 const OTHER_USER = {
   id: 'user-yamada',
