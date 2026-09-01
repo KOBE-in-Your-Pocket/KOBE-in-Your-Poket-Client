@@ -8,28 +8,33 @@ export const styles = StyleSheet.create({
   tabButton: {
     flex: 1,
     alignItems: 'center',
+    // 長い英語ラベルでも均等幅の flex 子が縮められるようにする。
+    minWidth: 0,
   },
   tabButtonInner: {
     alignItems: 'center',
     justifyContent: 'center',
     gap: Spacing.one,
     paddingVertical: Spacing.one,
-    paddingHorizontal: Spacing.two,
+    paddingHorizontal: Spacing.one,
     borderRadius: Spacing.two,
     borderWidth: 1,
     borderColor: 'transparent',
-    minWidth: 64,
+    width: '100%',
+    maxWidth: '100%',
   },
   tabButtonInnerFocused: {
     borderColor: TAB_BAR_COLORS.activeBorder,
   },
   tabLabel: {
     fontSize: 11,
+    lineHeight: 14,
     fontWeight: '600',
+    textAlign: 'center',
+    width: '100%',
   },
-  // 現在タブのラベルを太字＋やや大きめで強調する（色・枠線に加えて文字でも現在地を示す）。
+  // フォントサイズは変えず太字だけで強調し、言語・フォーカス切替でレイアウトが動かないようにする。
   tabLabelFocused: {
-    fontSize: 13,
     fontWeight: '800',
   },
   pressed: {
