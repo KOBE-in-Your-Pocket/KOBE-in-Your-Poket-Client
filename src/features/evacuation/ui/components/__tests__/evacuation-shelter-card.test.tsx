@@ -109,6 +109,20 @@ describe('EvacuationShelterCard', () => {
     });
   });
 
+  describe('収容人数表示', () => {
+    it('capacity が無い避難所は収容人数の行を表示しない', () => {
+      renderCard({ shelter: { ...shelter, capacity: undefined } });
+
+      expect(screen.queryByText('evacuation.list.capacity')).toBeNull();
+    });
+
+    it('capacity がある避難所は収容人数を表示する', () => {
+      renderCard();
+
+      expect(screen.getByText('evacuation.list.capacity')).toBeTruthy();
+    });
+  });
+
   describe('経路ボタン', () => {
     it('押すと現在地を起点に confirmOpenDirections を呼ぶ', () => {
       renderCard();
