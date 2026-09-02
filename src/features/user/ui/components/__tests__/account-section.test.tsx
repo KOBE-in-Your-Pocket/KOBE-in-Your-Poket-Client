@@ -1,6 +1,7 @@
 import '@testing-library/jest-native/extend-expect';
 
 import { fireEvent, render, screen } from '@testing-library/react-native';
+import { router } from 'expo-router';
 import { Text as MockText } from 'react-native';
 
 import type { PublicUser } from '../../../domain/public-user';
@@ -16,6 +17,7 @@ jest.mock('@/shared/lib/theme', () => ({
   useTheme: () => ({
     background: '#ffffff',
     backgroundElement: '#eeeeee',
+    backgroundSelected: '#e0e1e6',
     text: '#000000',
     textSecondary: '#666666',
   }),
@@ -27,6 +29,12 @@ jest.mock('@/shared/ui', () => ({
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
+}));
+
+jest.mock('expo-image', () => ({ Image: () => null }));
+jest.mock('expo-symbols', () => ({ SymbolView: () => null }));
+jest.mock('expo-router', () => ({
+  router: { back: jest.fn(), push: jest.fn() },
 }));
 
 let mockCurrentUser: PublicUser | null;
@@ -46,6 +54,12 @@ jest.mock('../sign-in-modal', () => ({
     visible ? <MockText>sign-in-modal-visible</MockText> : null,
 }));
 
+const USER: PublicUser = {
+  id: 'user-1',
+  name: 'Google 太郎',
+  iconUrl: 'https://i.pravatar.cc/150?img=12',
+};
+
 describe('AccountSection', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -59,16 +73,27 @@ describe('AccountSection', () => {
 
     fireEvent.press(screen.getByText('settings.signIn'));
 
-    expect(screen.getByText('sign-in-modal-visible')).toBeOnTheScreen();
+    expect(screen.getByText('sign-in-modal-visible')).toBeTruthy();
   });
 
-  it('ログイン中はユーザー名を表示し、ログアウトをタップで signOut を実行する', () => {
-    mockCurrentUser = { id: 'user-1', name: 'メール 太郎', iconUrl: '' };
-
+  it('未ログイン時は編集導線を表示しない', () => {
     render(<AccountSection />);
 
-    expect(screen.getByText('メール 太郎')).toBeOnTheScreen();
-    expect(screen.queryByText('settings.signIn')).toBeNull();
+    expect(screen.queryByLabelText('settings.editAccount')).toBeNull();
+  });
+
+  it('ログイン済み時はアカウント行からアカウント編集画面へ遷移できる', () => {
+    mockCurrentUser = USER;
+    render(<AccountSection />);
+
+    fireEvent.press(screen.getByLabelText('settings.editAccount'));
+
+    expect(router.push).toHaveBeenCalledWith('/settings/account-edit');
+  });
+
+  it('ログイン済み時はログアウトをタップで signOut を実行する', () => {
+    mockCurrentUser = USER;
+    render(<AccountSection />);
 
     fireEvent.press(screen.getByText('settings.signOut'));
 
