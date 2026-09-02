@@ -10,6 +10,7 @@ import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
 import { useCurrentUser } from '../../application/use-current-user';
+import { useUpdateProfile } from '../../application/use-update-profile';
 import { isValidDisplayName, MAX_DISPLAY_NAME_LENGTH } from '../../domain/profile-edits';
 import { IconLibraryModal } from './icon-library-modal';
 import { UserAvatar } from './user-avatar';
@@ -103,6 +104,7 @@ function Header({
 function AccountEditForm({ currentUser }: { currentUser: PublicUser }) {
   const { t } = useTranslation();
   const theme = useTheme();
+  const updateProfile = useUpdateProfile();
 
   const [name, setName] = useState(currentUser.name);
   const [iconUrl, setIconUrl] = useState(currentUser.iconUrl);
@@ -111,12 +113,12 @@ function AccountEditForm({ currentUser }: { currentUser: PublicUser }) {
   const canSave = isValidDisplayName(name);
 
   function handleSave() {
-    // TODO(#404): 保存処理（アカウント編集内容の保存）を接続する。
+    updateProfile.mutate({ name, iconUrl }, { onSuccess: () => router.back() });
   }
 
   return (
     <>
-      <Header canSave={canSave} onSave={handleSave} />
+      <Header canSave={canSave} isSaving={updateProfile.isPending} onSave={handleSave} />
 
       <View style={styles.iconArea}>
         <Pressable
