@@ -1,4 +1,5 @@
 import type { AuthSession, EmailSignUpResult, PersistedSession } from './auth-session';
+import type { PublicUser } from './public-user';
 
 /** backend 認証 API へのアクセスを抽象化するポート。 */
 export type AuthGateway = {
@@ -18,4 +19,9 @@ export type SessionStore = {
   savePersistedSession(session: AuthSession): Promise<void>;
   loadPersistedSession(): Promise<PersistedSession | null>;
   clearPersistedSession(): Promise<void>;
+};
+
+/** 永続化済みセッションのユーザー情報のみを更新するポート（アカウント編集用）。 */
+export type PersistedUserStore = {
+  updatePersistedUser(user: PublicUser): Promise<void>;
 };

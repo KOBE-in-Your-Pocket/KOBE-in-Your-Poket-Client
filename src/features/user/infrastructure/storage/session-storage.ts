@@ -1,6 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 
 import type { AuthSession, PersistedSession } from '../../domain/auth-session';
+import type { PublicUser } from '../../domain/public-user';
 
 /**
  * セッションの永続化（expo-secure-store）。
@@ -37,6 +38,20 @@ export async function loadPersistedSession(): Promise<PersistedSession | null> {
   } catch {
     return null;
   }
+}
+
+/**
+ * 保存済みセッションのユーザー情報のみを差し替える。アカウント編集の保存時に呼ぶ。
+ * 未保存（モックログインなど）の場合は何もしない。
+ */
+export async function updatePersistedUser(user: PublicUser): Promise<void> {
+  const persisted = await loadPersistedSession();
+  if (persisted === null) {
+    return;
+  }
+
+  const updated: PersistedSession = { ...persisted, user };
+  await SecureStore.setItemAsync(SESSION_KEY, JSON.stringify(updated));
 }
 
 /** 保存済みセッションを削除する。ログアウト時・トークン失効時に呼ぶ。 */
