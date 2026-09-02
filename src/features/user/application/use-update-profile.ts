@@ -4,6 +4,7 @@ import type { PersistedUserStore } from '../domain/auth-ports';
 import { normalizeProfileEdits, type ProfileEdits } from '../domain/profile-edits';
 import { useAuthStore } from '../store/use-auth-store';
 import { defaultPersistedUserStore } from './auth-deps';
+import { enqueueSessionWrite } from './session-operation';
 
 type UpdateProfileDeps = {
   persistedUserStore: PersistedUserStore;
@@ -38,7 +39,9 @@ export async function performProfileUpdate(
   updateCurrentUser(updated);
 
   try {
-    await deps.persistedUserStore.updatePersistedUser(updated);
+    // 進行中のサインイン・復元・ログアウトの書き込みと交錯して古いセッションが
+    // 復活しないよう直列化する（session-operation.ts 参照）。
+    await enqueueSessionWrite(() => deps.persistedUserStore.updatePersistedUser(updated));
   } catch {
     // 永続化に失敗してもメモリ上の更新は維持する（次回起動時に反映されないだけ）。
   }
