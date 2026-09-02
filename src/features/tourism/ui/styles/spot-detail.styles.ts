@@ -143,11 +143,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.two,
   },
-  reviewAvatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-  },
   reviewAuthor: {
     flex: 1,
   },
