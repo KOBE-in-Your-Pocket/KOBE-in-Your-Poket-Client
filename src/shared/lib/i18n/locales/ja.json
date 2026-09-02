@@ -44,6 +44,7 @@
     "signInWithGoogle": "Google でサインイン",
     "signOut": "ログアウト",
     "signInError": "サインインに失敗しました。時間をおいて再度お試しください。",
+    "editAccount": "アカウントを編集",
     "accountEdit": {
       "title": "アカウント編集",
       "back": "戻る",
