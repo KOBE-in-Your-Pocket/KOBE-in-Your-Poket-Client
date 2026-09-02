@@ -90,4 +90,13 @@ describe('AccountSection', () => {
 
     expect(router.push).toHaveBeenCalledWith('/settings/account-edit');
   });
+
+  it('ログイン済み時はログアウトをタップで signOut を実行する', () => {
+    mockCurrentUser = USER;
+    render(<AccountSection />);
+
+    fireEvent.press(screen.getByText('settings.signOut'));
+
+    expect(mockSignOut.mutate).toHaveBeenCalled();
+  });
 });
