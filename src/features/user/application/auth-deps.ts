@@ -1,4 +1,4 @@
-import type { AuthGateway, SessionStore } from '../domain/auth-ports';
+import type { AuthGateway, PersistedUserStore, SessionStore } from '../domain/auth-ports';
 import {
   logoutAuthSession,
   refreshAuthSession,
@@ -10,6 +10,7 @@ import {
   clearPersistedSession,
   loadPersistedSession,
   savePersistedSession,
+  updatePersistedUser,
 } from '../infrastructure/storage/session-storage';
 
 /** 本番用の認証 API ゲートウェイ。 */
@@ -26,4 +27,9 @@ export const defaultSessionStore: SessionStore = {
   savePersistedSession,
   loadPersistedSession,
   clearPersistedSession,
+};
+
+/** 本番用の永続化ユーザー更新ストア。 */
+export const defaultPersistedUserStore: PersistedUserStore = {
+  updatePersistedUser,
 };

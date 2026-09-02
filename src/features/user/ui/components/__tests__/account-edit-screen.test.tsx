@@ -1,4 +1,6 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { router } from 'expo-router';
 import { Text as MockText, View as MockView } from 'react-native';
 
 import { useAuthStore } from '../../../store/use-auth-store';
@@ -38,6 +40,15 @@ jest.mock('expo-router', () => ({
 
 const USER = { id: 'user-1', name: 'Google 太郎', iconUrl: 'https://i.pravatar.cc/150?img=12' };
 
+function renderScreen() {
+  const client = new QueryClient({ defaultOptions: { mutations: { retry: false } } });
+  return render(
+    <QueryClientProvider client={client}>
+      <AccountEditScreen />
+    </QueryClientProvider>,
+  );
+}
+
 describe('AccountEditScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -50,19 +61,19 @@ describe('AccountEditScreen', () => {
 
   it('未ログイン時はログイン案内を表示する', () => {
     useAuthStore.getState().logout();
-    render(<AccountEditScreen />);
+    renderScreen();
 
     expect(screen.getByText('settings.accountEdit.notSignedIn')).toBeTruthy();
   });
 
   it('現在のアカウント情報（表示名）を初期表示する', () => {
-    render(<AccountEditScreen />);
+    renderScreen();
 
     expect(screen.getByDisplayValue('Google 太郎')).toBeTruthy();
   });
 
   it('表示名が空のときは保存ボタンが無効になり、有効な表示名で再度有効になる', () => {
-    render(<AccountEditScreen />);
+    renderScreen();
     const nameInput = () =>
       screen.getByPlaceholderText('settings.accountEdit.displayNamePlaceholder');
     const saveButton = () => screen.getByRole('button', { name: 'settings.accountEdit.save' });
@@ -77,7 +88,7 @@ describe('AccountEditScreen', () => {
   });
 
   it('アイコンをタップするとモック写真ライブラリが開き、写真を選ぶと閉じる', () => {
-    render(<AccountEditScreen />);
+    renderScreen();
 
     fireEvent.press(screen.getByLabelText('settings.accountEdit.changeIcon'));
     expect(screen.getByText('settings.accountEdit.iconLibraryTitle')).toBeTruthy();
@@ -85,5 +96,29 @@ describe('AccountEditScreen', () => {
     fireEvent.press(screen.getAllByLabelText('settings.accountEdit.iconLibraryPhoto')[0]);
 
     expect(screen.queryByText('settings.accountEdit.iconLibraryTitle')).toBeNull();
+  });
+
+  it('表示名を編集して保存するとストアへ反映され前の画面へ戻る', async () => {
+    renderScreen();
+
+    fireEvent.changeText(
+      screen.getByPlaceholderText('settings.accountEdit.displayNamePlaceholder'),
+      '新しい名前',
+    );
+    fireEvent.press(screen.getByRole('button', { name: 'settings.accountEdit.save' }));
+
+    await waitFor(() => expect(router.back).toHaveBeenCalled());
+    expect(useAuthStore.getState().currentUser?.name).toBe('新しい名前');
+  });
+
+  it('アイコンを選んで保存すると選んだ写真が反映される', async () => {
+    renderScreen();
+
+    fireEvent.press(screen.getByLabelText('settings.accountEdit.changeIcon'));
+    fireEvent.press(screen.getAllByLabelText('settings.accountEdit.iconLibraryPhoto')[0]);
+    fireEvent.press(screen.getByRole('button', { name: 'settings.accountEdit.save' }));
+
+    await waitFor(() => expect(router.back).toHaveBeenCalled());
+    expect(useAuthStore.getState().currentUser?.iconUrl).not.toBe(USER.iconUrl);
   });
 });
