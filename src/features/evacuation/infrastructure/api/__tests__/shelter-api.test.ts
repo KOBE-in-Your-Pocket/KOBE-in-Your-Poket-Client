@@ -41,13 +41,13 @@ describe('fetchEvacuationShelters', () => {
     }
   });
 
-  it('GET /api/v1/evacuation/shelters を呼ぶ', async () => {
+  it('GET /api/v1/evacuation/shelters を lang クエリ付きで呼ぶ', async () => {
     mockFetch.mockResolvedValue(jsonResponse(200, { data: [shelterFixture], meta: {} }));
 
-    await fetchEvacuationShelters();
+    await fetchEvacuationShelters('ja');
 
     expect(mockFetch).toHaveBeenCalledWith(
-      'http://10.0.2.2:9090/api/v1/evacuation/shelters',
+      'http://10.0.2.2:9090/api/v1/evacuation/shelters?lang=ja',
       expect.objectContaining({ method: 'GET' }),
     );
   });
@@ -57,7 +57,7 @@ describe('fetchEvacuationShelters', () => {
       jsonResponse(200, { data: [shelterFixture], meta: { updatedAt: '2025-04-02' } }),
     );
 
-    await expect(fetchEvacuationShelters()).resolves.toEqual([shelterFixture]);
+    await expect(fetchEvacuationShelters('ja')).resolves.toEqual([shelterFixture]);
   });
 
   it('非 2xx レスポンスは ApiError として伝播する', async () => {
@@ -65,6 +65,6 @@ describe('fetchEvacuationShelters', () => {
       jsonResponse(500, { status: 500, error: 'INTERNAL', message: '内部エラー' }),
     );
 
-    await expect(fetchEvacuationShelters()).rejects.toBeInstanceOf(ApiError);
+    await expect(fetchEvacuationShelters('ja')).rejects.toBeInstanceOf(ApiError);
   });
 });
