@@ -1,31 +1,34 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import '@testing-library/jest-native/extend-expect';
+
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
-import { Text as MockText, View as MockView } from 'react-native';
+import { Text as MockText } from 'react-native';
 
-import { useAuthStore } from '../../../store/use-auth-store';
+import type { PublicUser } from '../../../domain/public-user';
 import { AccountSection } from '../account-section';
 
 import type { ReactNode } from 'react';
 
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+jest.mock('@/shared/config', () => ({
+  Spacing: { half: 2, one: 4, two: 8, three: 16, four: 24, five: 32, six: 64 },
 }));
 
 jest.mock('@/shared/lib/theme', () => ({
   useTheme: () => ({
-    background: '#FFFFFF',
+    background: '#ffffff',
+    backgroundElement: '#eeeeee',
+    backgroundSelected: '#e0e1e6',
     text: '#000000',
-    textSecondary: '#60646C',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
+    textSecondary: '#666666',
   }),
 }));
 
-// shared/ui バレルは Reanimated / react-native-maps などネイティブ UI を含むため軽量スタブへ差し替える。
 jest.mock('@/shared/ui', () => ({
   ThemedText: ({ children }: { children?: ReactNode }) => <MockText>{children}</MockText>,
-  ThemedView: ({ children }: { children?: ReactNode }) => <MockView>{children}</MockView>,
+}));
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
 }));
 
 jest.mock('expo-image', () => ({ Image: () => null }));
@@ -34,35 +37,57 @@ jest.mock('expo-router', () => ({
   router: { back: jest.fn(), push: jest.fn() },
 }));
 
-const USER = { id: 'user-1', name: 'Google 太郎', iconUrl: 'https://i.pravatar.cc/150?img=12' };
+let mockCurrentUser: PublicUser | null;
+const mockSignOut = { mutate: jest.fn(), isPending: false };
 
-function renderSection() {
-  const client = new QueryClient({ defaultOptions: { mutations: { retry: false } } });
-  return render(
-    <QueryClientProvider client={client}>
-      <AccountSection />
-    </QueryClientProvider>,
-  );
-}
+jest.mock('../../../application/use-current-user', () => ({
+  useCurrentUser: () => mockCurrentUser,
+}));
+
+jest.mock('../../../application/use-sign-out', () => ({
+  useSignOut: () => mockSignOut,
+}));
+
+// SignInModal は重い依存（Google ボタン・認証フック）を含むため表示状態だけ検証する。
+jest.mock('../sign-in-modal', () => ({
+  SignInModal: ({ visible }: { visible: boolean }) =>
+    visible ? <MockText>sign-in-modal-visible</MockText> : null,
+}));
+
+const USER: PublicUser = {
+  id: 'user-1',
+  name: 'Google 太郎',
+  iconUrl: 'https://i.pravatar.cc/150?img=12',
+};
 
 describe('AccountSection', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    useAuthStore.getState().logout();
+    mockCurrentUser = null;
+  });
+
+  it('未ログイン時は「ログイン / 新規登録」行を表示し、タップでモーダルを開く', () => {
+    render(<AccountSection />);
+
+    expect(screen.queryByText('sign-in-modal-visible')).toBeNull();
+
+    fireEvent.press(screen.getByText('settings.signIn'));
+
+    expect(screen.getByText('sign-in-modal-visible')).toBeTruthy();
+  });
+
+  it('未ログイン時は編集導線を表示しない', () => {
+    render(<AccountSection />);
+
+    expect(screen.queryByLabelText('settings.editAccount')).toBeNull();
   });
 
   it('ログイン済み時はアカウント行からアカウント編集画面へ遷移できる', () => {
-    useAuthStore.getState().login(USER);
-    renderSection();
+    mockCurrentUser = USER;
+    render(<AccountSection />);
 
     fireEvent.press(screen.getByLabelText('settings.editAccount'));
 
     expect(router.push).toHaveBeenCalledWith('/settings/account-edit');
-  });
-
-  it('未ログイン時は編集導線を表示しない', () => {
-    renderSection();
-
-    expect(screen.queryByLabelText('settings.editAccount')).toBeNull();
   });
 });

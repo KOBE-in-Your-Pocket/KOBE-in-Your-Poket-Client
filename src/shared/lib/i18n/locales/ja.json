@@ -40,6 +40,7 @@
   "settings": {
     "language": "言語",
     "account": "アカウント",
+    "signIn": "ログイン / 新規登録",
     "signInWithGoogle": "Google でサインイン",
     "signOut": "ログアウト",
     "signInError": "サインインに失敗しました。時間をおいて再度お試しください。",
@@ -58,6 +59,23 @@
       "iconLibraryClose": "閉じる",
       "notSignedIn": "アカウントを編集するにはログインが必要です。"
     }
+  },
+  "auth": {
+    "title": "アカウント",
+    "or": "または",
+    "signInTab": "ログイン",
+    "signUpTab": "新規登録",
+    "namePlaceholder": "表示名",
+    "emailPlaceholder": "メールアドレス",
+    "passwordPlaceholder": "パスワード（6文字以上）",
+    "submitSignIn": "ログイン",
+    "submitSignUp": "登録する",
+    "close": "閉じる",
+    "invalidCredentials": "メールアドレスまたはパスワードが正しくありません。",
+    "signUpError": "登録に失敗しました。入力内容を確認して再度お試しください。",
+    "confirmationEmailSent": "確認メールを送信しました。メール内のリンクで認証を完了してから、ログインしてください。",
+    "emailNotConfirmed": "メールアドレスの確認が完了していません。届いている確認メールのリンクを開いてください。",
+    "emailRateLimited": "確認メールの送信回数が上限に達しました。しばらく時間をおいてから再度お試しください。"
   },
   "tourism": {
     "spotList": {

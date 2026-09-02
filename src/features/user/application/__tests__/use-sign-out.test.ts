@@ -25,6 +25,8 @@ describe('performSignOut', () => {
     await performSignOut({
       authGateway: {
         signInWithGoogle: jest.fn(),
+        signUpWithEmail: jest.fn(),
+        signInWithEmail: jest.fn(),
         refreshAuthSession: jest.fn(),
         logoutAuthSession,
       },
@@ -47,6 +49,8 @@ describe('performSignOut', () => {
     await performSignOut({
       authGateway: {
         signInWithGoogle: jest.fn(),
+        signUpWithEmail: jest.fn(),
+        signInWithEmail: jest.fn(),
         refreshAuthSession: jest.fn(),
         logoutAuthSession,
       },
@@ -66,6 +70,8 @@ describe('performSignOut', () => {
     await performSignOut({
       authGateway: {
         signInWithGoogle: jest.fn(),
+        signUpWithEmail: jest.fn(),
+        signInWithEmail: jest.fn(),
         refreshAuthSession: jest.fn(),
         logoutAuthSession,
       },
@@ -86,6 +92,8 @@ describe('performSignOut', () => {
       performSignOut({
         authGateway: {
           signInWithGoogle: jest.fn(),
+          signUpWithEmail: jest.fn(),
+          signInWithEmail: jest.fn(),
           refreshAuthSession: jest.fn(),
           logoutAuthSession,
         },

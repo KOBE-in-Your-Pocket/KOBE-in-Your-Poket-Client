@@ -22,3 +22,12 @@ export type PersistedSession = {
   refreshToken: string;
   user: PublicUser;
 };
+
+/**
+ * メール新規登録の結果。
+ * backend（Supabase）側でメール確認が有効な場合、登録は成功してもセッションは発行されず、
+ * ユーザーは確認メールのリンクを開いてからログインする必要がある。
+ */
+export type EmailSignUpResult =
+  | { status: 'session'; session: AuthSession }
+  | { status: 'confirmationRequired' };

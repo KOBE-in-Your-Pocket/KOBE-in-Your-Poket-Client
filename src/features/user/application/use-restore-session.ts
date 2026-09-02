@@ -2,9 +2,13 @@ import { useEffect } from 'react';
 
 import { AuthApiError } from '../domain/auth-api-error';
 import type { AuthGateway, SessionStore } from '../domain/auth-ports';
-import { useAuthStore } from '../store/use-auth-store';
 import { defaultAuthGateway, defaultSessionStore } from './auth-deps';
-import { getSessionGeneration, isSessionGenerationCurrent } from './session-operation';
+import {
+  commitSession,
+  enqueueSessionWrite,
+  getSessionGeneration,
+  isSessionGenerationCurrent,
+} from './session-operation';
 
 type RestoreSessionDeps = {
   authGateway: AuthGateway;
@@ -33,23 +37,18 @@ export async function restoreSession(
 
   try {
     const session = await deps.authGateway.refreshAuthSession(persisted.refreshToken);
-    if (!isSessionGenerationCurrent(generation)) {
-      return;
-    }
-
-    await deps.sessionStore.savePersistedSession(session);
-    if (!isSessionGenerationCurrent(generation)) {
-      return;
-    }
-
-    useAuthStore.getState().setSession(session);
+    await commitSession(session, generation, deps.sessionStore);
   } catch (error) {
     if (!isSessionGenerationCurrent(generation)) {
       return;
     }
 
     if (error instanceof AuthApiError) {
-      await deps.sessionStore.clearPersistedSession();
+      await enqueueSessionWrite(async () => {
+        if (isSessionGenerationCurrent(generation)) {
+          await deps.sessionStore.clearPersistedSession();
+        }
+      });
     }
   }
 }
