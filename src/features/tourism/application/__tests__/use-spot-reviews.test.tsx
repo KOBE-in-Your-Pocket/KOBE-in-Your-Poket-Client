@@ -61,6 +61,17 @@ describe('mergeReviews', () => {
 
     expect(mergeReviews(seed, submitted).map((r) => r.id)).toEqual(['later', 'earlier']);
   });
+
+  it('seed と submitted に同一 id があれば重複させず submitted を優先する', () => {
+    // API が投稿済みレビューを返しても、ローカルの編集内容を優先して 1 件にまとめる。
+    const seed = [review('dup', '2025-01-01T00:00:00.000Z')];
+    const submitted = [{ ...review('dup', '2026-01-01T00:00:00.000Z'), comment: 'edited' }];
+
+    const result = mergeReviews(seed, submitted);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].comment).toBe('edited');
+  });
 });
 
 describe('useSpotReviews', () => {
@@ -80,6 +91,15 @@ describe('useSpotReviews', () => {
 
     expect(result.current.data).toEqual(apiReviews);
     expect(mockFetchReviews).toHaveBeenCalledWith('nankinmachi', 'ja', expect.any(AbortSignal));
+  });
+
+  it('取得に失敗すると isError が true になる', async () => {
+    mockFetchReviews.mockRejectedValueOnce(new Error('offline'));
+    const { Wrapper } = createWrapper();
+
+    const { result } = renderHook(() => useSpotReviews('nankinmachi'), { wrapper: Wrapper });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
   });
 
   it('spotId が未指定のときは取得せず空配列を返す', () => {

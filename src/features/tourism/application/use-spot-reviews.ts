@@ -18,12 +18,20 @@ const EMPTY_REVIEWS: Review[] = [];
  *
  * 投稿・編集は当面ローカルストアに保持されるため、実 API 取得分にユーザー自身の
  * 投稿を重ねることで、投稿直後でも一覧から消えないようにする。
- * seed と submitted は ID が重複しない前提（サーバー ID とローカル生成 ID）で単純結合する。
+ * seed と submitted に同一 id が現れた場合（API が投稿済みレビューを返した等）は重複させず、
+ * ローカルの編集内容を優先する（submitted で上書き）。
  * postedAt は ISO 8601 のオフセット表記（`Z` / `±hh:mm`）が混在しうるため、文字列比較ではなく
  * 数値化した時刻で比較して実際の新しい順を保つ。
  */
 export function mergeReviews(seed: Review[], submitted: Review[]): Review[] {
-  return [...seed, ...submitted].sort((a, b) => Date.parse(b.postedAt) - Date.parse(a.postedAt));
+  const byId = new Map<string, Review>();
+  for (const review of seed) {
+    byId.set(review.id, review);
+  }
+  for (const review of submitted) {
+    byId.set(review.id, review);
+  }
+  return [...byId.values()].sort((a, b) => Date.parse(b.postedAt) - Date.parse(a.postedAt));
 }
 
 export function useSpotReviews(spotId: string | null | undefined) {
