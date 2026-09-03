@@ -1,5 +1,5 @@
 export { bootstrapEvacuationDatabase } from './application/use-cases/bootstrap-evacuation-database';
-export { seedEvacuationSheltersIfEmpty } from './application/use-cases/seed-evacuation-shelters-if-empty';
+export { reseedEvacuationSheltersIfNeeded } from './application/use-cases/reseed-evacuation-shelters-if-needed';
 export {
   sortSheltersByDistance,
   type ShelterWithDistance,
