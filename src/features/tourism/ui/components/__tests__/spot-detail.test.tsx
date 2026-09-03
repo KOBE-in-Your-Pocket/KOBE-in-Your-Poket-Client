@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen } from '@testing-library/react-native';
 import { Text as MockText, View as MockView } from 'react-native';
 
 import { SpotDetailContent } from '../spot-detail';
@@ -100,7 +100,12 @@ jest.mock('@/shared/ui', () => ({
 
 describe('SpotDetailContent', () => {
   beforeEach(() => {
-    mockUseSpotReviews.mockReturnValue({ data: [], isPending: false });
+    mockUseSpotReviews.mockReturnValue({
+      data: [],
+      isPending: false,
+      isError: false,
+      refetch: jest.fn(),
+    });
     mockUseCurrentUser.mockReturnValue({ name: 'test-user' });
     mockUseCurrentLocation.mockReturnValue({ coords: null });
   });
@@ -116,5 +121,54 @@ describe('SpotDetailContent', () => {
     expect(mockSpotMannerSection).toHaveBeenCalledWith({ spotId: 'nankinmachi' });
     expect(screen.getByText(mockSpot.name)).toBeTruthy();
     expect(screen.getByText('review-form:nankinmachi')).toBeTruthy();
+  });
+
+  it('レビュー取得失敗かつ 0 件のときはエラーと再試行導線を表示し、0件表示にはしない', () => {
+    mockUseSpotReviews.mockReturnValue({
+      data: [],
+      isPending: false,
+      isError: true,
+      refetch: jest.fn(),
+    });
+
+    render(<SpotDetailContent spot={mockSpot} />);
+
+    expect(screen.getByText('tourism.reviewList.loadError')).toBeTruthy();
+    expect(screen.getByText('tourism.spotDetail.reviewsRetry')).toBeTruthy();
+    // 通信エラーを「レビュー0件」と混同しない。
+    expect(screen.queryByText('tourism.spotDetail.noReviews')).toBeNull();
+  });
+
+  it('再試行を押すと refetch を呼ぶ', () => {
+    const refetch = jest.fn();
+    mockUseSpotReviews.mockReturnValue({ data: [], isPending: false, isError: true, refetch });
+
+    render(<SpotDetailContent spot={mockSpot} />);
+    fireEvent.press(screen.getByText('tourism.spotDetail.reviewsRetry'));
+
+    expect(refetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('取得失敗でも表示できるレビューがあれば一覧を出し、エラー表示にはしない', () => {
+    mockUseSpotReviews.mockReturnValue({
+      data: [
+        {
+          id: 'own-1',
+          rating: { value: 5 },
+          comment: '自分の投稿',
+          author: { id: 'me', name: 'me', iconUrl: 'https://example.com/a.png' },
+          postedAt: '2025-05-01T00:00:00.000Z',
+          language: 'ja',
+        },
+      ],
+      isPending: false,
+      isError: true,
+      refetch: jest.fn(),
+    });
+
+    render(<SpotDetailContent spot={mockSpot} />);
+
+    expect(screen.getByText('自分の投稿')).toBeTruthy();
+    expect(screen.queryByText('tourism.reviewList.loadError')).toBeNull();
   });
 });

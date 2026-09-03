@@ -58,6 +58,22 @@ describe('mergeReviews', () => {
     expect(mergeReviews(seed, submitted).map((r) => r.id)).toEqual(['later', 'earlier']);
   });
 
+  it('不正な postedAt は最古扱いで末尾へ回し、有効な日時は新しい順を保つ', () => {
+    const seed = [
+      review('invalid', ''),
+      review('newer', '2025-03-01T00:00:00.000Z'),
+      review('older', '2025-01-01T00:00:00.000Z'),
+    ];
+
+    expect(mergeReviews(seed, []).map((r) => r.id)).toEqual(['newer', 'older', 'invalid']);
+  });
+
+  it('不正な postedAt が複数あっても安定ソートで元の相対順序を保つ（sort が不定にならない）', () => {
+    const seed = [review('bad-1', 'not-a-date'), review('bad-2', ''), review('bad-3', 'NaN')];
+
+    expect(mergeReviews(seed, []).map((r) => r.id)).toEqual(['bad-1', 'bad-2', 'bad-3']);
+  });
+
   it('seed と submitted に同一 id があれば重複させず submitted を優先する', () => {
     // API が投稿済みレビューを返しても、ローカルの編集内容を優先して 1 件にまとめる。
     const seed = [review('dup', '2025-01-01T00:00:00.000Z')];

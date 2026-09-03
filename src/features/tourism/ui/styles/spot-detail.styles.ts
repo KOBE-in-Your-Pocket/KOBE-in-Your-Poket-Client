@@ -154,4 +154,13 @@ export const styles = StyleSheet.create({
   reviewComment: {
     lineHeight: 20,
   },
+  reviewsError: {
+    gap: Spacing.two,
+    alignItems: 'flex-start',
+  },
+  reviewsRetryButton: {
+    paddingVertical: Spacing.one,
+    paddingHorizontal: Spacing.three,
+    borderRadius: 8,
+  },
 });

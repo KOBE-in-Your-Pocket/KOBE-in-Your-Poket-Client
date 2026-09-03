@@ -88,6 +88,7 @@
       "back": "Back",
       "reviews": "Reviews",
       "noReviews": "No reviews yet.",
+      "reviewsRetry": "Retry",
       "addressLabel": "Address",
       "locationLabel": "Location",
       "notFound": "Spot not found.",

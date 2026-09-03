@@ -19,6 +19,8 @@ const EMPTY_REVIEWS: Review[] = [];
  * ローカルの編集内容を優先する（submitted で上書き）。
  * postedAt は ISO 8601 のオフセット表記（`Z` / `±hh:mm`）が混在しうるため、文字列比較ではなく
  * 数値化した時刻で比較して実際の新しい順を保つ。
+ * 不正な日時（空文字・非 ISO 等で `Date.parse` が NaN）は最古扱いにして末尾へ回し、
+ * 比較関数が NaN を返さない全順序を保つ（sort が不定にならないようにする）。
  */
 export function mergeReviews(seed: Review[], submitted: Review[]): Review[] {
   const byId = new Map<string, Review>();
@@ -28,7 +30,26 @@ export function mergeReviews(seed: Review[], submitted: Review[]): Review[] {
   for (const review of submitted) {
     byId.set(review.id, review);
   }
-  return [...byId.values()].sort((a, b) => Date.parse(b.postedAt) - Date.parse(a.postedAt));
+  return [...byId.values()].sort(compareByPostedAtDesc);
+}
+
+/** postedAt を数値化する。不正な日時は最古（-Infinity）扱いにする。 */
+function toPostedAtTime(postedAt: string): number {
+  const time = Date.parse(postedAt);
+  return Number.isNaN(time) ? -Infinity : time;
+}
+
+/**
+ * postedAt の新しい順（降順）で比較する。両方が不正な日時（-Infinity）でも NaN を返さず
+ * 0（同順）を返すため、安定ソートにより元の相対順序が保たれる。
+ */
+function compareByPostedAtDesc(a: Review, b: Review): number {
+  const timeA = toPostedAtTime(a.postedAt);
+  const timeB = toPostedAtTime(b.postedAt);
+  if (timeA === timeB) {
+    return 0;
+  }
+  return timeB > timeA ? 1 : -1;
 }
 
 export function useSpotReviews(spotId: string | null | undefined) {
@@ -47,5 +68,10 @@ export function useSpotReviews(spotId: string | null | undefined) {
     [seedQuery.data, submitted],
   );
 
-  return { data, isPending: seedQuery.isPending, isError: seedQuery.isError };
+  return {
+    data,
+    isPending: seedQuery.isPending,
+    isError: seedQuery.isError,
+    refetch: seedQuery.refetch,
+  };
 }

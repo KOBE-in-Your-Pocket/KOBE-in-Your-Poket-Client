@@ -288,7 +288,12 @@ export function SpotDetailContent({ spot }: { spot: Spot }) {
   const theme = useTheme();
   const { t } = useTranslation();
   const { coords } = useCurrentLocation();
-  const { data: reviews, isPending: isReviewsPending } = useSpotReviews(spot.id);
+  const {
+    data: reviews,
+    isPending: isReviewsPending,
+    isError: isReviewsError,
+    refetch: refetchReviews,
+  } = useSpotReviews(spot.id);
   const [reviewLang, setReviewLang] = useState<ReviewLangFilter>('all');
   const currentUser = useCurrentUser();
   const updateReview = useUpdateReview(spot.id);
@@ -376,6 +381,11 @@ export function SpotDetailContent({ spot }: { spot: Spot }) {
           </View>
           <ReviewForm spotId={spot.id} />
           <ReviewLanguageFilter value={reviewLang} onChange={setReviewLang} />
+          {/*
+            表示できるレビューがあれば取得失敗でも一覧を優先表示し、ローカル投稿が隠れないようにする。
+            取得失敗かつ表示できるレビューが 0 件のときだけエラーと再試行導線を出し、
+            通信エラーを「レビュー0件」と区別できるようにする（PBI #485）。
+          */}
           {isReviewsPending ? (
             <ActivityIndicator />
           ) : filteredReviews.length > 0 ? (
@@ -388,6 +398,19 @@ export function SpotDetailContent({ spot }: { spot: Spot }) {
                 onDelete={() => deleteReview(review.id)}
               />
             ))
+          ) : isReviewsError ? (
+            <View style={styles.reviewsError}>
+              <ThemedText type="small" themeColor="textSecondary">
+                {t('tourism.reviewList.loadError')}
+              </ThemedText>
+              <Pressable
+                onPress={() => refetchReviews()}
+                accessibilityRole="button"
+                style={[styles.reviewsRetryButton, { backgroundColor: theme.backgroundSelected }]}
+              >
+                <ThemedText type="smallBold">{t('tourism.spotDetail.reviewsRetry')}</ThemedText>
+              </Pressable>
+            </View>
           ) : (
             <ThemedText type="small" themeColor="textSecondary">
               {t('tourism.spotDetail.noReviews')}
