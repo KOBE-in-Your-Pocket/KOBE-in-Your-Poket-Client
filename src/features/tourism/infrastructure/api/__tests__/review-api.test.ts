@@ -25,14 +25,13 @@ describe('fetchReviews', () => {
     mockApiFetch.mockReset();
   });
 
-  it('spotId をエンコードしたパスと lang クエリ・signal で apiFetch を呼ぶ', async () => {
+  it('spotId をエンコードしたパスと signal で apiFetch を呼ぶ（lang クエリは付けない）', async () => {
     mockApiFetch.mockResolvedValue([]);
     const signal = new AbortController().signal;
 
-    await fetchReviews('spot/with space', 'ja', signal);
+    await fetchReviews('spot/with space', signal);
 
     expect(mockApiFetch).toHaveBeenCalledWith('/api/v1/tourism/spots/spot%2Fwith%20space/reviews', {
-      query: { lang: 'ja' },
       signal,
     });
   });
@@ -40,10 +39,9 @@ describe('fetchReviews', () => {
   it('signal 未指定でも呼び出せる（undefined を渡す）', async () => {
     mockApiFetch.mockResolvedValue([]);
 
-    await fetchReviews('nankinmachi', 'en');
+    await fetchReviews('nankinmachi');
 
     expect(mockApiFetch).toHaveBeenCalledWith('/api/v1/tourism/spots/nankinmachi/reviews', {
-      query: { lang: 'en' },
       signal: undefined,
     });
   });
@@ -52,6 +50,6 @@ describe('fetchReviews', () => {
     const reviews = [review('r1'), review('r2')];
     mockApiFetch.mockResolvedValue(reviews);
 
-    await expect(fetchReviews('nankinmachi', 'ja')).resolves.toEqual(reviews);
+    await expect(fetchReviews('nankinmachi')).resolves.toEqual(reviews);
   });
 });

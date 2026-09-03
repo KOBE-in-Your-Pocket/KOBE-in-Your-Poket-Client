@@ -8,10 +8,6 @@ import { mergeReviews, useSpotReviews, SPOT_REVIEWS_QUERY_KEY } from '../use-spo
 
 import type { Review } from '../../domain/review';
 
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ i18n: { language: 'ja' } }),
-}));
-
 jest.mock('../../infrastructure/api/review-api', () => ({
   fetchReviews: jest.fn(),
 }));
@@ -80,7 +76,7 @@ describe('useSpotReviews', () => {
     useReviewStore.setState({ submittedReviews: {} });
   });
 
-  it('解決した言語と signal を渡して fetchReviews を呼び、取得結果を返す', async () => {
+  it('spotId と signal を渡して fetchReviews を呼び、取得結果を返す', async () => {
     const apiReviews = [review('r1', '2025-05-01T00:00:00.000Z')];
     mockFetchReviews.mockResolvedValue(apiReviews);
     const { Wrapper } = createWrapper();
@@ -90,7 +86,8 @@ describe('useSpotReviews', () => {
     await waitFor(() => expect(result.current.isPending).toBe(false));
 
     expect(result.current.data).toEqual(apiReviews);
-    expect(mockFetchReviews).toHaveBeenCalledWith('nankinmachi', 'ja', expect.any(AbortSignal));
+    // 言語は付けず全件取得する（絞り込みは UI 側 ReviewLanguageFilter に委ねる）。
+    expect(mockFetchReviews).toHaveBeenCalledWith('nankinmachi', expect.any(AbortSignal));
   });
 
   it('取得に失敗すると isError が true になる', async () => {
@@ -124,7 +121,7 @@ describe('useSpotReviews', () => {
     expect(result.current.data.map((r) => r.id)).toEqual(['local-new', 'api-old']);
   });
 
-  it('queryKey に解決した言語を含める', async () => {
+  it('queryKey に spotId を含める', async () => {
     mockFetchReviews.mockResolvedValue([]);
     const { Wrapper, queryClient } = createWrapper();
 
@@ -136,6 +133,6 @@ describe('useSpotReviews', () => {
       .getQueryCache()
       .getAll()
       .map((query) => query.queryKey);
-    expect(keys).toContainEqual([...SPOT_REVIEWS_QUERY_KEY, 'nankinmachi', 'ja']);
+    expect(keys).toContainEqual([...SPOT_REVIEWS_QUERY_KEY, 'nankinmachi']);
   });
 });
