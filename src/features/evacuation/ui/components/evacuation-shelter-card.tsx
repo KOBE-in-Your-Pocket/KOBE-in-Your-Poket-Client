@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { SymbolView } from 'expo-symbols';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
@@ -7,6 +6,8 @@ import { confirmOpenDirections } from '@/shared/lib/directions';
 import { formatDistanceKm, getDistanceKm, type GeoCoordinates } from '@/shared/lib/geo';
 import { useTheme } from '@/shared/lib/theme';
 import { ThemedText, ThemedView } from '@/shared/ui';
+
+import { ShelterImage } from './shelter-image';
 
 import { styles } from '../styles/evacuation-shelter-card.styles';
 
@@ -39,7 +40,11 @@ export function EvacuationShelterCard({
   return (
     <ThemedView style={styles.card}>
       <View style={styles.imageWrapper}>
-        <Image source={{ uri: shelter.media.imageUrl }} style={styles.image} contentFit="cover" />
+        <ShelterImage
+          imageUrl={shelter.media.imageUrl}
+          facilityCategory={shelter.facilityCategory}
+          style={styles.image}
+        />
         <View style={styles.scrim} />
 
         <Pressable
