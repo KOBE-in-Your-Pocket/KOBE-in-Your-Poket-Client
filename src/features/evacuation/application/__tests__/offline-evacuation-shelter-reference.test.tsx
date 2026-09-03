@@ -14,7 +14,7 @@ import {
   getEvacuationSheltersFromLocalDb,
 } from '../use-cases/local-evacuation-shelter-queries';
 
-import { fetchEvacuationShelters } from '../../infrastructure/api/mock-shelters';
+import { fetchEvacuationShelters } from '../../infrastructure/api/shelter-api';
 import type { EvacuationDatabase } from '../../infrastructure/db/client';
 import { getEvacuationDatabase } from '../../infrastructure/db/client';
 import * as schema from '../../infrastructure/db/schema';
@@ -22,7 +22,7 @@ import { createSqliteEvacuationShelterRepository } from '../../infrastructure/db
 
 import type { ReactNode } from 'react';
 
-jest.mock('../../infrastructure/api/mock-shelters', () => ({
+jest.mock('../../infrastructure/api/shelter-api', () => ({
   fetchEvacuationShelters: jest.fn(),
 }));
 

@@ -7,7 +7,7 @@ import {
 } from '../bootstrap-evacuation-database';
 import { seedEvacuationSheltersIfEmpty } from '../seed-evacuation-shelters-if-empty';
 
-jest.mock('../../../infrastructure/api/mock-shelters', () => ({
+jest.mock('../../../infrastructure/api/shelter-api', () => ({
   fetchEvacuationShelters: jest.fn(),
 }));
 

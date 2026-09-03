@@ -1,4 +1,4 @@
-import { fetchEvacuationShelters } from '../../infrastructure/api/mock-shelters';
+import { fetchEvacuationShelters } from '../../infrastructure/api/shelter-api';
 import { getEvacuationDatabase } from '../../infrastructure/db/client';
 import { runEvacuationMigrations } from '../../infrastructure/db/run-migrations';
 import { createSqliteEvacuationShelterRepository } from '../../infrastructure/db/sqlite-evacuation-shelter-repository';

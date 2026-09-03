@@ -72,6 +72,24 @@ describe('useAuthStore', () => {
     });
   });
 
+  describe('updateCurrentUser', () => {
+    it('トークンを保ったまま currentUser のみ更新する', () => {
+      useAuthStore.getState().setSession(SESSION);
+      const updated = {
+        id: 'user-google',
+        name: '新しい名前',
+        iconUrl: 'https://example.com/new.png',
+      };
+
+      useAuthStore.getState().updateCurrentUser(updated);
+
+      const state = useAuthStore.getState();
+      expect(state.currentUser).toEqual(updated);
+      expect(state.accessToken).toBe('access-token');
+      expect(state.refreshToken).toBe('refresh-token');
+    });
+  });
+
   describe('setSession', () => {
     it('ユーザーとトークンを設定する', () => {
       useAuthStore.getState().setSession(SESSION);
