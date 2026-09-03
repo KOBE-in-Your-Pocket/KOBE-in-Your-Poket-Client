@@ -75,23 +75,29 @@ export function ReviewList({ spotId }: { spotId: string }) {
 
       <ReviewForm spotId={spotId} />
 
+      {/*
+        表示できるレビューがあれば、API 取得が失敗していても優先して一覧を出す。
+        reviews は API 取得分とローカル投稿分を mergeReviews した結果のため、API 障害時でも
+        ユーザー自身の投稿（useReviewStore 由来）が隠れないようにする。
+        エラー表示は取得失敗かつ表示できるレビューが 0 件のときだけに限定する。
+      */}
       {isPending ? (
         <View style={styles.centered}>
           <ActivityIndicator />
+        </View>
+      ) : reviews.length > 0 ? (
+        <View style={styles.list}>
+          {reviews.map((review) => (
+            <ReviewItem key={review.id} review={review} />
+          ))}
         </View>
       ) : isError ? (
         <View style={styles.centered}>
           <ThemedText themeColor="textSecondary">{t('tourism.reviewList.loadError')}</ThemedText>
         </View>
-      ) : reviews.length === 0 ? (
+      ) : (
         <View style={styles.centered}>
           <ThemedText themeColor="textSecondary">{t('tourism.reviewList.empty')}</ThemedText>
-        </View>
-      ) : (
-        <View style={styles.list}>
-          {reviews.map((review) => (
-            <ReviewItem key={review.id} review={review} />
-          ))}
         </View>
       )}
     </View>
