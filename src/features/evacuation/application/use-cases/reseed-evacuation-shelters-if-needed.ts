@@ -16,6 +16,12 @@ export type ReseedEvacuationSheltersDeps = {
  *
  * テーブルが空（初回起動）、または最後にシードした表示言語が現在の言語と異なる
  * （表示言語の切り替え、もしくは AsyncStorage と SQLite の記録のズレ）場合に再フェッチする。
+ *
+ * 取得に失敗（オフライン等）しても DB に既存データがあれば、それをそのまま表示し続ける
+ * ために例外を握りつぶす（避難所は防災情報のため、言語切り替え時の一時的な通信断で
+ * 一覧が丸ごと見られなくなるのは避けたい）。取得できなかった言語は記録しないため、
+ * 次回オンライン復帰時に改めて再取得が試みられる。DB が空で表示するものが無い場合のみ
+ * 例外を伝播する。
  */
 export async function reseedEvacuationSheltersIfNeeded(
   deps: ReseedEvacuationSheltersDeps,
@@ -29,7 +35,16 @@ export async function reseedEvacuationSheltersIfNeeded(
     return false;
   }
 
-  const shelters = await deps.fetchShelters(deps.language);
+  let shelters: EvacuationShelter[];
+  try {
+    shelters = await deps.fetchShelters(deps.language);
+  } catch (error) {
+    if (existing.length > 0) {
+      return false;
+    }
+    throw error;
+  }
+
   await deps.repository.replaceAll(shelters);
   await deps.setLastSeededLanguage(deps.language);
   return true;

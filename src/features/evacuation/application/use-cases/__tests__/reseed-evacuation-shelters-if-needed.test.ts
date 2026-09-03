@@ -93,4 +93,32 @@ describe('reseedEvacuationSheltersIfNeeded', () => {
     expect(deps.fetchShelters).toHaveBeenCalledWith('ja');
     expect(deps.repository.replaceAll).toHaveBeenCalledWith(mockShelters);
   });
+
+  it('取得に失敗しても DB に既存データがあれば例外を投げず false を返す（オフラインでの言語切替）', async () => {
+    const deps = createDeps({
+      repository: createRepository({ findAll: jest.fn().mockResolvedValue(mockShelters) }),
+      fetchShelters: jest.fn().mockRejectedValue(new Error('network error')),
+      getLastSeededLanguage: jest.fn().mockResolvedValue('en'),
+      language: 'ja',
+    });
+
+    await expect(reseedEvacuationSheltersIfNeeded(deps)).resolves.toBe(false);
+
+    expect(deps.repository.replaceAll).not.toHaveBeenCalled();
+    expect(deps.setLastSeededLanguage).not.toHaveBeenCalled();
+  });
+
+  it('取得に失敗し DB も空のときは例外をそのまま伝播する（表示できるデータが無い）', async () => {
+    const deps = createDeps({
+      repository: createRepository({ findAll: jest.fn().mockResolvedValue([]) }),
+      fetchShelters: jest.fn().mockRejectedValue(new Error('network error')),
+      getLastSeededLanguage: jest.fn().mockResolvedValue(null),
+      language: 'ja',
+    });
+
+    await expect(reseedEvacuationSheltersIfNeeded(deps)).rejects.toThrow('network error');
+
+    expect(deps.repository.replaceAll).not.toHaveBeenCalled();
+    expect(deps.setLastSeededLanguage).not.toHaveBeenCalled();
+  });
 });
