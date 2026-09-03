@@ -126,4 +126,35 @@ describe('bootstrapEvacuationDatabase', () => {
       expect.objectContaining({ language: 'en' }),
     );
   });
+
+  it('後ろに連結された別言語の呼び出しがある間に古い言語側が失敗しても、その追跡状態を巻き添えでクリアしない', async () => {
+    let resolveEnReseed: (() => void) | undefined;
+    jest.mocked(reseedEvacuationSheltersIfNeeded).mockImplementation((deps) => {
+      if (deps.language === 'ja') {
+        return Promise.reject(new Error('offline'));
+      }
+      return new Promise((resolve) => {
+        resolveEnReseed = () => resolve(true);
+      });
+    });
+
+    const first = bootstrapEvacuationDatabase('ja');
+    const second = bootstrapEvacuationDatabase('en');
+
+    await expect(first).rejects.toThrow('offline');
+
+    // 'ja' の失敗ハンドラが 'en' の進行中の Promise を巻き添えでクリアしていなければ、
+    // 同じ 'en' への呼び出しは dedupe されて同一 Promise を返すはず。
+    const third = bootstrapEvacuationDatabase('en');
+    expect(third).toBe(second);
+
+    await waitFor(() => resolveEnReseed !== undefined);
+    resolveEnReseed?.();
+    await expect(second).resolves.toBeUndefined();
+
+    const enCalls = jest
+      .mocked(reseedEvacuationSheltersIfNeeded)
+      .mock.calls.filter(([deps]) => deps.language === 'en');
+    expect(enCalls).toHaveLength(1);
+  });
 });

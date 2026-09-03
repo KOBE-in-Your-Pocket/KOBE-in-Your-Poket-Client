@@ -42,15 +42,20 @@ export function bootstrapEvacuationDatabase(language: SupportedLanguage): Promis
 
   const previous = bootstrapPromise ?? Promise.resolve();
   bootstrapLanguage = language;
-  bootstrapPromise = previous
+  const current: Promise<void> = previous
     .catch(() => undefined)
     .then(() => doBootstrapEvacuationDatabase(language))
     .catch((error: unknown) => {
-      bootstrapPromise = null;
-      bootstrapLanguage = null;
+      // 自分より後の呼び出しが既に bootstrapPromise を差し替えている場合、
+      // その新しい進行中の実行の追跡状態を巻き添えでクリアしないようにする。
+      if (bootstrapPromise === current) {
+        bootstrapPromise = null;
+        bootstrapLanguage = null;
+      }
       throw error;
     });
-  return bootstrapPromise;
+  bootstrapPromise = current;
+  return current;
 }
 
 export function resetEvacuationDatabaseBootstrapForTests(): void {
