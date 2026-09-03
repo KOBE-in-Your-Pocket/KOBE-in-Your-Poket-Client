@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { openBrowserAsync } from 'expo-web-browser';
@@ -8,6 +7,8 @@ import { ActivityIndicator, Alert, Pressable, ScrollView, View } from 'react-nat
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useEvacuationShelterDetail } from '../../application/hooks/use-evacuation-shelter-detail';
+
+import { ShelterImage } from './shelter-image';
 
 import { EXTERNAL_LINK_COLOR, styles } from '../styles/evacuation-shelter-detail.styles';
 
@@ -71,10 +72,10 @@ function ShelterDetailContent({ shelter }: { shelter: EvacuationShelter }) {
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
       <View style={styles.hero}>
-        <Image
-          source={{ uri: shelter.media.imageUrl }}
+        <ShelterImage
+          imageUrl={shelter.media.imageUrl}
+          facilityCategory={shelter.facilityCategory}
           style={styles.heroImage}
-          contentFit="cover"
         />
       </View>
 
