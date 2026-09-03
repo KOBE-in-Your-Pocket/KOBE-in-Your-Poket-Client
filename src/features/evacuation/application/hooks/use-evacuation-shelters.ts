@@ -16,6 +16,11 @@ export const EVACUATION_SHELTERS_QUERY_KEY = ['evacuation', 'shelters'] as const
  * ローカル SQLite リポジトリ経由で取得する。bootstrap 完了後に DB を読むため、
  * 初回起動時のシード後データもオフラインで閲覧できる。表示言語をクエリキーに
  * 含めることで、言語切り替え時に bootstrap 経由の再シードを含めて再取得する。
+ *
+ * ここでの言語は `resolveLanguage(i18n.language)`。`useEvacuationDbBootstrap` は
+ * 別ソースの `useUiStore.language` を使っており、両者は言語切り替え箇所（
+ * `useLanguageBootstrap`・`LanguageSelector`）が必ずセットで更新する不変条件で
+ * 一致を保っている。片方だけ更新する変更を入れないこと。
  */
 export function useEvacuationShelters() {
   const { i18n } = useTranslation();
