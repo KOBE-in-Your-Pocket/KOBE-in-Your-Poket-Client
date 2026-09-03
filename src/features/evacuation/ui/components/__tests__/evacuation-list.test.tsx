@@ -23,13 +23,12 @@ const DEFAULT_SHELTER: EvacuationShelter = {
   accessible: true,
 };
 
-let mockShelters: EvacuationShelter[] = [DEFAULT_SHELTER];
-
 // jest.mock ファクトリから参照するため mock プレフィックスを付ける（out-of-scope 変数制約）。
+const mockUseEvacuationShelters = jest.fn();
 const mockUseCurrentLocation = jest.fn();
 
 jest.mock('../../../application/hooks/use-evacuation-shelters', () => ({
-  useEvacuationShelters: () => ({ data: mockShelters, isPending: false, isError: false }),
+  useEvacuationShelters: () => mockUseEvacuationShelters(),
 }));
 
 jest.mock('@/shared/lib/geo', () => ({
@@ -74,7 +73,11 @@ jest.mock('react-native-safe-area-context', () => ({
 }));
 
 beforeEach(() => {
-  mockShelters = [DEFAULT_SHELTER];
+  mockUseEvacuationShelters.mockReturnValue({
+    data: [DEFAULT_SHELTER],
+    isPending: false,
+    isError: false,
+  });
 });
 
 describe('EvacuationList の位置情報フォールバック表示', () => {
@@ -167,7 +170,11 @@ describe('EvacuationList の収容人数表示', () => {
   });
 
   it('capacity がある避難所は収容人数を表示する', () => {
-    mockShelters = [{ ...DEFAULT_SHELTER, capacity: 120 }];
+    mockUseEvacuationShelters.mockReturnValue({
+      data: [{ ...DEFAULT_SHELTER, capacity: 120 }],
+      isPending: false,
+      isError: false,
+    });
 
     render(<EvacuationList />);
 
