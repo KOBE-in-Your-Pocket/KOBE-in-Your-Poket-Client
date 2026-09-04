@@ -50,6 +50,12 @@ const OTHER_USER = {
   name: '山田花子',
   iconUrl: 'https://example.com/hanako.png',
 };
+/**
+ * 投稿は Promise の解決とその後の再レンダーを挟む。CI の遅いランナーでは
+ * waitFor の既定（1 秒）で足りずに落ちるため、明示的に長めを渡す。
+ */
+const ASYNC_TIMEOUT = { timeout: 10_000 };
+
 const PLACEHOLDER_LABEL = 'tourism.reviewForm.placeholder';
 const COMMENT_PLACEHOLDER = 'tourism.reviewForm.commentPlaceholder';
 const SUBMIT_LABEL = 'tourism.reviewForm.submit';
@@ -65,9 +71,13 @@ const CREATED_REVIEW = {
   language: 'ja' as const,
 };
 
+/**
+ * gcTime を 0 にするのは、キャッシュ回収のタイマーがテスト終了後も残って
+ * jest がプロセスを終了できなくなるのを防ぐため。
+ */
 function renderForm() {
   const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    defaultOptions: { queries: { retry: false, gcTime: 0 }, mutations: { retry: false } },
   });
 
   return render(
@@ -158,8 +168,11 @@ describe('ReviewForm', () => {
     fillForm();
     fireEvent.press(screen.getByText(SUBMIT_LABEL));
 
-    await waitFor(() => expect(screen.queryByPlaceholderText(COMMENT_PLACEHOLDER)).toBeNull());
-    expect(postReviewMock).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(postReviewMock).toHaveBeenCalledTimes(1), ASYNC_TIMEOUT);
+    await waitFor(
+      () => expect(screen.queryByPlaceholderText(COMMENT_PLACEHOLDER)).toBeNull(),
+      ASYNC_TIMEOUT,
+    );
 
     // 再展開しても下書きは残っていない
     fireEvent.press(screen.getByLabelText(PLACEHOLDER_LABEL));
@@ -176,7 +189,7 @@ describe('ReviewForm', () => {
     fillForm('失敗しても消えないコメント');
     fireEvent.press(screen.getByText(SUBMIT_LABEL));
 
-    await waitFor(() => expect(screen.getByText(SUBMIT_ERROR)).toBeTruthy());
+    await waitFor(() => expect(screen.getByText(SUBMIT_ERROR)).toBeTruthy(), ASYNC_TIMEOUT);
     expect(screen.getByPlaceholderText(COMMENT_PLACEHOLDER).props.value).toBe(
       '失敗しても消えないコメント',
     );
@@ -197,7 +210,7 @@ describe('ReviewForm', () => {
     fillForm();
     fireEvent.press(screen.getByText(SUBMIT_LABEL));
 
-    await waitFor(() => expect(screen.getByText(SUBMITTING_LABEL)).toBeTruthy());
+    await waitFor(() => expect(screen.getByText(SUBMITTING_LABEL)).toBeTruthy(), ASYNC_TIMEOUT);
     fireEvent.press(screen.getByText(SUBMITTING_LABEL));
     expect(postReviewMock).toHaveBeenCalledTimes(1);
 

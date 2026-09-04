@@ -44,9 +44,13 @@ const CREATED_REVIEW = {
   language: 'ja' as const,
 };
 
+/**
+ * gcTime を 0 にするのは、キャッシュ回収のタイマーがテスト終了後も残って
+ * jest がプロセスを終了できなくなるのを防ぐため。
+ */
 function createWrapper() {
   const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    defaultOptions: { queries: { retry: false, gcTime: 0 }, mutations: { retry: false } },
   });
   const wrapper = ({ children }: PropsWithChildren) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
