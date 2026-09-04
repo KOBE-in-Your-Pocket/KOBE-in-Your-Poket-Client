@@ -25,3 +25,8 @@ export type SessionStore = {
 export type PersistedUserStore = {
   updatePersistedUser(user: PublicUser): Promise<void>;
 };
+
+/** ユーザー情報の取得 API を抽象化するポート。 */
+export type UserGateway = {
+  fetchCurrentUser(): Promise<PublicUser>;
+};
