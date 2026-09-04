@@ -12,24 +12,23 @@ import { EvacuationList } from '../evacuation-list';
 import type { EvacuationShelter } from '../../../domain/evacuation-shelter';
 import type { ReactNode } from 'react';
 
-const mockShelters: EvacuationShelter[] = [
-  {
-    id: 'shelter-1',
-    name: '避難所A',
-    address: '住所A',
-    coordinates: { latitude: 34.69, longitude: 135.19 },
-    type: 'designated',
-    facilityCategory: 'school',
-    media: { imageUrl: '' },
-    accessible: true,
-  },
-];
+const DEFAULT_SHELTER: EvacuationShelter = {
+  id: 'shelter-1',
+  name: '避難所A',
+  address: '住所A',
+  coordinates: { latitude: 34.69, longitude: 135.19 },
+  type: 'designated',
+  facilityCategory: 'school',
+  media: { imageUrl: '' },
+  accessible: true,
+};
 
 // jest.mock ファクトリから参照するため mock プレフィックスを付ける（out-of-scope 変数制約）。
+const mockUseEvacuationShelters = jest.fn();
 const mockUseCurrentLocation = jest.fn();
 
 jest.mock('../../../application/hooks/use-evacuation-shelters', () => ({
-  useEvacuationShelters: () => ({ data: mockShelters, isPending: false, isError: false }),
+  useEvacuationShelters: () => mockUseEvacuationShelters(),
 }));
 
 jest.mock('@/shared/lib/geo', () => ({
@@ -72,6 +71,14 @@ jest.mock('expo-router', () => ({
 jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
 }));
+
+beforeEach(() => {
+  mockUseEvacuationShelters.mockReturnValue({
+    data: [DEFAULT_SHELTER],
+    isPending: false,
+    isError: false,
+  });
+});
 
 describe('EvacuationList の位置情報フォールバック表示', () => {
   beforeEach(() => {
@@ -144,5 +151,33 @@ describe('EvacuationList の位置情報フォールバック表示', () => {
     expect(screen.queryByText('evacuation.list.title')).toBeNull();
     expect(screen.queryByText('location.permissionDeniedNotice')).toBeNull();
     expect(screen.getByText('避難所A')).toBeTruthy();
+  });
+});
+
+describe('EvacuationList の収容人数表示', () => {
+  beforeEach(() => {
+    mockUseCurrentLocation.mockReturnValue({
+      coords: null,
+      permissionDenied: false,
+      servicesDisabled: false,
+    });
+  });
+
+  it('capacity が無い避難所は収容人数の行を表示しない', () => {
+    render(<EvacuationList />);
+
+    expect(screen.queryByText('evacuation.list.capacity')).toBeNull();
+  });
+
+  it('capacity がある避難所は収容人数を表示する', () => {
+    mockUseEvacuationShelters.mockReturnValue({
+      data: [{ ...DEFAULT_SHELTER, capacity: 120 }],
+      isPending: false,
+      isError: false,
+    });
+
+    render(<EvacuationList />);
+
+    expect(screen.getByText('evacuation.list.capacity')).toBeTruthy();
   });
 });

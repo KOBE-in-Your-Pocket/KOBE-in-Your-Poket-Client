@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useMemo } from 'react';
@@ -11,6 +10,8 @@ import {
   type ShelterWithDistance,
 } from '../../application/use-cases/sort-shelters-by-distance';
 import { useEvacuationShelters } from '../../application/hooks/use-evacuation-shelters';
+
+import { ShelterImage } from './shelter-image';
 
 import { ACCESSIBLE_COLOR, styles } from '../styles/evacuation-list.styles';
 
@@ -37,7 +38,11 @@ function ShelterListItem({
     >
       <ThemedView style={styles.card}>
         <View style={styles.imageWrapper}>
-          <Image source={{ uri: shelter.media.imageUrl }} style={styles.image} contentFit="cover" />
+          <ShelterImage
+            imageUrl={shelter.media.imageUrl}
+            facilityCategory={shelter.facilityCategory}
+            style={styles.image}
+          />
           {shelter.distanceKm !== null ? (
             <View style={styles.distanceBadge}>
               <ThemedText style={styles.distanceText}>

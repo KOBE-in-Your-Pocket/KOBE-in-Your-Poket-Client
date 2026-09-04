@@ -209,3 +209,41 @@ describe('避難所詳細からの外部マップ起動フォールバック分�
     );
   });
 });
+
+describe('避難所詳細の値の無い項目の表示分岐', () => {
+  beforeEach(() => {
+    mockUseCurrentLocation.mockReturnValue({
+      coords: null,
+      permissionDenied: false,
+      servicesDisabled: false,
+      loading: false,
+      error: null,
+    });
+  });
+
+  it('capacity・externalUrl が無い避難所ではその項目を表示しない', () => {
+    mockUseEvacuationShelterDetail.mockReturnValue({
+      data: shelter,
+      isPending: false,
+      isError: false,
+    });
+
+    render(<EvacuationShelterDetailScreen shelterId="shelter-1" />);
+
+    expect(screen.queryByText('evacuation.list.capacity')).toBeNull();
+    expect(screen.queryByLabelText('evacuation.shelterDetail.externalLink')).toBeNull();
+  });
+
+  it('capacity・externalUrl がある避難所ではその項目を表示する', () => {
+    mockUseEvacuationShelterDetail.mockReturnValue({
+      data: { ...shelter, capacity: 300, externalUrl: 'https://example.com/shelter-1' },
+      isPending: false,
+      isError: false,
+    });
+
+    render(<EvacuationShelterDetailScreen shelterId="shelter-1" />);
+
+    expect(screen.getByText('evacuation.list.capacity')).toBeTruthy();
+    expect(screen.getByLabelText('evacuation.shelterDetail.externalLink')).toBeTruthy();
+  });
+});
