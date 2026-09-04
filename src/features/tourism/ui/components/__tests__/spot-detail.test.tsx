@@ -100,6 +100,12 @@ jest.mock('@/shared/ui', () => ({
   ThemedView: ({ children }: { children: ReactNode }) => <MockView>{children}</MockView>,
 }));
 
+/**
+ * 保存は Promise の解決とその後の再レンダーを挟む。CI の遅いランナーでは
+ * waitFor の既定（1 秒）で足りずに落ちるため、明示的に長めを渡す。
+ */
+const ASYNC_TIMEOUT = { timeout: 10_000 };
+
 const OWN_REVIEW = {
   id: 'review-1',
   rating: { value: 3 },
@@ -166,11 +172,13 @@ describe('SpotDetailContent', () => {
       fireEvent.changeText(screen.getByDisplayValue('編集前のコメント'), '編集後のコメント');
       fireEvent.press(screen.getByText('tourism.reviewCard.save'));
 
-      await waitFor(() =>
-        expect(mockUpdateReviewAsync).toHaveBeenCalledWith({
-          reviewId: 'review-1',
-          changes: { rating: { value: 3 }, comment: '編集後のコメント' },
-        }),
+      await waitFor(
+        () =>
+          expect(mockUpdateReviewAsync).toHaveBeenCalledWith({
+            reviewId: 'review-1',
+            changes: { rating: { value: 3 }, comment: '編集後のコメント' },
+          }),
+        ASYNC_TIMEOUT,
       );
     });
 
@@ -181,7 +189,11 @@ describe('SpotDetailContent', () => {
       openEditor();
       fireEvent.press(screen.getByText('tourism.reviewCard.save'));
 
-      await waitFor(() => expect(screen.queryByDisplayValue('編集前のコメント')).toBeNull());
+      await waitFor(() => expect(mockUpdateReviewAsync).toHaveBeenCalled(), ASYNC_TIMEOUT);
+      await waitFor(
+        () => expect(screen.queryByDisplayValue('編集前のコメント')).toBeNull(),
+        ASYNC_TIMEOUT,
+      );
     });
 
     it('保存に失敗したらエラーを表示し、編集モードと入力内容を保持する', async () => {
@@ -192,7 +204,10 @@ describe('SpotDetailContent', () => {
       fireEvent.changeText(screen.getByDisplayValue('編集前のコメント'), '失敗しても消えない');
       fireEvent.press(screen.getByText('tourism.reviewCard.save'));
 
-      await waitFor(() => expect(screen.getByText('tourism.reviewCard.saveError')).toBeTruthy());
+      await waitFor(
+        () => expect(screen.getByText('tourism.reviewCard.saveError')).toBeTruthy(),
+        ASYNC_TIMEOUT,
+      );
       expect(screen.getByDisplayValue('失敗しても消えない')).toBeTruthy();
     });
 
@@ -208,11 +223,14 @@ describe('SpotDetailContent', () => {
       openEditor();
       fireEvent.press(screen.getByText('tourism.reviewCard.save'));
 
-      await waitFor(() => expect(screen.getByText('tourism.reviewCard.saving')).toBeTruthy());
+      await waitFor(
+        () => expect(screen.getByText('tourism.reviewCard.saving')).toBeTruthy(),
+        ASYNC_TIMEOUT,
+      );
       fireEvent.press(screen.getByText('tourism.reviewCard.saving'));
       expect(mockUpdateReviewAsync).toHaveBeenCalledTimes(1);
 
-      await waitFor(() => resolveSave(OWN_REVIEW));
+      await waitFor(() => resolveSave(OWN_REVIEW), ASYNC_TIMEOUT);
     });
   });
 });
