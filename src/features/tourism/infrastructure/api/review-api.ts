@@ -99,3 +99,42 @@ export async function postReview(
     },
   };
 }
+
+/** 編集で変更できるレビューの内容。 */
+export type ReviewUpdate = {
+  rating: { value: number };
+  comment: string;
+};
+
+/**
+ * 自分のレビューを編集する。
+ *
+ * バックエンド `PUT /api/v1/tourism/spots/:spotId/reviews/:reviewId` を呼び出す（認証必須 / #506）。
+ * 言語は投稿時のものが維持されるため送らない（backend の `ReviewUpdateRequest` は
+ * rating / comment のみ受け取る）。author の補完は {@link postReview} と同じ理由で
+ * ログイン中のユーザーを使う。
+ */
+export async function updateReview(
+  spotId: string,
+  reviewId: string,
+  update: ReviewUpdate,
+  author: PublicUser,
+): Promise<Review> {
+  const response = await apiFetch<ReviewResponse>(
+    `/api/v1/tourism/spots/${encodeURIComponent(spotId)}/reviews/${encodeURIComponent(reviewId)}`,
+    {
+      method: 'PUT',
+      auth: true,
+      body: { rating: update.rating.value, comment: update.comment },
+    },
+  );
+
+  return {
+    ...toReview(response),
+    author: {
+      id: author.id,
+      name: response.author.name,
+      iconUrl: response.author.iconUrl ?? author.iconUrl,
+    },
+  };
+}
