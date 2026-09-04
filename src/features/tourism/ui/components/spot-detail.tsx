@@ -30,7 +30,7 @@ import { ReviewForm } from './review-form';
 import { ReviewLanguageFilter, type ReviewLangFilter } from './review-language-filter';
 
 import { SpotMannerSection } from '@/features/manner';
-import { useCurrentUser } from '@/features/user';
+import { useCurrentUser, UserAvatar } from '@/features/user';
 import { Spacing } from '@/shared/config';
 import { confirmOpenDirections } from '@/shared/lib/directions';
 import { useCurrentLocation } from '@/shared/lib/geo';
@@ -58,6 +58,7 @@ function BackButton({ label }: { label: string }) {
 }
 
 const MAX_STAR = 5;
+const REVIEW_AVATAR_SIZE = 36;
 
 function ReviewCard({
   review,
@@ -178,11 +179,7 @@ function ReviewCard({
     <>
       <ThemedView type="backgroundElement" style={styles.reviewCard}>
         <View style={styles.reviewHeader}>
-          <Image
-            source={{ uri: review.author.iconUrl }}
-            style={styles.reviewAvatar}
-            contentFit="cover"
-          />
+          <UserAvatar iconUrl={review.author.iconUrl} size={REVIEW_AVATAR_SIZE} />
           <ThemedText type="smallBold" style={styles.reviewAuthor} numberOfLines={1}>
             {review.author.name}
           </ThemedText>

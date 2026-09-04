@@ -26,11 +26,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.two,
   },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
   authorMeta: {
     flex: 1,
     gap: Spacing.half,

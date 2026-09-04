@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { SymbolView } from 'expo-symbols';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, View } from 'react-native';
@@ -11,9 +10,11 @@ import type { Review } from '../../domain/review';
 
 import { ReviewForm } from './review-form';
 
+import { UserAvatar } from '@/features/user';
 import { ThemedText, ThemedView } from '@/shared/ui';
 
 const MAX_RATING = 5;
+const AVATAR_SIZE = 40;
 
 function formatPostedAt(postedAt: string, language: string): string {
   return new Intl.DateTimeFormat(language, {
@@ -46,7 +47,7 @@ function ReviewItem({ review }: { review: Review }) {
   return (
     <ThemedView type="backgroundElement" style={styles.item}>
       <View style={styles.itemHeader}>
-        <Image source={{ uri: review.author.iconUrl }} style={styles.avatar} contentFit="cover" />
+        <UserAvatar iconUrl={review.author.iconUrl} size={AVATAR_SIZE} />
         <View style={styles.authorMeta}>
           <ThemedText type="smallBold">{review.author.name}</ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
