@@ -14,16 +14,32 @@ import {
   getEvacuationSheltersFromLocalDb,
 } from '../use-cases/local-evacuation-shelter-queries';
 
-import { fetchEvacuationShelters } from '../../infrastructure/api/mock-shelters';
+import { fetchEvacuationShelters } from '../../infrastructure/api/shelter-api';
 import type { EvacuationDatabase } from '../../infrastructure/db/client';
 import { getEvacuationDatabase } from '../../infrastructure/db/client';
 import * as schema from '../../infrastructure/db/schema';
 import { createSqliteEvacuationShelterRepository } from '../../infrastructure/db/sqlite-evacuation-shelter-repository';
+import {
+  getLastSeededShelterLanguage,
+  setLastSeededShelterLanguage,
+} from '../../infrastructure/storage/shelter-language-storage';
 
+import type { SupportedLanguage } from '@/shared/lib/i18n';
 import type { ReactNode } from 'react';
 
-jest.mock('../../infrastructure/api/mock-shelters', () => ({
+let mockLanguage: SupportedLanguage = 'ja';
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({ i18n: { language: mockLanguage } }),
+}));
+
+jest.mock('../../infrastructure/api/shelter-api', () => ({
   fetchEvacuationShelters: jest.fn(),
+}));
+
+jest.mock('../../infrastructure/storage/shelter-language-storage', () => ({
+  getLastSeededShelterLanguage: jest.fn(),
+  setLastSeededShelterLanguage: jest.fn(),
 }));
 
 jest.mock('../../infrastructure/db/client', () => {
@@ -65,6 +81,20 @@ const seededShelters: EvacuationShelter[] = [
   },
 ];
 
+const seededSheltersEn: EvacuationShelter[] = [
+  {
+    id: 'shelter-1',
+    name: 'Shelter A',
+    address: 'Address A',
+    coordinates: { latitude: 34.69, longitude: 135.19 },
+    type: 'emergency',
+    facilityCategory: 'park',
+    media: { imageUrl: 'https://example.com/a.jpg' },
+    capacity: 100,
+    accessible: true,
+  },
+];
+
 function createInMemoryEvacuationDatabase(): {
   db: EvacuationDatabase;
   close: () => void;
@@ -94,6 +124,10 @@ describe('オフライン（DBのみ）避難所参照', () => {
     resetEvacuationDatabaseBootstrapForTests();
     jest.clearAllMocks();
 
+    mockLanguage = 'ja';
+    jest.mocked(getLastSeededShelterLanguage).mockResolvedValue(null);
+    jest.mocked(setLastSeededShelterLanguage).mockResolvedValue(undefined);
+
     const { db, close } = createInMemoryEvacuationDatabase();
     closeDatabase = close;
     jest.mocked(getEvacuationDatabase).mockReturnValue(db);
@@ -105,19 +139,21 @@ describe('オフライン（DBのみ）避難所参照', () => {
   });
 
   describe('local-evacuation-shelter-queries', () => {
-    it('DB にデータがあるとき fetch せず一覧を返す', async () => {
+    it('DB にデータがあり同じ言語のときは fetch せず一覧を返す', async () => {
       const repository = createSqliteEvacuationShelterRepository(getEvacuationDatabase());
       await repository.replaceAll(seededShelters);
+      jest.mocked(getLastSeededShelterLanguage).mockResolvedValue('ja');
 
-      await expect(getEvacuationSheltersFromLocalDb()).resolves.toEqual(seededShelters);
+      await expect(getEvacuationSheltersFromLocalDb('ja')).resolves.toEqual(seededShelters);
       expect(fetchEvacuationShelters).not.toHaveBeenCalled();
     });
 
-    it('DB にデータがあるとき fetch せず詳細を返す', async () => {
+    it('DB にデータがあり同じ言語のときは fetch せず詳細を返す', async () => {
       const repository = createSqliteEvacuationShelterRepository(getEvacuationDatabase());
       await repository.replaceAll(seededShelters);
+      jest.mocked(getLastSeededShelterLanguage).mockResolvedValue('ja');
 
-      await expect(getEvacuationShelterByIdFromLocalDb('shelter-2')).resolves.toEqual(
+      await expect(getEvacuationShelterByIdFromLocalDb('shelter-2', 'ja')).resolves.toEqual(
         seededShelters[1],
       );
       expect(fetchEvacuationShelters).not.toHaveBeenCalled();
@@ -126,19 +162,34 @@ describe('オフライン（DBのみ）避難所参照', () => {
     it('存在しない ID は null を返す', async () => {
       const repository = createSqliteEvacuationShelterRepository(getEvacuationDatabase());
       await repository.replaceAll(seededShelters);
+      jest.mocked(getLastSeededShelterLanguage).mockResolvedValue('ja');
 
-      await expect(getEvacuationShelterByIdFromLocalDb('missing')).resolves.toBeNull();
+      await expect(getEvacuationShelterByIdFromLocalDb('missing', 'ja')).resolves.toBeNull();
       expect(fetchEvacuationShelters).not.toHaveBeenCalled();
     });
 
     it('DB が空のときのみ初回 bootstrap で fetch してシードする', async () => {
       jest.mocked(fetchEvacuationShelters).mockResolvedValue(seededShelters);
 
-      await expect(getEvacuationSheltersFromLocalDb()).resolves.toEqual(seededShelters);
+      await expect(getEvacuationSheltersFromLocalDb('ja')).resolves.toEqual(seededShelters);
       expect(fetchEvacuationShelters).toHaveBeenCalledTimes(1);
 
-      await expect(getEvacuationSheltersFromLocalDb()).resolves.toEqual(seededShelters);
+      jest.mocked(getLastSeededShelterLanguage).mockResolvedValue('ja');
+      await expect(getEvacuationSheltersFromLocalDb('ja')).resolves.toEqual(seededShelters);
       expect(fetchEvacuationShelters).toHaveBeenCalledTimes(1);
+    });
+
+    it('表示言語が変わると再取得して新しい言語のデータに入れ替える', async () => {
+      jest.mocked(fetchEvacuationShelters).mockResolvedValueOnce(seededShelters);
+      await expect(getEvacuationSheltersFromLocalDb('ja')).resolves.toEqual(seededShelters);
+      expect(fetchEvacuationShelters).toHaveBeenCalledWith('ja');
+
+      jest.mocked(getLastSeededShelterLanguage).mockResolvedValue('ja');
+      jest.mocked(fetchEvacuationShelters).mockResolvedValueOnce(seededSheltersEn);
+
+      await expect(getEvacuationSheltersFromLocalDb('en')).resolves.toEqual(seededSheltersEn);
+      expect(fetchEvacuationShelters).toHaveBeenCalledTimes(2);
+      expect(fetchEvacuationShelters).toHaveBeenLastCalledWith('en');
     });
   });
 
@@ -157,6 +208,7 @@ describe('オフライン（DBのみ）避難所参照', () => {
 
       const repository = createSqliteEvacuationShelterRepository(getEvacuationDatabase());
       await repository.replaceAll(seededShelters);
+      jest.mocked(getLastSeededShelterLanguage).mockResolvedValue('ja');
     });
 
     afterEach(async () => {
@@ -200,6 +252,27 @@ describe('オフライン（DBのみ）避難所参照', () => {
       expect(result.current.fetchStatus).toBe('idle');
       expect(result.current.data).toBeUndefined();
       expect(fetchEvacuationShelters).not.toHaveBeenCalled();
+      unmount();
+    });
+
+    it('表示言語が変わると新しいクエリキーで再取得し、新しい言語のデータを返す', async () => {
+      const { result, rerender, unmount } = renderHook(() => useEvacuationShelters(), {
+        wrapper: createQueryClientWrapper(queryClient),
+      });
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
+      expect(result.current.data).toEqual(seededShelters);
+
+      jest.mocked(fetchEvacuationShelters).mockResolvedValueOnce(seededSheltersEn);
+      mockLanguage = 'en';
+      rerender({});
+
+      await waitFor(() => {
+        expect(result.current.data).toEqual(seededSheltersEn);
+      });
+      expect(fetchEvacuationShelters).toHaveBeenCalledWith('en');
       unmount();
     });
   });

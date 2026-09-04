@@ -14,6 +14,8 @@ type AuthState = {
   login: (user: PublicUser) => void;
   /** backend 認証で得たセッション（ユーザー + トークン）を設定する。 */
   setSession: (session: AuthSession) => void;
+  /** ログイン状態（トークン）を保ったまま現在ユーザーの情報のみ更新する。 */
+  updateCurrentUser: (user: PublicUser) => void;
   /** ログアウトし、ユーザー・トークンをすべて未設定に戻す。 */
   logout: () => void;
 };
@@ -30,6 +32,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   accessToken: null,
   refreshToken: null,
   login: (user) => set({ currentUser: user, accessToken: null, refreshToken: null }),
+  updateCurrentUser: (user) => set({ currentUser: user }),
   setSession: (session) =>
     set({
       currentUser: session.user,
