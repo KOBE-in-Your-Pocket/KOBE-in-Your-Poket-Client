@@ -113,7 +113,9 @@
       "commentPlaceholder": "请输入评论",
       "submit": "发布",
       "cancel": "取消",
-      "starLabel": "{{count}}星"
+      "starLabel": "{{count}}星",
+      "submitting": "发布中...",
+      "submitError": "无法发布评论。请稍后再试。"
     },
     "genreFilter": {
       "all": "全部",

@@ -1,3 +1,4 @@
+import type { PublicUser } from '@/features/user';
 import { apiFetch } from '@/shared/lib/api';
 import type { SupportedLanguage } from '@/shared/lib/i18n';
 
@@ -52,4 +53,49 @@ export async function fetchReviews(spotId: string, language: SupportedLanguage):
   );
 
   return response.map(toReview);
+}
+
+/** 投稿するレビューの内容。 */
+export type ReviewInput = {
+  rating: { value: number };
+  comment: string;
+  language: SupportedLanguage;
+};
+
+/**
+ * レビューを投稿する。
+ *
+ * バックエンド `POST /api/v1/tourism/spots/:spotId/reviews` を呼び出す（認証必須 / #506）。
+ * backend はレスポンスの author に id を返さないが、投稿は自分のものなので
+ * ログイン中のユーザーで補う（{@link fetchReviews} の空文字フォールバックとは違い、
+ * 投稿直後の一覧で「自分のレビュー」として扱えるようにするため）。
+ */
+export async function postReview(
+  spotId: string,
+  input: ReviewInput,
+  author: PublicUser,
+): Promise<Review> {
+  const response = await apiFetch<ReviewResponse>(
+    `/api/v1/tourism/spots/${encodeURIComponent(spotId)}/reviews`,
+    {
+      method: 'POST',
+      auth: true,
+      body: {
+        rating: input.rating.value,
+        comment: input.comment,
+        // backend は author.name を必須・iconUrl を任意で受け取る（未設定は null）。
+        author: { name: author.name, iconUrl: author.iconUrl || null },
+        language: input.language,
+      },
+    },
+  );
+
+  return {
+    ...toReview(response),
+    author: {
+      id: author.id,
+      name: response.author.name,
+      iconUrl: response.author.iconUrl ?? author.iconUrl,
+    },
+  };
 }

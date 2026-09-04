@@ -1,11 +1,19 @@
-import { act, fireEvent, render, screen } from '@testing-library/react-native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { Text as MockText, View as MockView } from 'react-native';
 
 import { useAuthStore } from '@/features/user';
 
+import { postReview } from '../../../infrastructure/api/review-api';
 import { ReviewForm } from '../review-form';
 
 import type { ReactNode } from 'react';
+
+jest.mock('../../../infrastructure/api/review-api', () => ({
+  postReview: jest.fn(),
+}));
+
+const postReviewMock = postReview as jest.Mock;
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'ja' } }),
@@ -44,14 +52,49 @@ const OTHER_USER = {
 };
 const PLACEHOLDER_LABEL = 'tourism.reviewForm.placeholder';
 const COMMENT_PLACEHOLDER = 'tourism.reviewForm.commentPlaceholder';
+const SUBMIT_LABEL = 'tourism.reviewForm.submit';
+const SUBMITTING_LABEL = 'tourism.reviewForm.submitting';
+const SUBMIT_ERROR = 'tourism.reviewForm.submitError';
+
+const CREATED_REVIEW = {
+  id: 'review-from-server',
+  rating: { value: 4 },
+  comment: '投稿するコメント',
+  author: USER,
+  postedAt: '2026-09-04T00:00:00Z',
+  language: 'ja' as const,
+};
+
+function renderForm() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
+
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <ReviewForm spotId="spot-a" />
+    </QueryClientProvider>,
+  );
+}
+
+/**
+ * 展開してから星とコメントを埋め、投稿できる状態にする。
+ * t のスタブが翻訳キーをそのまま返すため 5 つの星は同じラベルになる。4 つ目を押す。
+ */
+function fillForm(comment = '投稿するコメント') {
+  fireEvent.press(screen.getByLabelText(PLACEHOLDER_LABEL));
+  fireEvent.press(screen.getAllByLabelText('tourism.reviewForm.starLabel')[3]);
+  fireEvent.changeText(screen.getByPlaceholderText(COMMENT_PLACEHOLDER), comment);
+}
 
 describe('ReviewForm', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     useAuthStore.getState().logout();
   });
 
   it('未ログイン時は何も表示しない', () => {
-    render(<ReviewForm spotId="spot-a" />);
+    renderForm();
 
     expect(screen.queryByLabelText(PLACEHOLDER_LABEL)).toBeNull();
   });
@@ -60,7 +103,7 @@ describe('ReviewForm', () => {
     act(() => {
       useAuthStore.getState().login(USER);
     });
-    render(<ReviewForm spotId="spot-a" />);
+    renderForm();
 
     // 展開して下書きを入力する
     fireEvent.press(screen.getByLabelText(PLACEHOLDER_LABEL));
@@ -87,7 +130,7 @@ describe('ReviewForm', () => {
     act(() => {
       useAuthStore.getState().login(USER);
     });
-    render(<ReviewForm spotId="spot-a" />);
+    renderForm();
 
     // USER で下書きを入力する
     fireEvent.press(screen.getByLabelText(PLACEHOLDER_LABEL));
@@ -103,5 +146,63 @@ describe('ReviewForm', () => {
     expect(screen.queryByPlaceholderText(COMMENT_PLACEHOLDER)).toBeNull();
     fireEvent.press(screen.getByLabelText(PLACEHOLDER_LABEL));
     expect(screen.getByPlaceholderText(COMMENT_PLACEHOLDER).props.value).toBe('');
+  });
+
+  it('投稿に成功したらフォームを閉じて入力をクリアする', async () => {
+    act(() => {
+      useAuthStore.getState().login(USER);
+    });
+    postReviewMock.mockResolvedValue(CREATED_REVIEW);
+    renderForm();
+
+    fillForm();
+    fireEvent.press(screen.getByText(SUBMIT_LABEL));
+
+    await waitFor(() => expect(screen.queryByPlaceholderText(COMMENT_PLACEHOLDER)).toBeNull());
+    expect(postReviewMock).toHaveBeenCalledTimes(1);
+
+    // 再展開しても下書きは残っていない
+    fireEvent.press(screen.getByLabelText(PLACEHOLDER_LABEL));
+    expect(screen.getByPlaceholderText(COMMENT_PLACEHOLDER).props.value).toBe('');
+  });
+
+  it('投稿に失敗したらエラーを表示し、入力内容を保持する', async () => {
+    act(() => {
+      useAuthStore.getState().login(USER);
+    });
+    postReviewMock.mockRejectedValue(new Error('network down'));
+    renderForm();
+
+    fillForm('失敗しても消えないコメント');
+    fireEvent.press(screen.getByText(SUBMIT_LABEL));
+
+    await waitFor(() => expect(screen.getByText(SUBMIT_ERROR)).toBeTruthy());
+    expect(screen.getByPlaceholderText(COMMENT_PLACEHOLDER).props.value).toBe(
+      '失敗しても消えないコメント',
+    );
+  });
+
+  it('投稿中は送信ボタンのラベルを切り替え、二重送信を防ぐ', async () => {
+    act(() => {
+      useAuthStore.getState().login(USER);
+    });
+    let resolvePost: (review: typeof CREATED_REVIEW) => void = () => {};
+    postReviewMock.mockReturnValue(
+      new Promise((resolve) => {
+        resolvePost = resolve;
+      }),
+    );
+    renderForm();
+
+    fillForm();
+    fireEvent.press(screen.getByText(SUBMIT_LABEL));
+
+    await waitFor(() => expect(screen.getByText(SUBMITTING_LABEL)).toBeTruthy());
+    fireEvent.press(screen.getByText(SUBMITTING_LABEL));
+    expect(postReviewMock).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      resolvePost(CREATED_REVIEW);
+    });
   });
 });

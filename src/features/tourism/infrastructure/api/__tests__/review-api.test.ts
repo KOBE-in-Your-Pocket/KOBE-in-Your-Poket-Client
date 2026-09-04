@@ -1,6 +1,6 @@
 import { apiFetch } from '@/shared/lib/api';
 
-import { fetchReviews } from '../review-api';
+import { fetchReviews, postReview } from '../review-api';
 
 jest.mock('@/shared/lib/api', () => ({
   apiFetch: jest.fn(),
@@ -69,6 +69,81 @@ describe('fetchReviews', () => {
     mockApiFetch.mockResolvedValue([response({ name: '太郎' })]);
 
     const [review] = await fetchReviews('nankinmachi', 'ja');
+
+    expect(review).toMatchObject({
+      id: 'r1',
+      rating: { value: 4 },
+      comment: 'コメント',
+      postedAt: '2025-05-01T00:00:00.000Z',
+      language: 'ja',
+    });
+  });
+});
+
+const AUTHOR = { id: 'user-arakawa', name: '荒川蓮', iconUrl: 'https://i.pravatar.cc/150?img=68' };
+const INPUT = { rating: { value: 4 }, comment: 'コメント', language: 'ja' } as const;
+
+describe('postReview', () => {
+  beforeEach(() => {
+    mockApiFetch.mockReset();
+    mockApiFetch.mockResolvedValue(response({ name: '荒川蓮' }));
+  });
+
+  it('認証付きで POST し、rating は数値・author は名前とアイコンで送る', async () => {
+    await postReview('nankinmachi', INPUT, AUTHOR);
+
+    expect(mockApiFetch).toHaveBeenCalledWith('/api/v1/tourism/spots/nankinmachi/reviews', {
+      method: 'POST',
+      auth: true,
+      body: {
+        rating: 4,
+        comment: 'コメント',
+        author: { name: '荒川蓮', iconUrl: 'https://i.pravatar.cc/150?img=68' },
+        language: 'ja',
+      },
+    });
+  });
+
+  it('spotId を URL エンコードする', async () => {
+    await postReview('spot/with space', INPUT, AUTHOR);
+
+    expect(mockApiFetch.mock.calls[0][0]).toBe('/api/v1/tourism/spots/spot%2Fwith%20space/reviews');
+  });
+
+  it('アイコン未設定の投稿者は iconUrl を null で送る', async () => {
+    await postReview('nankinmachi', INPUT, { ...AUTHOR, iconUrl: '' });
+
+    expect(mockApiFetch.mock.calls[0][1]).toMatchObject({
+      body: { author: { name: '荒川蓮', iconUrl: null } },
+    });
+  });
+
+  it('author.id は backend が返さないためログイン中のユーザーの ID で補う', async () => {
+    const review = await postReview('nankinmachi', INPUT, AUTHOR);
+
+    expect(review.author.id).toBe('user-arakawa');
+  });
+
+  it('backend がアイコンを返さない場合はログイン中のユーザーのアイコンにフォールバックする', async () => {
+    mockApiFetch.mockResolvedValue(response({ name: '荒川蓮', iconUrl: null }));
+
+    const review = await postReview('nankinmachi', INPUT, AUTHOR);
+
+    expect(review.author.iconUrl).toBe('https://i.pravatar.cc/150?img=68');
+  });
+
+  it('backend がアイコンを返す場合はその値を採用する', async () => {
+    mockApiFetch.mockResolvedValue(
+      response({ name: '荒川蓮', iconUrl: 'https://cdn.example.com/icon.png' }),
+    );
+
+    const review = await postReview('nankinmachi', INPUT, AUTHOR);
+
+    expect(review.author.iconUrl).toBe('https://cdn.example.com/icon.png');
+  });
+
+  it('author 以外のフィールドはサーバーの値をそのまま採用する', async () => {
+    const review = await postReview('nankinmachi', INPUT, AUTHOR);
 
     expect(review).toMatchObject({
       id: 'r1',
