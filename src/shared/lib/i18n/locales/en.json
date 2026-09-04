@@ -75,7 +75,11 @@
     "signUpError": "Sign-up failed. Please check your input and try again.",
     "confirmationEmailSent": "A confirmation email has been sent. Open the link in the email to verify, then log in.",
     "emailNotConfirmed": "Your email address is not confirmed yet. Please open the link in the confirmation email.",
-    "emailRateLimited": "The confirmation email limit has been reached. Please wait a while and try again."
+    "emailRateLimited": "The confirmation email limit has been reached. Please wait a while and try again.",
+    "googleConfigMissing": "Google Sign-In is not configured correctly. Try updating the app, or contact the developer.",
+    "googlePlayServicesUnavailable": "Google Play services is unavailable. Update or enable it, then try again.",
+    "googleInProgress": "Sign-in is already in progress. Please wait a moment.",
+    "networkError": "Could not reach the network. Check your connection and try again."
   },
   "tourism": {
     "spotList": {

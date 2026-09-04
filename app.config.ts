@@ -31,11 +31,49 @@ const isProductionIosBuild =
   process.env.EAS_BUILD_PROFILE === 'production' || process.env.EAS_BUILD_PROFILE === 'preview';
 const needsInsecureHttpExceptions = !isProductionIosBuild && (isLocalDevIos || usesHttpBackend);
 
+// EAS Build 上かどうか。EAS_BUILD_PROFILE はビルドジョブでのみ設定される。
+// .env はリポジトリにコミットされず EAS Build にもアップロードされないため、
+// EAS 側の環境変数（eas.json の "environment" で選択）が未設定だと
+// クライアント ID が欠けたまま「一見成功する」ビルドが出来上がってしまう。
+const isEasBuild = Boolean(process.env.EAS_BUILD_PROFILE);
+
+const missingGoogleIosClientIdMessage =
+  '[app.config] EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID が未設定です。\n' +
+  '  Google サインインの URL スキームがネイティブビルドに焼き込まれず、サインインは動作しません。\n' +
+  '  ローカル: .env に設定してください（.env.example 参照）。\n' +
+  '  EAS Build: eas env:set --name EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID --environment development ...\n' +
+  '  で EAS の環境変数へ登録してください（eas.json の "environment" で選択される）。';
+
 if (!googleIosClientId) {
+  // サインインが壊れたビルドを配布してしまわないよう、EAS Build では警告ではなく失敗させる。
+  if (isEasBuild) {
+    throw new Error(missingGoogleIosClientIdMessage);
+  }
+  console.warn(missingGoogleIosClientIdMessage);
+}
+
+// 認証 API の接続先。未設定だと ID トークンを送る先が無く、サインインは必ず失敗する。
+// ローカルでは各 feature がモックへフォールバックするので警告に留め、
+// 配布ビルドでは（Google サインインごと壊れるため）ビルドを失敗させる。
+if (!apiBaseUrl) {
+  const message =
+    '[app.config] EXPO_PUBLIC_API_BASE_URL が未設定です。\n' +
+    '  認証 API（Google サインインを含む）の接続先が無く、サインインは動作しません。\n' +
+    '  ローカル: .env に設定してください（.env.example 参照）。\n' +
+    '  EAS Build: eas env:set --name EXPO_PUBLIC_API_BASE_URL --environment development ... で登録してください。';
+  if (isEasBuild) {
+    throw new Error(message);
+  }
+  console.warn(message);
+}
+
+// Android は idToken の取得に種別ウェブのクライアント ID が必須（iOS では未使用）。
+// 未設定だと Google サインインのボタンを押した瞬間に実行時エラーになる。
+if (!process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID?.trim()) {
   console.warn(
-    '[app.config] EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID が未設定です。\n' +
-      '  Google サインインの URL スキームがネイティブビルドに焼き込まれず、サインインは動作しません。\n' +
-      '  ネイティブビルド（dev client 再作成）前に .env に設定してください（.env.example 参照）。',
+    '[app.config] EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID が未設定です。\n' +
+      '  Android では idToken 取得に必須のため、Google サインインは実行時に失敗します。\n' +
+      '  iOS のみ検証中であればこの警告は無視できます（.env.example 参照）。',
   );
 }
 

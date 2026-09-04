@@ -75,7 +75,11 @@
     "signUpError": "회원가입에 실패했습니다. 입력 내용을 확인한 후 다시 시도해 주세요.",
     "confirmationEmailSent": "확인 이메일을 보냈습니다. 이메일의 링크로 인증을 완료한 후 로그인해 주세요.",
     "emailNotConfirmed": "이메일 주소 인증이 완료되지 않았습니다. 확인 이메일의 링크를 열어 주세요.",
-    "emailRateLimited": "확인 이메일 발송 한도에 도달했습니다. 잠시 후 다시 시도해 주세요."
+    "emailRateLimited": "확인 이메일 발송 한도에 도달했습니다. 잠시 후 다시 시도해 주세요.",
+    "googleConfigMissing": "Google 로그인 설정이 올바르지 않습니다. 앱을 업데이트하거나 개발자에게 문의해 주세요.",
+    "googlePlayServicesUnavailable": "Google Play 서비스를 사용할 수 없습니다. 업데이트하거나 활성화한 후 다시 시도해 주세요.",
+    "googleInProgress": "로그인을 처리하는 중입니다. 잠시만 기다려 주세요.",
+    "networkError": "네트워크에 연결할 수 없습니다. 연결 상태를 확인한 후 다시 시도해 주세요."
   },
   "tourism": {
     "spotList": {

@@ -22,7 +22,10 @@ import {
   useEmailSignIn,
   useEmailSignUp,
 } from '../../application/use-email-auth';
-import { useGoogleSignIn } from '../../application/use-google-sign-in';
+import {
+  resolveGoogleSignInErrorKind,
+  useGoogleSignIn,
+} from '../../application/use-google-sign-in';
 
 /** プライマリアクションの配色（位置情報モーダルのアクセントカラーに合わせる）。 */
 const ACCENT_COLOR = '#C67B4A';
@@ -149,7 +152,7 @@ export function SignInModal({ visible, onClose }: SignInModalProps) {
     mode,
     signInError: emailSignIn.error,
     signUpError: emailSignUp.error,
-    googleError: googleSignIn.isError,
+    googleError: googleSignIn.isError ? googleSignIn.error : null,
     t,
   });
 
@@ -305,11 +308,23 @@ function resolveErrorMessage({
   mode: AuthMode;
   signInError: unknown;
   signUpError: unknown;
-  googleError: boolean;
+  googleError: unknown;
   t: (key: string) => string;
 }): string | null {
   if (googleError) {
-    return t('settings.signInError');
+    switch (resolveGoogleSignInErrorKind(googleError)) {
+      case 'configMissing':
+        return t('auth.googleConfigMissing');
+      case 'playServicesUnavailable':
+        return t('auth.googlePlayServicesUnavailable');
+      case 'inProgress':
+        return t('auth.googleInProgress');
+      case 'network':
+        return t('auth.networkError');
+      case 'backendRejected':
+      case 'unknown':
+        return t('settings.signInError');
+    }
   }
 
   if (mode === 'signIn' && signInError) {

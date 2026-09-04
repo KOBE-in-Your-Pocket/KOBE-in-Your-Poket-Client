@@ -4,6 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 import { Text as MockText, View as MockView } from 'react-native';
 
 import { AuthApiError } from '../../../domain/auth-api-error';
+import { GoogleSignInConfigError } from '../../../domain/google-sign-in-config-error';
 import type { AuthSession } from '../../../domain/auth-session';
 import { SignInModal } from '../sign-in-modal';
 
@@ -60,7 +61,9 @@ jest.mock('../../../application/use-email-auth', () => ({
   useEmailSignUp: () => mockEmailSignUp,
 }));
 
+// エラー種別の変換ロジック（resolveGoogleSignInErrorKind）は実物を使い、フックだけ差し替える。
 jest.mock('../../../application/use-google-sign-in', () => ({
+  ...jest.requireActual('../../../application/use-google-sign-in'),
   useGoogleSignIn: () => mockGoogleSignIn,
 }));
 
@@ -191,6 +194,18 @@ describe('SignInModal', () => {
 
     expect(mockEmailSignIn.reset).toHaveBeenCalled();
     expect(mockEmailSignUp.reset).toHaveBeenCalled();
+  });
+
+  it('Google サインイン失敗時は原因ごとに異なる文言を出す', () => {
+    mockGoogleSignIn.isError = true;
+    mockGoogleSignIn.error = new GoogleSignInConfigError('client id 未設定');
+    render(<SignInModal visible onClose={jest.fn()} />);
+    expect(screen.getByText('auth.googleConfigMissing')).toBeTruthy();
+
+    screen.rerender(<SignInModal visible onClose={jest.fn()} />);
+    mockGoogleSignIn.error = new AuthApiError(400, 'Bad ID token');
+    screen.rerender(<SignInModal visible onClose={jest.fn()} />);
+    expect(screen.getByText('settings.signInError')).toBeTruthy();
   });
 
   it('メール認証開始時に Google のエラー状態をリセットする', () => {

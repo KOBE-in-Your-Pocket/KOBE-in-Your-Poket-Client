@@ -36,6 +36,13 @@ jest.mock('@react-native-google-signin/google-signin', () => {
     isSuccessResponse: (response) => response?.type === 'success',
     isCancelledResponse: (response) => response?.type === 'cancelled',
     isErrorWithCode: (error) => typeof error?.code !== 'undefined',
-    statusCodes: {},
+    // 実際の値は OS ごとに異なる定数なので、テストでは識別可能な代表値を割り当てる。
+    statusCodes: {
+      SIGN_IN_CANCELLED: 'SIGN_IN_CANCELLED',
+      IN_PROGRESS: 'IN_PROGRESS',
+      PLAY_SERVICES_NOT_AVAILABLE: 'PLAY_SERVICES_NOT_AVAILABLE',
+      SIGN_IN_REQUIRED: 'SIGN_IN_REQUIRED',
+      NULL_PRESENTER: 'NULL_PRESENTER',
+    },
   };
 });

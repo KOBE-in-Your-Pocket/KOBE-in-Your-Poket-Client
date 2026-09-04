@@ -75,7 +75,11 @@
     "signUpError": "注册失败，请检查输入内容后重试。",
     "confirmationEmailSent": "确认邮件已发送。请通过邮件中的链接完成验证后再登录。",
     "emailNotConfirmed": "邮箱尚未完成验证。请打开确认邮件中的链接。",
-    "emailRateLimited": "确认邮件发送次数已达上限。请稍等片刻后重试。"
+    "emailRateLimited": "确认邮件发送次数已达上限。请稍等片刻后重试。",
+    "googleConfigMissing": "Google 登录配置不完整，暂时无法使用。请尝试更新应用，或联系开发者。",
+    "googlePlayServicesUnavailable": "无法使用 Google Play 服务。请更新或启用后重试。",
+    "googleInProgress": "正在处理登录，请稍候。",
+    "networkError": "无法连接网络。请检查网络状况后重试。"
   },
   "tourism": {
     "spotList": {

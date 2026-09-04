@@ -75,7 +75,11 @@
     "signUpError": "登録に失敗しました。入力内容を確認して再度お試しください。",
     "confirmationEmailSent": "確認メールを送信しました。メール内のリンクで認証を完了してから、ログインしてください。",
     "emailNotConfirmed": "メールアドレスの確認が完了していません。届いている確認メールのリンクを開いてください。",
-    "emailRateLimited": "確認メールの送信回数が上限に達しました。しばらく時間をおいてから再度お試しください。"
+    "emailRateLimited": "確認メールの送信回数が上限に達しました。しばらく時間をおいてから再度お試しください。",
+    "googleConfigMissing": "Google サインインの設定が不足しているため利用できません。アプリの更新をお試しいただくか、開発者にお問い合わせください。",
+    "googlePlayServicesUnavailable": "Google Play 開発者サービスが利用できません。更新または有効化してから再度お試しください。",
+    "googleInProgress": "サインインの処理中です。しばらくお待ちください。",
+    "networkError": "ネットワークに接続できませんでした。通信環境を確認して再度お試しください。"
   },
   "tourism": {
     "spotList": {
