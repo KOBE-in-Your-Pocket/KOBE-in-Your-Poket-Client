@@ -45,21 +45,23 @@ describe('local-evacuation-shelter-queries', () => {
     });
   });
 
-  it('getEvacuationSheltersFromLocalDb は bootstrap 後に findAll する', async () => {
+  it('getEvacuationSheltersFromLocalDb は指定言語で bootstrap 後に findAll する', async () => {
     findAll.mockResolvedValue([mockShelter]);
 
-    await expect(getEvacuationSheltersFromLocalDb()).resolves.toEqual([mockShelter]);
+    await expect(getEvacuationSheltersFromLocalDb('ja')).resolves.toEqual([mockShelter]);
 
-    expect(bootstrapEvacuationDatabase).toHaveBeenCalledTimes(1);
+    expect(bootstrapEvacuationDatabase).toHaveBeenCalledWith('ja');
     expect(findAll).toHaveBeenCalledTimes(1);
   });
 
-  it('getEvacuationShelterByIdFromLocalDb は bootstrap 後に findById する', async () => {
+  it('getEvacuationShelterByIdFromLocalDb は指定言語で bootstrap 後に findById する', async () => {
     findById.mockResolvedValue(mockShelter);
 
-    await expect(getEvacuationShelterByIdFromLocalDb('shelter-1')).resolves.toEqual(mockShelter);
+    await expect(getEvacuationShelterByIdFromLocalDb('shelter-1', 'ja')).resolves.toEqual(
+      mockShelter,
+    );
 
-    expect(bootstrapEvacuationDatabase).toHaveBeenCalledTimes(1);
+    expect(bootstrapEvacuationDatabase).toHaveBeenCalledWith('ja');
     expect(findById).toHaveBeenCalledWith('shelter-1');
   });
 });

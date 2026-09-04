@@ -22,6 +22,8 @@ const iosBundleIdentifier = isLocalDevIos
 const iosAppleTeamId = isLocalDevIos ? process.env.IOS_DEV_TEAM_ID : undefined;
 
 // 開発用 backend が HTTP のときだけ ATS 例外を焼き込む（シミュレータ / EAS Dev Client 向け）。
+// デプロイ環境の backend は HTTPS 化済み（https://18-181-34-28.sslip.io）のため例外は不要で、
+// この分岐はローカル HTTP backend を使う開発ビルドだけに効く。
 // 本番 iOS ビルド（production / preview プロファイル）では例外を入れない。
 const apiBaseUrl = process.env.EXPO_PUBLIC_API_BASE_URL?.trim();
 const usesHttpBackend = apiBaseUrl?.startsWith('http://') ?? false;
@@ -61,7 +63,8 @@ export default (): ExpoConfig => ({
     infoPlist: {
       // 開発ビルドで HTTP backend を使う場合のみ ATS 例外を設定する。
       // - LOCAL_DEV_IOS=1: 実機ローカル検証（localhost / LAN IP も許可）
-      // - EXPO_PUBLIC_API_BASE_URL が http:// 始まり: シミュレータ / EAS Dev Client（nip.io 等）
+      // - EXPO_PUBLIC_API_BASE_URL が http:// 始まり: ローカル HTTP backend（nip.io 等）
+      // デプロイ環境は HTTPS（sslip.io）なので usesHttpBackend=false となり、例外は焼き込まれない。
       // 本番 iOS ビルド（production / preview）では例外を入れない。
       ...(needsInsecureHttpExceptions
         ? {
