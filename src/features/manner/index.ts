@@ -5,6 +5,7 @@ export { MannerRepositoryProvider } from './application/manner-repository-contex
 export { useManners } from './ui/hooks/use-manners';
 export { useSpotManners } from './application/use-spot-manners';
 export { useFilteredManners } from './ui/hooks/use-filtered-manners';
+export { createApiMannerRepository } from './infrastructure/api/api-manner-repository';
 export { createMockMannerRepository } from './infrastructure/api/mock-manner-repository';
 export { MannerScreen } from './ui/components/manner-screen';
 export { MannerList } from './ui/components/manner-list';
