@@ -1,3 +1,4 @@
+export { createAuthTokenProvider } from './application/auth-token-provider';
 export { useCurrentUser } from './application/use-current-user';
 export { useRestoreSession } from './application/use-restore-session';
 export type { AuthSession } from './domain/auth-session';
