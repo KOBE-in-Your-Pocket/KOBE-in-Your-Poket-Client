@@ -37,6 +37,9 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     textAlignVertical: 'top',
   },
+  errorText: {
+    color: '#D45B45',
+  },
   actions: {
     flexDirection: 'row',
     justifyContent: 'flex-end',

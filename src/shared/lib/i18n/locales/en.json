@@ -103,7 +103,9 @@
       "edit": "Edit",
       "save": "Save",
       "delete": "Delete",
-      "openMenu": "Open menu"
+      "openMenu": "Open menu",
+      "saving": "Saving...",
+      "saveError": "Could not update your review. Please try again later."
     },
     "reviewFilter": {
       "all": "All"
@@ -113,7 +115,9 @@
       "commentPlaceholder": "Enter your comment",
       "submit": "Post",
       "cancel": "Cancel",
-      "starLabel": "{{count}} stars"
+      "starLabel": "{{count}} stars",
+      "submitting": "Posting...",
+      "submitError": "Could not post your review. Please try again later."
     },
     "genreFilter": {
       "all": "All",

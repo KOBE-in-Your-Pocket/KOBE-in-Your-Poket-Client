@@ -103,7 +103,9 @@
       "edit": "編集",
       "save": "保存",
       "delete": "削除",
-      "openMenu": "メニューを開く"
+      "openMenu": "メニューを開く",
+      "saving": "保存中...",
+      "saveError": "レビューを更新できませんでした。時間をおいて再度お試しください。"
     },
     "reviewFilter": {
       "all": "すべて"
@@ -113,7 +115,9 @@
       "commentPlaceholder": "コメントを入力してください",
       "submit": "投稿する",
       "cancel": "キャンセル",
-      "starLabel": "{{count}}星"
+      "starLabel": "{{count}}星",
+      "submitting": "投稿中...",
+      "submitError": "レビューを投稿できませんでした。時間をおいて再度お試しください。"
     },
     "genreFilter": {
       "all": "すべて",

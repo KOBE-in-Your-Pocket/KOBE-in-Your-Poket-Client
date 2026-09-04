@@ -40,7 +40,7 @@ function StarInput({ value, onChange }: { value: number; onChange: (v: number) =
 export function ReviewForm({ spotId }: { spotId: string }) {
   const { t } = useTranslation();
   const theme = useTheme();
-  const submit = useSubmitReview(spotId);
+  const submitReview = useSubmitReview(spotId);
   const currentUser = useCurrentUser();
 
   const [expanded, setExpanded] = useState(false);
@@ -59,15 +59,27 @@ export function ReviewForm({ spotId }: { spotId: string }) {
     setComment('');
   }
 
+  const isSubmitting = submitReview.isPending;
+  const canSubmit = rating > 0 && comment.trim() !== '' && !isSubmitting;
+
   function handleSubmit() {
-    if (rating === 0 || comment.trim() === '') return;
-    submit({ rating: { value: rating }, comment: comment.trim() });
-    setRating(0);
-    setComment('');
-    setExpanded(false);
+    if (!canSubmit) return;
+    // 投稿はネットワーク越しなので、成功が確定するまで入力内容は消さない
+    // （失敗したときに書き直しにならないようにする）。
+    submitReview.mutate(
+      { rating: { value: rating }, comment: comment.trim() },
+      {
+        onSuccess: () => {
+          setRating(0);
+          setComment('');
+          setExpanded(false);
+        },
+      },
+    );
   }
 
   function handleCancel() {
+    submitReview.reset();
     setRating(0);
     setComment('');
     setExpanded(false);
@@ -113,10 +125,17 @@ export function ReviewForm({ spotId }: { spotId: string }) {
         autoFocus
       />
 
+      {submitReview.isError && (
+        <ThemedText type="small" style={styles.errorText}>
+          {t('tourism.reviewForm.submitError')}
+        </ThemedText>
+      )}
+
       <View style={styles.actions}>
         <Pressable
           style={[styles.actionButton, { backgroundColor: theme.backgroundSelected }]}
           onPress={handleCancel}
+          disabled={isSubmitting}
           accessibilityRole="button"
         >
           <ThemedText type="smallBold">{t('tourism.reviewForm.cancel')}</ThemedText>
@@ -125,19 +144,17 @@ export function ReviewForm({ spotId }: { spotId: string }) {
         <Pressable
           style={[
             styles.actionButton,
-            {
-              backgroundColor: rating > 0 && comment.trim() ? '#D45B45' : theme.backgroundSelected,
-            },
+            { backgroundColor: canSubmit ? '#D45B45' : theme.backgroundSelected },
           ]}
           onPress={handleSubmit}
-          disabled={rating === 0 || comment.trim() === ''}
+          disabled={!canSubmit}
           accessibilityRole="button"
         >
           <ThemedText
             type="smallBold"
-            style={{ color: rating > 0 && comment.trim() ? '#FFFFFF' : theme.textSecondary }}
+            style={{ color: canSubmit ? '#FFFFFF' : theme.textSecondary }}
           >
-            {t('tourism.reviewForm.submit')}
+            {t(isSubmitting ? 'tourism.reviewForm.submitting' : 'tourism.reviewForm.submit')}
           </ThemedText>
         </Pressable>
       </View>

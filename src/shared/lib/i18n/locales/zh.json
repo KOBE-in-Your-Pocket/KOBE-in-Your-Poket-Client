@@ -103,7 +103,9 @@
       "edit": "编辑",
       "save": "保存",
       "delete": "删除",
-      "openMenu": "打开菜单"
+      "openMenu": "打开菜单",
+      "saving": "保存中...",
+      "saveError": "无法更新评论。请稍后再试。"
     },
     "reviewFilter": {
       "all": "全部"
@@ -113,7 +115,9 @@
       "commentPlaceholder": "请输入评论",
       "submit": "发布",
       "cancel": "取消",
-      "starLabel": "{{count}}星"
+      "starLabel": "{{count}}星",
+      "submitting": "发布中...",
+      "submitError": "无法发布评论。请稍后再试。"
     },
     "genreFilter": {
       "all": "全部",

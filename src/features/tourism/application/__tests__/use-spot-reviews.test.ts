@@ -24,4 +24,18 @@ describe('mergeReviews', () => {
   it('空同士なら空配列を返す', () => {
     expect(mergeReviews([], [])).toEqual([]);
   });
+
+  it('seed と submitted に同じ ID があっても重複させない（投稿・編集の再取得後）', () => {
+    const posted = review('server-1', '2026-09-04T00:00:00.000Z');
+    const seed = [review('a', '2025-01-01T00:00:00.000Z'), posted];
+
+    expect(mergeReviews(seed, [posted]).map((r) => r.id)).toEqual(['server-1', 'a']);
+  });
+
+  it('同じ ID なら submitted 側の内容を優先する（編集直後の反映）', () => {
+    const seed = [review('server-1', '2026-09-04T00:00:00.000Z')];
+    const edited = { ...review('server-1', '2026-09-04T00:00:00.000Z'), comment: '編集後' };
+
+    expect(mergeReviews(seed, [edited])[0].comment).toBe('編集後');
+  });
 });

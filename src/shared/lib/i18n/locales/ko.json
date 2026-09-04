@@ -103,7 +103,9 @@
       "edit": "편집",
       "save": "저장",
       "delete": "삭제",
-      "openMenu": "메뉴 열기"
+      "openMenu": "메뉴 열기",
+      "saving": "저장 중...",
+      "saveError": "리뷰를 수정하지 못했습니다. 잠시 후 다시 시도해 주세요."
     },
     "reviewFilter": {
       "all": "전체"
@@ -113,7 +115,9 @@
       "commentPlaceholder": "댓글을 입력하세요",
       "submit": "게시",
       "cancel": "취소",
-      "starLabel": "별 {{count}}개"
+      "starLabel": "별 {{count}}개",
+      "submitting": "게시 중...",
+      "submitError": "리뷰를 게시하지 못했습니다. 잠시 후 다시 시도해 주세요."
     },
     "genreFilter": {
       "all": "전체",
