@@ -237,5 +237,14 @@
     "servicesDisabledMessage": "To show your location on the map, turn on Location Services in your device settings.",
     "openSettings": "Open Settings",
     "close": "Close"
+  },
+  "legal": {
+    "consent": {
+      "title": "Before you start",
+      "description": "Using this app requires your acceptance of our Privacy Policy. It explains how we use your location to show tourist spots and walking directions, and what we store if you create an account, such as your email address and display name. Please read it and then continue.",
+      "readPolicy": "Read the Privacy Policy",
+      "accept": "Accept and start",
+      "saveError": "We could not save your acceptance. Please try again."
+    }
   }
 }
