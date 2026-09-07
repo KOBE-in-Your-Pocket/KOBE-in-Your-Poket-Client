@@ -68,15 +68,13 @@ describe('useReviewStore', () => {
         'spot-b',
         makeReview({ id: 'r2', author: { id: 'user-taro', name: 'Taro', iconUrl: 'old.png' } }),
       );
-    useReviewStore
-      .getState()
-      .addReview(
-        'spot-a',
-        makeReview({
-          id: 'r3',
-          author: { id: 'user-hanako', name: 'Hanako', iconUrl: 'hanako.png' },
-        }),
-      );
+    useReviewStore.getState().addReview(
+      'spot-a',
+      makeReview({
+        id: 'r3',
+        author: { id: 'user-hanako', name: 'Hanako', iconUrl: 'hanako.png' },
+      }),
+    );
 
     useReviewStore.getState().updateAuthorInfo('user-taro', { name: '新太郎', iconUrl: 'new.png' });
 
