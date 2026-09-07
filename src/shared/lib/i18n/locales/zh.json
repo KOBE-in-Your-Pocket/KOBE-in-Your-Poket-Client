@@ -113,7 +113,8 @@
       "commentPlaceholder": "请输入评论",
       "submit": "发布",
       "cancel": "取消",
-      "starLabel": "{{count}}星"
+      "starLabel": "{{count}}星",
+      "loginRequired": "发布评价需要登录。请从设置界面登录。"
     },
     "genreFilter": {
       "all": "全部",

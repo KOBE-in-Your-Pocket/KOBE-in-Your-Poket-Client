@@ -50,10 +50,11 @@ describe('ReviewForm', () => {
     useAuthStore.getState().logout();
   });
 
-  it('未ログイン時は何も表示しない', () => {
+  it('未ログイン時はログイン案内を表示する', () => {
     render(<ReviewForm spotId="spot-a" />);
 
     expect(screen.queryByLabelText(PLACEHOLDER_LABEL)).toBeNull();
+    expect(screen.getByText('tourism.reviewForm.loginRequired')).toBeTruthy();
   });
 
   it('ログアウトで下書きを破棄し、再ログイン時に入力が残らない', () => {

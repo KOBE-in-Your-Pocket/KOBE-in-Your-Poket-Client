@@ -113,7 +113,8 @@
       "commentPlaceholder": "コメントを入力してください",
       "submit": "投稿する",
       "cancel": "キャンセル",
-      "starLabel": "{{count}}星"
+      "starLabel": "{{count}}星",
+      "loginRequired": "レビュー投稿にはログインが必要です。設定画面からログインしてください"
     },
     "genreFilter": {
       "all": "すべて",

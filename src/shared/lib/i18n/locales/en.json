@@ -113,7 +113,8 @@
       "commentPlaceholder": "Enter your comment",
       "submit": "Post",
       "cancel": "Cancel",
-      "starLabel": "{{count}} stars"
+      "starLabel": "{{count}} stars",
+      "loginRequired": "You need to log in to post a review. Please log in from Settings."
     },
     "genreFilter": {
       "all": "All",

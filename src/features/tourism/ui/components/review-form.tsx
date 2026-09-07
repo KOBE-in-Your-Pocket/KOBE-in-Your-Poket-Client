@@ -73,10 +73,13 @@ export function ReviewForm({ spotId }: { spotId: string }) {
     setExpanded(false);
   }
 
-  // 未ログイン時はレビュー投稿できないためフォームを表示しない。
-  // ログイン導線の表示は別要件で対応する。
+  // 未ログイン時はレビュー投稿できないため、ログインを促す案内を表示する（#400）。
   if (!currentUser) {
-    return null;
+    return (
+      <ThemedView type="backgroundElement" style={styles.loginNotice}>
+        <ThemedText themeColor="textSecondary">{t('tourism.reviewForm.loginRequired')}</ThemedText>
+      </ThemedView>
+    );
   }
 
   if (!expanded) {
