@@ -37,6 +37,18 @@ const ICON_MAP: Record<string, SymbolName> = {
   'no-phone-calls': { ios: 'phone.down', android: 'phone_disabled', web: 'phone_disabled' },
   'no-white-clothes-in-kinsen': { ios: 'tshirt', android: 'checkroom', web: 'checkroom' },
   'no-feeding-wild-boars': { ios: 'pawprint', android: 'pets', web: 'pets' },
+
+  // backend（`GET /api/v1/manner/items`）が返すアイコン識別キー（#412）。
+  // mock が題材ごとのキー（no-eating-while-walking 等）だったのに対し、
+  // backend は主題を表すキー（food / trash 等）を返すため別途対応づける。
+  'hot-spring': { ios: 'drop', android: 'hot_tub', web: 'hot_tub' },
+  mountain: { ios: 'mountain.2', android: 'landscape', web: 'landscape' },
+  food: { ios: 'fork.knife', android: 'restaurant', web: 'restaurant' },
+  trash: { ios: 'trash', android: 'delete', web: 'delete' },
+  train: { ios: 'tram.fill', android: 'train', web: 'train' },
+  users: { ios: 'person.2', android: 'group', web: 'group' },
+  torii: { ios: 'building.columns', android: 'temple_buddhist', web: 'temple_buddhist' },
+  'coin-off': { ios: 'yensign.circle', android: 'money_off', web: 'money_off' },
 };
 
 const DEFAULT_ICON: SymbolName = { ios: 'info.circle', android: 'info', web: 'info' };

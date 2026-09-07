@@ -1,4 +1,9 @@
-import type { AuthGateway, PersistedUserStore, SessionStore } from '../domain/auth-ports';
+import type {
+  AuthGateway,
+  PersistedUserStore,
+  SessionStore,
+  UserGateway,
+} from '../domain/auth-ports';
 import {
   logoutAuthSession,
   refreshAuthSession,
@@ -6,6 +11,7 @@ import {
   signInWithGoogle,
   signUpWithEmail,
 } from '../infrastructure/api/auth-api';
+import { fetchCurrentUser } from '../infrastructure/api/user-api';
 import {
   clearPersistedSession,
   loadPersistedSession,
@@ -32,4 +38,9 @@ export const defaultSessionStore: SessionStore = {
 /** 本番用の永続化ユーザー更新ストア。 */
 export const defaultPersistedUserStore: PersistedUserStore = {
   updatePersistedUser,
+};
+
+/** 本番用のユーザー取得ゲートウェイ。 */
+export const defaultUserGateway: UserGateway = {
+  fetchCurrentUser,
 };

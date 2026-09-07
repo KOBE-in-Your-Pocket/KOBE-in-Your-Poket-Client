@@ -68,7 +68,8 @@ function ReviewCard({
 }: {
   review: Review;
   isOwn: boolean;
-  onUpdate: (changes: ReviewEdit) => void;
+  /** 保存は backend への PUT。完了を待って編集モードを閉じるため Promise を返す。 */
+  onUpdate: (changes: ReviewEdit) => Promise<unknown>;
   onDelete: () => void;
 }) {
   const { t } = useTranslation();
@@ -80,6 +81,10 @@ function ReviewCard({
   const [editing, setEditing] = useState(false);
   const [editRating, setEditRating] = useState(review.rating.value);
   const [editComment, setEditComment] = useState(review.comment);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveFailed, setSaveFailed] = useState(false);
+
+  const canSave = editRating > 0 && editComment.trim() !== '' && !isSaving;
 
   function openMenu() {
     menuAnchorRef.current?.measureInWindow((x, _y, w, h) => {
@@ -88,15 +93,25 @@ function ReviewCard({
     });
   }
 
-  function handleSave() {
-    if (editRating === 0 || editComment.trim() === '') return;
-    onUpdate({ rating: { value: editRating }, comment: editComment.trim() });
-    setEditing(false);
+  async function handleSave() {
+    if (!canSave) return;
+    setIsSaving(true);
+    setSaveFailed(false);
+    try {
+      // 保存が確定するまで編集モードを閉じない（失敗しても入力し直しにならないように）。
+      await onUpdate({ rating: { value: editRating }, comment: editComment.trim() });
+      setEditing(false);
+    } catch {
+      setSaveFailed(true);
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   function handleCancel() {
     setEditRating(review.rating.value);
     setEditComment(review.comment);
+    setSaveFailed(false);
     setEditing(false);
   }
 
@@ -136,6 +151,11 @@ function ReviewCard({
           multiline
           autoFocus
         />
+        {saveFailed && (
+          <ThemedText type="small" style={{ color: '#D45B45' }}>
+            {t('tourism.reviewCard.saveError')}
+          </ThemedText>
+        )}
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: Spacing.two }}>
           <Pressable
             style={{
@@ -145,6 +165,7 @@ function ReviewCard({
               backgroundColor: theme.backgroundSelected,
             }}
             onPress={handleCancel}
+            disabled={isSaving}
             accessibilityRole="button"
           >
             <ThemedText type="smallBold">{t('tourism.reviewForm.cancel')}</ThemedText>
@@ -154,20 +175,17 @@ function ReviewCard({
               paddingVertical: Spacing.two,
               paddingHorizontal: Spacing.three,
               borderRadius: 8,
-              backgroundColor:
-                editRating > 0 && editComment.trim() ? '#D45B45' : theme.backgroundSelected,
+              backgroundColor: canSave ? '#D45B45' : theme.backgroundSelected,
             }}
             onPress={handleSave}
-            disabled={editRating === 0 || editComment.trim() === ''}
+            disabled={!canSave}
             accessibilityRole="button"
           >
             <ThemedText
               type="smallBold"
-              style={{
-                color: editRating > 0 && editComment.trim() ? '#FFFFFF' : theme.textSecondary,
-              }}
+              style={{ color: canSave ? '#FFFFFF' : theme.textSecondary }}
             >
-              {t('tourism.reviewCard.save')}
+              {t(isSaving ? 'tourism.reviewCard.saving' : 'tourism.reviewCard.save')}
             </ThemedText>
           </Pressable>
         </View>
@@ -381,7 +399,7 @@ export function SpotDetailContent({ spot }: { spot: Spot }) {
                 key={review.id}
                 review={review}
                 isOwn={review.author.id === currentUser?.id}
-                onUpdate={(changes) => updateReview(review.id, changes)}
+                onUpdate={(changes) => updateReview.mutateAsync({ reviewId: review.id, changes })}
                 onDelete={() => deleteReview(review.id)}
               />
             ))

@@ -103,7 +103,9 @@
       "edit": "Edit",
       "save": "Save",
       "delete": "Delete",
-      "openMenu": "Open menu"
+      "openMenu": "Open menu",
+      "saving": "Saving...",
+      "saveError": "Could not update your review. Please try again later."
     },
     "reviewFilter": {
       "all": "All"
@@ -114,7 +116,9 @@
       "submit": "Post",
       "cancel": "Cancel",
       "starLabel": "{{count}} stars",
-      "loginRequired": "You need to log in to post a review. Please log in from Settings."
+      "loginRequired": "You need to log in to post a review. Please log in from Settings.",
+      "submitting": "Posting...",
+      "submitError": "Could not post your review. Please try again later."
     },
     "genreFilter": {
       "all": "All",

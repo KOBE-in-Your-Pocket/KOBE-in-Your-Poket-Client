@@ -16,12 +16,24 @@ const EMPTY_REVIEWS: Review[] = [];
 /**
  * サーバー取得分（seed）とローカル投稿分（submitted）を結合し、投稿日時の新しい順に並べる。
  *
- * 投稿・編集は当面ローカルストアに保持されるため、実 API 取得分にユーザー自身の
- * 投稿を重ねることで、投稿直後でも一覧から消えないようにする。
- * seed と submitted は ID が重複しない前提（サーバー ID とローカル生成 ID）で単純結合する。
+ * 投稿・編集の結果は再取得が届くまでの間もローカルストアに載るため、実 API 取得分に
+ * ユーザー自身の投稿を重ねることで、投稿直後でも一覧から消えないようにする。
+ *
+ * 投稿・編集がサーバー採番の ID を持つレビューをストアへ積むようになった（#411）ため、
+ * 再取得後は seed と submitted に同じ ID が並ぶ。ID で重複を排除しないと React の
+ * 一覧が同じ key を 2 つ持つことになるので、Map でまとめて submitted を優先する
+ * （編集直後は submitted 側が新しい内容を持つ）。
  */
 export function mergeReviews(seed: Review[], submitted: Review[]): Review[] {
-  return [...seed, ...submitted].sort((a, b) => b.postedAt.localeCompare(a.postedAt));
+  const byId = new Map<string, Review>();
+  for (const item of seed) {
+    byId.set(item.id, item);
+  }
+  for (const item of submitted) {
+    byId.set(item.id, item);
+  }
+
+  return [...byId.values()].sort((a, b) => b.postedAt.localeCompare(a.postedAt));
 }
 
 export function useSpotReviews(spotId: string | null | undefined) {
