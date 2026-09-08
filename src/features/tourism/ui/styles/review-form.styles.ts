@@ -17,6 +17,11 @@ export const styles = StyleSheet.create({
   triggerText: {
     flex: 1,
   },
+  loginNotice: {
+    paddingVertical: Spacing.two,
+    paddingHorizontal: Spacing.three,
+    borderRadius: 12,
+  },
   form: {
     gap: Spacing.three,
     paddingVertical: Spacing.three,

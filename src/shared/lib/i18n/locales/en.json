@@ -116,6 +116,7 @@
       "submit": "Post",
       "cancel": "Cancel",
       "starLabel": "{{count}} stars",
+      "loginRequired": "You need to log in to post a review. Please log in from Settings.",
       "submitting": "Posting...",
       "submitError": "Could not post your review. Please try again later."
     },
