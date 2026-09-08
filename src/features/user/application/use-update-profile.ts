@@ -1,5 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
+import { useReviewStore } from '@/features/tourism/store/use-review-store';
+
 import type { PersistedUserStore } from '../domain/auth-ports';
 import { normalizeProfileEdits, type ProfileEdits } from '../domain/profile-edits';
 import { useAuthStore } from '../store/use-auth-store';
@@ -20,6 +22,9 @@ type UpdateProfileDeps = {
  * 既知の制約: セッション再発行（/auth/refresh）はサーバー側のユーザー情報を
  * 返すため、次回のセッション復元時にローカルの編集内容はサーバー側の値で
  * 上書きされる。backend API 提供までの割り切り。
+ *
+ * 合わせて、自分が投稿済みのレビュー（useReviewStore の submittedReviews）の
+ * author.name / author.iconUrl もその場で書き換える（#516 暫定対応）。
  */
 export async function performProfileUpdate(
   edits: ProfileEdits,
@@ -37,6 +42,10 @@ export async function performProfileUpdate(
 
   const updated = { ...currentUser, ...normalized };
   updateCurrentUser(updated);
+  useReviewStore.getState().updateAuthorInfo(updated.id, {
+    name: updated.name,
+    iconUrl: updated.iconUrl,
+  });
 
   try {
     // 進行中のサインイン・復元・ログアウトの書き込みと交錯して古いセッションが

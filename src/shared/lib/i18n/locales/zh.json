@@ -116,6 +116,7 @@
       "submit": "发布",
       "cancel": "取消",
       "starLabel": "{{count}}星",
+      "loginRequired": "发布评价需要登录。请从设置界面登录。",
       "submitting": "发布中...",
       "submitError": "无法发布评论。请稍后再试。"
     },
