@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 
+import { PrivacyConsentGate } from '@/features/legal';
 import { createApiMannerRepository, MannerRepositoryProvider } from '@/features/manner';
 import { createAuthTokenProvider, useRestoreSession, useSyncCurrentUser } from '@/features/user';
 import { warnIfApiBaseUrlMissing } from '@/shared/config';
@@ -32,7 +33,9 @@ export default function RootLayout() {
 
   return (
     <AppProviders>
-      <AppBootstrap />
+      <PrivacyConsentGate>
+        <AppBootstrap />
+      </PrivacyConsentGate>
     </AppProviders>
   );
 }
